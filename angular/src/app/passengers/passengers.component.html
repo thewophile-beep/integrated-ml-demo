@@ -1,0 +1,21 @@
+<h2>My Passengers</h2>
+
+<ul class="passengers">
+    <li *ngFor="let passenger of passengers">
+        <a routerLink="/detail/{{passenger.Id}}">
+            <span class="badge">{{passenger.Id}}</span> {{passenger.Name}}
+        </a>
+        <button class="delete" title="delete passenger"
+                (click)="delete(passenger)">x</button>
+    </li>
+</ul>
+
+<div>
+    <label for="new-passenger">Passenger name: </label>
+    <input id="new-passenger" #passengerName />
+  
+    <!-- (click) passes input value to add() and then clears the input -->
+    <button class="add-button" (click)="add(passengerName.value); passengerName.value=''">
+      Add passenger
+    </button>
+</div>

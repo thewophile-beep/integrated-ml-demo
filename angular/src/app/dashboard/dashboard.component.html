@@ -1,0 +1,9 @@
+<h2>Top Passengers</h2>
+<div class="passengers-menu">
+  <a *ngFor="let passenger of passengers"
+      routerLink="/detail/{{passenger.Id}}">
+      {{passenger.Name}}
+  </a>
+</div>
+
+<app-passenger-search></app-passenger-search>
