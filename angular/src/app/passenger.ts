@@ -5,7 +5,7 @@ export interface Passenger {
     Name: string;
     Sex: string;
     Age: number;
-    Sibsp: number;
+    SibSp: number;
     Parch: number;
     Ticket: string;
     Fare: number;

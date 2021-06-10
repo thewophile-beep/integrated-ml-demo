@@ -18,7 +18,7 @@ Property Sex As %String(VALUELIST = ",male,female");
 Property Age As %Decimal(SCALE = 4);
 
 /// Number of Siblings/Spouse aboard
-Property Sibsp As %Integer;
+Property SibSp As %Integer;
 
 /// Number of Parent/Chila abroad
 Property Parch As %Integer;

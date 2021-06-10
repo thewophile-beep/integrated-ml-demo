@@ -2,9 +2,11 @@
   width: 100%;
 }
 
-.shipping-card {
+.passenger-card {
   min-width: 120px;
   margin: 20px auto;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 .mat-radio-button {
@@ -24,4 +26,12 @@
 
 .col:last-child {
   margin-right: 0;
+}
+
+.principal-header {
+  font-size: 40px;
+}
+
+.passenger-creation-card {
+  margin-bottom: 15px;
 }

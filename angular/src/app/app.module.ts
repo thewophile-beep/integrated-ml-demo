@@ -12,7 +12,6 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { HttpClientModule } from '@angular/common/http';
 import { PassengerSearchComponent } from './passenger-search/passenger-search.component';
-import { PassengerCreationComponent } from './passenger-creation/passenger-creation.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -36,7 +35,6 @@ import { MatListModule } from '@angular/material/list';
     MessagesComponent,
     DashboardComponent,
     PassengerSearchComponent,
-    PassengerCreationComponent,
     CreatePassengerFormComponent,
     NavigationComponent,
   ],

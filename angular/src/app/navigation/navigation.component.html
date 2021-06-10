@@ -8,8 +8,9 @@
       <a mat-list-item href="dashboard">Dashboard</a>
       <a mat-list-item href="passengers">Passenger List</a>
       <a mat-list-item href="creation">Create Passenger</a>
-      <a mat-list-item href="creation-test">Create Passenger test</a>
     </mat-nav-list>
+    <mat-toolbar>Messages</mat-toolbar>
+    <app-messages></app-messages>
   </mat-sidenav>
   <mat-sidenav-content>
     <mat-toolbar color="primary">
@@ -24,6 +25,5 @@
       <span>Titanic Passengers</span>
     </mat-toolbar>
     <router-outlet></router-outlet>
-    <app-messages></app-messages>
-</mat-sidenav-content>
+  </mat-sidenav-content>
 </mat-sidenav-container>
