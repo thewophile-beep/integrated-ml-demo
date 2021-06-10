@@ -12,7 +12,10 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { HttpClientModule } from '@angular/common/http';
 import { PassengerSearchComponent } from './passenger-search/passenger-search.component';
+import { PassengerCreationComponent } from './passenger-creation/passenger-creation.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import {MatFormFieldModule} from '@angular/material/form-field'; 
 @NgModule({
   declarations: [
     AppComponent,
@@ -21,15 +24,15 @@ import { PassengerSearchComponent } from './passenger-search/passenger-search.co
     MessagesComponent,
     DashboardComponent,
     PassengerSearchComponent,
+    PassengerCreationComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
     AppRoutingModule,
     HttpClientModule,
-    // The HttpClientInMemoryWebApiModule module intercepts HTTP requests
-    // and returns simulated server responses.
-    // Remove it when a real server is ready to receive requests.
+    BrowserAnimationsModule,
+    MatFormFieldModule
   ],
   providers: [],
   bootstrap: [AppComponent]

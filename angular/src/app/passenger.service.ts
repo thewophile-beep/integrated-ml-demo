@@ -15,13 +15,12 @@ export class PassengerService {
   private PassengersUrl = 'http://localhost:52775/api/titanic/passengers';  // URL to web api
 
   httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json',
-    'Authorization': 'Basic '+ btoa('SuperUser:SYS') })
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
   
   /**
    * Handle Http operation that failed.
-   * Let the app continue.
+   * Let the app continue. 
    * @param operation - name of the operation that failed
    * @param result - optional value to return as the observable result
    */
@@ -95,7 +94,7 @@ export class PassengerService {
 
   /* GET Passengers whose name contains search term */
   searchPassengers(term: string): Observable<Passenger[]> {
-    if (!term.trim()) {
+    if (!term.trim() || term.length < 3) {
       // if not search term, return empty Passenger array.
       return of([]);
     }

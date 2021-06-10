@@ -1,6 +1,7 @@
 export interface Passenger {
-    Class: number;
-    Survived: boolean;
+    PassengerId: number;
+    Survived: number;
+    Pclass: number;
     Name: string;
     Sex: string;
     Age: number;
@@ -10,8 +11,5 @@ export interface Passenger {
     Fare: number;
     Cabin: string;
     Embarked: string;
-    Boat: string;
-    Body: number;
-    Destination: string;
     Id: number;
 }

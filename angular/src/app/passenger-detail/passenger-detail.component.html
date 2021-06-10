@@ -1,10 +1,16 @@
 <div *ngIf="passenger">
     <h2>{{passenger.Name | uppercase}} Details</h2>
     <div><span>id: </span>{{passenger.Id}}</div>
-    <div>
-        <label for="passenger-name">Passenger name: </label>
-        <input id="passenger-name" [(ngModel)]="passenger.Name" placeholder="name">
-    </div>
+    <div><span>Survived: </span>{{passenger.Survived}}</div>
+    <div><span>Class: </span>{{passenger.Pclass}}</div>
+    <div><span>Sex: </span>{{passenger.Sex}}</div>
+    <div><span>Age: </span>{{passenger.Age}}</div>
+    <div><span>Siblings/Spouse: </span>{{passenger.Sibsp}}</div>
+    <div><span>Parch: </span>{{passenger.Parch}}</div>
+    <div><span>Ticket: </span>{{passenger.Ticket}}</div>
+    <div><span>Fare: </span>{{passenger.Fare}}</div>
+    <div><span>Cabin: </span>{{passenger.Cabin}}</div>
+    <div><span>Embarked: </span>{{passenger.Embarked}}</div>
 </div>
 
 <button (click)="goBack()">go back</button>

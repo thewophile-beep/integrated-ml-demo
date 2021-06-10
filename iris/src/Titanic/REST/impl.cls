@@ -1,6 +1,6 @@
 /// Rest API for the Integrated ML Demo on the Titanic database<br/>
 /// Business logic class defined by OpenAPI in Titanic.REST.spec<br/>
-/// Updated Jun 9, 2021 13:23:06
+/// Updated Jun 10, 2021 08:40:41
 Class Titanic.REST.impl Extends %REST.Impl [ ProcedureBlock ]
 {
 
@@ -52,7 +52,7 @@ ClassMethod CreatePassenger(payloadBody As %Stream.Object) As %Stream.Object
 /// Return one record of Titanic.Table.Passenger<br/>
 /// The method arguments hold values for:<br/>
 ///     id<br/>
-ClassMethod GetPassenger(id As %String) As %Stream.Object
+ClassMethod GetPassenger(id As %Integer) As %Stream.Object
 {
     set tDyna = ""
     If ##class(Titanic.Table.Passenger).%ExistsId(id) {
@@ -69,7 +69,7 @@ ClassMethod GetPassenger(id As %String) As %Stream.Object
 /// The method arguments hold values for:<br/>
 ///     id<br/>
 ///     payloadBody, Request body contents<br/>
-ClassMethod UpdatePassenger(id As %String, payloadBody As %Stream.Object) As %Stream.Object
+ClassMethod UpdatePassenger(id As %Integer, payloadBody As %Stream.Object) As %Stream.Object
 {
     If ##class(Titanic.Table.Passenger).%ExistsId(id) {
         set tPassenger = ##class(Titanic.Table.Passenger).%OpenId(id)
@@ -88,7 +88,7 @@ ClassMethod UpdatePassenger(id As %String, payloadBody As %Stream.Object) As %St
 /// Delete a record of Titanic.Table.Passenger with id<br/>
 /// The method arguments hold values for:<br/>
 ///     id<br/>
-ClassMethod DeletePassenger(id As %String) As %Stream.Object
+ClassMethod DeletePassenger(id As %Integer) As %Stream.Object
 {
     If ##class(Titanic.Table.Passenger).%ExistsId(id) {
         Quit ##class(Titanic.Table.Passenger).%DeleteId(id)
@@ -96,6 +96,25 @@ ClassMethod DeletePassenger(id As %String) As %Stream.Object
         Do ..%SetStatusCode(204)
         Quit 
     }
+}
+
+/// Retreive all the records of Titanic.Table.Passenger with "name" in their name<br/>
+/// The method arguments hold values for:<br/>
+///     name, Search passenger by name<br/>
+ClassMethod SearchPassengers(name As %String) As %Stream.Object
+{
+    set tDyna = []
+    SET myquery = "SELECT Id FROM Titanic_Table.Passenger WHERE Titanic_Table.Passenger.Name %STARTSWITH ?"
+    SET tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    SET tRs = tStatement.%Execute(name)
+    while tRs.%Next() {
+        do ##class(Titanic.Table.Passenger).%OpenId(tRs.Id).%JSONExportToStream(.tStream)
+        set tElement = {}.%FromJSON(tStream)
+        set tElement.Id = tRs.Id
+        do tDyna.%Push(tElement)
+    }
+    Quit tDyna
 }
 
 }

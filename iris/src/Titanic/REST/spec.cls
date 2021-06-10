@@ -18,7 +18,7 @@ XData OpenAPI [ MimeType = application/json ]
     }
   },
   "host": "localhost:52775",
-  "basePath": "/api",
+  "basePath": "/api/titanic",
   "schemes": [
     "http",
     "https"
@@ -67,14 +67,9 @@ XData OpenAPI [ MimeType = application/json ]
           "200": {
             "description": "(Expected Result)",
             "schema": {
-              "type": "object",
-              "properties": {
-                "Id": {
-                  "type": "integer"
-                },
-                "Passenger": {
-                  "$ref": "#/definitions/Passenger"
-                }
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Passenger"
               }
             }
           },
@@ -105,7 +100,7 @@ XData OpenAPI [ MimeType = application/json ]
             "schema": {
               "type": "object",
               "properties": {
-                "Id": {
+                "PassengerId": {
                   "type": "integer"
                 }
               }
@@ -131,7 +126,7 @@ XData OpenAPI [ MimeType = application/json ]
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "integer"
           }
         ],
         "responses": {
@@ -159,7 +154,7 @@ XData OpenAPI [ MimeType = application/json ]
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "integer"
           },
           {
             "name": "payloadBody",
@@ -196,7 +191,7 @@ XData OpenAPI [ MimeType = application/json ]
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "integer"
           }
         ],
         "responses": {
@@ -211,17 +206,53 @@ XData OpenAPI [ MimeType = application/json ]
           }
         }
       }
+    },
+    "/passengers/": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "name",
+            "type": "string",
+            "description": " Search passenger by name "
+          }
+        ],
+        "description": " Retreive all the records of Titanic.Table.Passenger with \"name\" in their name ",
+        "summary": " Get all records of Passenger class with \"name\" in their name ",
+        "operationId": "SearchPassengers",
+        "x-ISC_ServiceMethod": "SearchPassengers",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Passenger"
+              }
+            }
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      }
     }
   },
   "definitions": {
     "Passenger": {
       "type": "object",
+      "required": [
+        "Name"
+      ],
       "properties": {
-        "Class": {
+        "PassengerId": {
           "type": "integer"
         },
         "Survived": {
           "type": "boolean"
+        },
+        "Pclass": {
+          "type": "integer"
         },
         "Name": {
           "type": "string"
@@ -232,7 +263,7 @@ XData OpenAPI [ MimeType = application/json ]
         "Age": {
           "type": "number"
         },
-        "Sibsp": {
+        "SibSp": {
           "type": "integer"
         },
         "Parch": {
@@ -248,15 +279,6 @@ XData OpenAPI [ MimeType = application/json ]
           "type": "string"
         },
         "Embarked": {
-          "type": "string"
-        },
-        "Boat": {
-          "type": "string"
-        },
-        "Body": {
-          "type": "integer"
-        },
-        "Destination": {
           "type": "string"
         }
       }

@@ -1,0 +1,50 @@
+<h2>Passenger Creation</h2>
+<div *ngIf="passenger">
+    <div>
+        <label for="passenger-name">Passenger name: </label>
+        <input id="passenger-name" [(ngModel)]="passenger.Name" placeholder="name">
+    </div>
+    <div>
+        <label for="passenger-survived">Survived: </label>
+        <input id="passenger-survived" [(ngModel)]="passenger.Survived" placeholder="survived" 
+        type="checkbox" checked="checkbox_checked" (change)="checkbox_checked ? passenger.Survived = 1 : passenger.Survived = 0">
+    </div>
+    <div>
+        <label for="passenger-class">Class: </label>
+        <input id="passenger-class" [(ngModel)]="passenger.Pclass" placeholder="class" type="number">
+    </div>
+    <div>
+        <label for="passenger-sex">Sex: </label>
+        <input id="passenger-sex" [(ngModel)]="passenger.Sex" placeholder="sex">
+    </div>
+    <div>
+        <label for="passenger-age">Age: </label>
+        <input id="passenger-age" [(ngModel)]="passenger.Age" placeholder="age" type="number">
+    </div>
+    <div>
+        <label for="passenger-sibsp">Sibsp: </label>
+        <input id="passenger-sibsp" [(ngModel)]="passenger.Sibsp" placeholder="sibsp" type="number">
+    </div>
+    <div>
+        <label for="passenger-parch">Parch: </label>
+        <input id="passenger-parch" [(ngModel)]="passenger.Parch" placeholder="parch" type="number">
+    </div>
+    <div>
+        <label for="passenger-ticket">Ticket: </label>
+        <input id="passenger-ticket" [(ngModel)]="passenger.Ticket" placeholder="ticket">
+    </div>
+    <div>
+        <label for="passenger-fare">Fare: </label>
+        <input id="passenger-fare" [(ngModel)]="passenger.Fare" placeholder="fare" type="number">
+    </div>
+    <div>
+        <label for="passenger-cabin">Cabin: </label>
+        <input id="passenger-cabin" [(ngModel)]="passenger.Cabin" placeholder="cabin">
+    </div>
+    <div>
+        <label for="passenger-embarked">Embarked: </label>
+        <input id="passenger-embarked" [(ngModel)]="passenger.Embarked" placeholder="embarked">
+    </div>
+</div>
+
+<button (click)="save()">save</button>

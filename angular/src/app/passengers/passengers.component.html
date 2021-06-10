@@ -1,15 +1,5 @@
 <h2>My Passengers</h2>
 
-<ul class="passengers">
-    <li *ngFor="let passenger of passengers">
-        <a routerLink="/detail/{{passenger.Id}}">
-            <span class="badge">{{passenger.Id}}</span> {{passenger.Name}}
-        </a>
-        <button class="delete" title="delete passenger"
-                (click)="delete(passenger)">x</button>
-    </li>
-</ul>
-
 <div>
     <label for="new-passenger">Passenger name: </label>
     <input id="new-passenger" #passengerName />
@@ -19,3 +9,13 @@
       Add passenger
     </button>
 </div>
+
+<ul class="passengers">
+    <li *ngFor="let passenger of passengers">
+        <a routerLink="/detail/{{passenger.Id}}">
+            <span class="badge">{{passenger.Id}}</span> {{passenger.Name}}
+        </a>
+        <button class="delete" title="delete passenger"
+                (click)="delete(passenger)">x</button>
+    </li>
+</ul>

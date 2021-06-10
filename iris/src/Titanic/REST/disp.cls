@@ -15,9 +15,9 @@ Parameter CONVERTINPUTSTREAM = 1;
 /// The default response charset is utf-8
 Parameter CHARSET = "utf-8";
 
-Parameter HandleCorsRequest = 1;
-
 Parameter CONTENTTYPE = "application/json";
+
+Parameter HandleCorsRequest = 1;
 
 XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 {
@@ -25,7 +25,7 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
   <!--  Server Info  -->
   <Route Url="/" Method="get" Call="GetInfo" />
   <!--  Get all records of Passenger class  -->
-  <Route Url="/passengers" Method="get" Call="GetAllPassengers" Cors="true"/>
+  <Route Url="/passengers" Method="get" Call="GetAllPassengers" />
   <!--  Create a Passenger  -->
   <Route Url="/passengers" Method="post" Call="CreatePassenger" />
   <!--  GET method to return JSON for a given passenger id -->
@@ -34,6 +34,8 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
   <Route Url="/passengers/:id" Method="put" Call="UpdatePassenger" />
   <!--  Delete a passenger with id -->
   <Route Url="/passengers/:id" Method="delete" Call="DeletePassenger" />
+  <!--  Get all records of Passenger class with "name" in their name  -->
+  <Route Url="/passengers/" Method="get" Call="SearchPassengers" />
 </Routes>
 }
 
@@ -78,6 +80,7 @@ ClassMethod CreatePassenger() As %Status
 ClassMethod GetPassenger(pid As %String) As %Status
 {
     Try {
+        If ($number(pid,"I")="") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"id",pid)) Quit
         Set response=##class(Titanic.REST.impl).GetPassenger(pid)
         Do ##class(Titanic.REST.impl).%WriteResponse(response)
     } Catch (ex) {
@@ -90,6 +93,7 @@ ClassMethod GetPassenger(pid As %String) As %Status
 ClassMethod UpdatePassenger(pid As %String) As %Status
 {
     Try {
+        If ($number(pid,"I")="") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"id",pid)) Quit
         If $isobject(%request.Content) Set ppayloadBody=%request.Content
         Set response=##class(Titanic.REST.impl).UpdatePassenger(pid,.ppayloadBody)
         Do ##class(Titanic.REST.impl).%WriteResponse(response)
@@ -103,7 +107,26 @@ ClassMethod UpdatePassenger(pid As %String) As %Status
 ClassMethod DeletePassenger(pid As %String) As %Status
 {
     Try {
+        If ($number(pid,"I")="") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"id",pid)) Quit
         Set response=##class(Titanic.REST.impl).DeletePassenger(pid)
+        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
+///  Get all records of Passenger class with "name" in their name 
+ClassMethod SearchPassengers() As %Status
+{
+    Try {
+        If $data(%request.Data("name",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"name")) Quit
+        }
+        If $data(%request.Data("name",1)) {
+            Set pname=%request.Data("name",1)
+        }
+        Set response=##class(Titanic.REST.impl).SearchPassengers(.pname)
         Do ##class(Titanic.REST.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
