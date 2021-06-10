@@ -4,6 +4,8 @@ import { PassengersComponent } from './passengers/passengers.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PassengerDetailComponent } from './passenger-detail/passenger-detail.component';
 import { PassengerCreationComponent } from './passenger-creation/passenger-creation.component';
+import { CreatePassengerFormComponent } from './create-passenger-form/create-passenger-form.component';
+import { NavigationComponent } from './navigation/navigation.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full'},
@@ -11,6 +13,7 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
   { path: 'detail/:id', component: PassengerDetailComponent },
   {path: 'creation', component: PassengerCreationComponent},
+  {path: 'creation-test', component: CreatePassengerFormComponent},
 ]
 
 @NgModule({

@@ -1,0 +1,75 @@
+<form [formGroup]="passengerForm" novalidate (ngSubmit)="onSubmit()">
+    <mat-card class="passenger-card">
+      <mat-card-header>
+        <mat-card-title>New Passenger Information</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="row">
+          <div class="col">
+            <mat-form-field class="full-width">
+              <input matInput placeholder="Name" formControlName="Name">
+              <mat-error *ngIf="passengerForm.controls['Name'].hasError('required')">
+                Name is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <mat-form-field class="full-width">
+              <mat-radio-group formControlName="Sex">
+                <mat-radio-button value="male">Male</mat-radio-button>
+                <mat-radio-button value="female">Female</mat-radio-button>
+                <mat-radio-button value="">Other</mat-radio-button>
+              </mat-radio-group>
+              <mat-error *ngIf="passengerForm.controls['Sex'].hasError('required')">
+                Sex is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col">
+            <mat-form-field class="full-width">
+              <input matInput placeholder="Age" formControlName="Age">
+              <mat-error *ngIf="passengerForm.controls['Age'].hasError('required')">
+                Age is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col">
+            <mat-form-field class="full-width">
+              <mat-radio-group formControlName="Pclass">
+                <mat-radio-button value="1">First Class</mat-radio-button>
+                <mat-radio-button value="2">Second Class</mat-radio-button>
+                <mat-radio-button value="3">Third Class</mat-radio-button>
+              </mat-radio-group>
+              <mat-error *ngIf="passengerForm.controls['Pclass'].hasError('required')">
+                Class is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <mat-form-field class="full-width">
+              <input matInput placeholder="Siblings / Spouses aboard" formControlName="Sibsp">
+              <mat-error *ngIf="passengerForm.controls['Sibsp'].hasError('required')">
+                Number of siblings / spouses aboard is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col">
+            <mat-form-field class="full-width">
+              <input matInput placeholder="Parents / Children aboard" formControlName="Parch">
+              <mat-error *ngIf="passengerForm.controls['Parch'].hasError('required')">
+                Number of parents / children aboard is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" type="submit">Submit</button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+  

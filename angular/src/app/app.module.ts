@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -15,7 +15,19 @@ import { PassengerSearchComponent } from './passenger-search/passenger-search.co
 import { PassengerCreationComponent } from './passenger-creation/passenger-creation.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import {MatFormFieldModule} from '@angular/material/form-field'; 
+import {MatFormFieldModule} from '@angular/material/form-field';
+import { CreatePassengerFormComponent } from './create-passenger-form/create-passenger-form.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatCardModule } from '@angular/material/card';
+import { NavigationComponent } from './navigation/navigation.component';
+import { LayoutModule } from '@angular/cdk/layout';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list'; 
 @NgModule({
   declarations: [
     AppComponent,
@@ -25,6 +37,8 @@ import {MatFormFieldModule} from '@angular/material/form-field';
     DashboardComponent,
     PassengerSearchComponent,
     PassengerCreationComponent,
+    CreatePassengerFormComponent,
+    NavigationComponent,
   ],
   imports: [
     BrowserModule,
@@ -32,7 +46,18 @@ import {MatFormFieldModule} from '@angular/material/form-field';
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatRadioModule,
+    MatCardModule,
+    ReactiveFormsModule,
+    LayoutModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatListModule
   ],
   providers: [],
   bootstrap: [AppComponent]
