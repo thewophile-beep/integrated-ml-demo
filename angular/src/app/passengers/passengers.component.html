@@ -1,21 +1,21 @@
-<h2>My Passengers</h2>
-
-<div>
-    <label for="new-passenger">Passenger name: </label>
-    <input id="new-passenger" #passengerName />
-  
-    <!-- (click) passes input value to add() and then clears the input -->
-    <button class="add-button" (click)="add(passengerName.value); passengerName.value=''">
-      Add passenger
-    </button>
-</div>
-
-<ul class="passengers">
-    <li *ngFor="let passenger of passengers">
-        <a routerLink="/detail/{{passenger.Id}}">
-            <span class="badge">{{passenger.Id}}</span> {{passenger.Name}}
-        </a>
-        <button class="delete" title="delete passenger"
-                (click)="delete(passenger)">x</button>
-    </li>
-</ul>
+<mat-card class="passengers-list-card">
+    <mat-card-header>
+        <mat-card-title class="principal-header">
+            Passenger List
+        </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <app-passenger-search></app-passenger-search>
+        <mat-nav-list>
+            <a mat-list-item *ngFor="let passenger of passengers" routerLink="/detail/{{passenger.Id}}">
+                <span matLine>
+                    {{passenger.Name}}
+                </span>
+                <button mat-icon-button title="delete passenger" (click)="delete(passenger)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+                <mat-divider></mat-divider>
+            </a>
+        </mat-nav-list>
+    </mat-card-content>
+</mat-card>

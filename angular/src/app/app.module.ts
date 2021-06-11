@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
 import { PassengerDetailComponent } from './passenger-detail/passenger-detail.component';
 import { PassengersComponent } from './passengers/passengers.component';
 import { MessagesComponent } from './messages/messages.component';
@@ -27,13 +26,13 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list'; 
+import {MatAutocompleteModule} from '@angular/material/autocomplete'; 
 @NgModule({
   declarations: [
     AppComponent,
     PassengersComponent,
     PassengerDetailComponent,
     MessagesComponent,
-    DashboardComponent,
     PassengerSearchComponent,
     CreatePassengerFormComponent,
     NavigationComponent,
@@ -55,7 +54,8 @@ import { MatListModule } from '@angular/material/list';
     MatToolbarModule,
     MatSidenavModule,
     MatIconModule,
-    MatListModule
+    MatListModule,
+    MatAutocompleteModule
   ],
   providers: [],
   bootstrap: [AppComponent]

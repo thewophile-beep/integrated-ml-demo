@@ -1,12 +1,17 @@
-<div id="search-component">
-    <label for="search-box">Passenger Search</label>
-    <input #searchBox id="search-box" (input)="search(searchBox.value)" />
-  
-    <ul class="search-result">
-      <li *ngFor="let passenger of passengers$ | async" >
-        <a routerLink="/detail/{{passenger.Id}}">
+<form class="full-width">
+  <mat-form-field class="full-width">
+    <mat-label>Search a passenger</mat-label>
+    <input matInput
+          placeholder="Enter a name"
+          #searchBox id="search-box" 
+          (input)="search(searchBox.value)"
+          [matAutocomplete]="auto">
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option *ngFor="let passenger of passengers$ | async" [value]="passenger">
+        <a class="passenger-autocomplete" routerLink="/detail/{{passenger.Id}}">
           {{passenger.Name}}
         </a>
-      </li>
-    </ul>
-  </div>
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+</form>

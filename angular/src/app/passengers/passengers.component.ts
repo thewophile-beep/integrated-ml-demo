@@ -20,15 +20,6 @@ export class PassengersComponent implements OnInit {
     getAll(): void {
         this.passengerService.getAllPassengers().subscribe(passengers => this.passengers = passengers);
     }
-    
-    add(Name: string): void {
-        Name = Name.trim();
-        if (!Name) { return; }
-        this.passengerService.createPassenger({ Name } as Passenger)
-          .subscribe(passenger => {
-            this.passengers.push(passenger);
-          });
-    }
 
     delete(passenger: Passenger): void {
         this.passengers = this.passengers.filter(h => h !== passenger);

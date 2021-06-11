@@ -1,89 +1,12 @@
 /* PassengersComponent's private CSS styles */
-.passengers {
-  margin: 0 0 2em 0;
-  list-style-type: none;
-  padding: 0;
-  width: 50em;
+
+.passengers-list-card {
+  min-width: 120px;
+  margin: 20px auto;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
-input {
-  display: block;
-  width: 100%;
-  padding: .5rem;
-  margin: 1rem 0;
-  box-sizing: border-box;
-}
-
-.passengers li {
-  position: relative;
-  cursor: pointer;
-}
-
-.passengers li:hover {
-  left: .1em;
-}
-
-.passengers a {
-  color: #333;
-  text-decoration: none;
-  background-color: #EEE;
-  margin: .5em;
-  padding: .3em 0;
-  height: 1.6em;
-  border-radius: 4px;
-  display: block;
-  width: 100%;
-}
-
-.passengers a:hover {
-  color: #2c3a41;
-  background-color: #e6e6e6;
-}
-
-.passengers a:active {
-  background-color: #525252;
-  color: #fafafa;
-}
-
-.passengers .badge {
-  display: inline-block;
-  font-size: small;
-  color: white;
-  padding: 0.8em 0.7em 0 0.7em;
-  background-color:#405061;
-  line-height: 1em;
-  position: relative;
-  left: -1px;
-  top: -4px;
-  height: 1.8em;
-  min-width: 16px;
-  text-align: right;
-  margin-right: .8em;
-  border-radius: 4px 0 0 4px;
-}
-
-.add-button {
- padding: .5rem 1.5rem;
- font-size: 1rem;
- margin-bottom: 2rem;
-}
-
-.add-button:hover {
-  color: white;
-  background-color: #42545C;
-}
-
-button.delete {
-  position: absolute;
-  left: 43.5em;
-  top: 5px;
-  background-color: white;
-  color:  #525252;
-  font-size: 1.1rem;
-  padding: 1px 10px 3px 10px;
-}
-
-button.delete:hover {
-  background-color: #525252;
-  color: white;
+.principal-header {
+  font-size: 35px;
 }

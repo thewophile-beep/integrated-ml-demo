@@ -12,7 +12,7 @@ zw $SYSTEM.OBJ.ImportDir("/tmp/iris/src", "*.cls", "cubk", .tErrors, 1)
 
 zpm "install csvgen"
 
-do ##class(community.csvgen).Generate("/tmp/iris/misc/titanic.csv",,"Data.Titanic")
+do ##class(community.csvgen).Generate("/tmp/iris/misc/titanic.csv",,"Titanic.Table.Passenger")
 
 
 h
