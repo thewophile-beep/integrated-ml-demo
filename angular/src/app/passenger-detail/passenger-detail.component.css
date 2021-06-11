@@ -1,24 +1,38 @@
 /* PassengerDetailComponent's private CSS styles */
-label {
-    color: #435960;
-    font-weight: bold;
-  }
-  input {
-    font-size: 1em;
-    padding: .5rem;
-  }
-  button {
-    margin-top: 20px;
-    background-color: #eee;
-    padding: 1rem;
-    border-radius: 4px;
-    font-size: 1rem;
-  }
-  button:hover {
-    background-color: #cfd8dc;
-  }
-  button:disabled {
-    background-color: #eee;
-    color: #ccc;
-    cursor: auto;
-  }
+.full-width {
+  width: 100%;
+}
+
+.passenger-card {
+  min-width: 120px;
+  margin: 20px auto;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.mat-radio-button {
+  display: block;
+  margin: 5px 0;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.col {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.col:last-child {
+  margin-right: 0;
+}
+
+.principal-header {
+  font-size: 35px;
+}
+
+.passenger-creation-card {
+  margin-bottom: 15px;
+}

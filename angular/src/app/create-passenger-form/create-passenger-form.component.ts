@@ -14,7 +14,7 @@ export class CreatePassengerFormComponent {
   passengerForm = this.fb.group({
     Name: [null, Validators.required],
     Sex: [null, Validators.required],
-    Age: [null, Validators.required, Validators.min(0)],
+    Age: [null, Validators.min(0)],
     Pclass: [null, Validators.required],
     SibSp: [0, Validators.min(0)],
     Parch: [0, Validators.min(0)],

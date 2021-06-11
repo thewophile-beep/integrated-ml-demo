@@ -1,6 +1,6 @@
 /// Rest API for the Integrated ML Demo on the Titanic database<br/>
 /// Business logic class defined by OpenAPI in Titanic.REST.spec<br/>
-/// Updated Jun 11, 2021 08:49:40
+/// Updated Jun 11, 2021 13:57:06
 Class Titanic.REST.impl Extends %REST.Impl [ ProcedureBlock ]
 {
 
@@ -20,7 +20,6 @@ ClassMethod GetInfo() As %Stream.Object
 /// The method arguments hold values for:<br/>
 ///     currpage, The current page at which the client is<br/>
 ///     pagesize, The number of passengers per page<br/>
-/// WARNING: This method's signature has changed.
 ClassMethod GetAllPassengers(currpage As %Float, pagesize As %Float) As %Stream.Object
 {
     set tStartRow = pagesize * (currpage - 1)

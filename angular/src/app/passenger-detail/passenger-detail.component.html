@@ -1,17 +1,155 @@
-<div *ngIf="passenger">
-    <h2>{{passenger.Name | uppercase}} Details</h2>
-    <div><span>id: </span>{{passenger.Id}}</div>
-    <div><span>Survived: </span>{{passenger.Survived}}</div>
-    <div><span>Class: </span>{{passenger.Pclass}}</div>
-    <div><span>Sex: </span>{{passenger.Sex}}</div>
-    <div><span>Age: </span>{{passenger.Age}}</div>
-    <div><span>Siblings/Spouse: </span>{{passenger.SibSp}}</div>
-    <div><span>Parch: </span>{{passenger.Parch}}</div>
-    <div><span>Ticket: </span>{{passenger.Ticket}}</div>
-    <div><span>Fare: </span>{{passenger.Fare}}</div>
-    <div><span>Cabin: </span>{{passenger.Cabin}}</div>
-    <div><span>Embarked: </span>{{passenger.Embarked}}</div>
-</div>
+<form [formGroup]="passengerForm" novalidate>
+    <div *ngIf="passenger; else notFound">
+        <mat-card class="passenger-card">
+            <mat-card-header>
+                <mat-card-title class="principal-header">Passenger n°{{passenger.PassengerId}} : {{passenger.Name | uppercase}} </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                
+                <mat-card class="passenger-creation-card">
+                    <mat-card-header>
+                        <mat-card-title>Personal Information</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <div class="row">
+                            <!-- Left : Name and Age -->
+                            <div class="col">
+                                <!-- Name Field -->
+                                <div class="row">
+                                    <div class="col">
+                                        <mat-form-field class="full-width">
+                                            <mat-label>Passenger Name</mat-label>
+                                            <input matInput placeholder="Enter a name" formControlName="Name">
+                                            <mat-error *ngIf="passengerForm.controls['Name'].hasError('required')">
+                                                Name is <strong>required</strong>
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <!-- Age Field -->
+                                <div class="row">
+                                    <div class="col">
+                                        <mat-form-field class="full-width">
+                                            <mat-label>Passenger Age</mat-label>
+                                            <input type="number"
+                                            matInput placeholder="Enter a number" 
+                                            formControlName="Age"
+                                            min="0"
+                                            >
+                                            <mat-error *ngIf="passengerForm.controls['Age'].hasError('required')">
+                                                Age is <strong>required</strong>
+                                            </mat-error>
+                                            <mat-error *ngIf="passengerForm.controls['Age'].hasError('min')">No negative values</mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Right : Sex -->
+                            <div class="col">
+                                <mat-label>Passenger Sex</mat-label>
+                                <mat-radio-group formControlName="Sex">
+                                    <mat-radio-button value="male">Male</mat-radio-button>
+                                    <mat-radio-button value="female">Female</mat-radio-button>
+                                    <mat-radio-button value="">Other</mat-radio-button>
+                                </mat-radio-group>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+                
+                <!-- Card : Embarkment Information -->
+                <mat-card class="passenger-creation-card">
+                    <mat-card-header>
+                        <mat-card-title>Embarkment Information</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <!-- Ticket / Fare / Cabin -->
+                        <div class="col">
+                            <!-- Ticket -->
+                            <div class="row">
+                                <mat-form-field class="full-width">
+                                    <mat-label>Ticket Number</mat-label>
+                                    <input matInput placeholder="Enter a ticket number" formControlName="Ticket">
+                                </mat-form-field>
+                            </div>
+                            <!-- Fare -->
+                            <div class="row">
+                                <mat-form-field class="full-width">
+                                    <mat-label>Fare</mat-label>
+                                    <input type="number" min="0" matInput placeholder="Enter a price" formControlName="Fare">
+                                </mat-form-field>
+                                <mat-error *ngIf="passengerForm.controls['Fare'].hasError('min')">No negative values</mat-error>
+                            </div>
+                            <!-- Cabin -->
+                            <div class="row">
+                                <mat-form-field class="full-width">
+                                    <mat-label>Cabin Number</mat-label>
+                                    <input type="string" matInput placeholder="Enter a cabin number" formControlName="Cabin">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <!-- Class / Port -->
+                        <div class="row">
+                            <!-- Class -->
+                            <div class="col">
+                                <mat-label>Passenger Class</mat-label>
+                                <mat-radio-group formControlName="Pclass">
+                                    <mat-radio-button [value]=1>First Class</mat-radio-button>
+                                    <mat-radio-button [value]=2>Second Class</mat-radio-button>
+                                    <mat-radio-button [value]=3>Third Class</mat-radio-button>
+                                </mat-radio-group>
+                            </div>
+                            <!-- Port -->
+                            <div class="col">
+                                <mat-label>Port of Embarkation</mat-label>
+                                <mat-radio-group formControlName="Embarked">
+                                    <mat-radio-button value="C">Cherbourg</mat-radio-button>
+                                    <mat-radio-button value="Q">Queenstown</mat-radio-button>
+                                    <mat-radio-button value="S">Southampton</mat-radio-button>
+                                </mat-radio-group>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+                
+                <!-- Card : Family Information -->
+                <mat-card class="passenger-creation-card">
+                    <mat-card-header>
+                        <mat-card-title>Family Information</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <!-- SibSp / Parch -->
+                        <div class="row">
+                            <!-- SibSp -->
+                            <div class="col">
+                                <mat-form-field class="full-width">
+                                    <input type="number" matInput placeholder="Siblings / Spouses aboard" formControlName="SibSp">
+                                    <mat-error *ngIf="passengerForm.controls['SibSp'].hasError('required')">
+                                        Number of siblings / spouses aboard is <strong>required</strong>
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <!-- Parch -->
+                            <div class="col">
+                                <mat-form-field class="full-width">
+                                    <input type="number" matInput placeholder="Parents / Children aboard" formControlName="Parch">
+                                    <mat-error *ngIf="passengerForm.controls['Parch'].hasError('required')">
+                                        Number of parents / children aboard is <strong>required</strong>
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
 
-<button (click)="goBack()">go back</button>
-<button (click)="save()">save</button>
+            </mat-card-content>
+            <mat-card-actions>
+                <button mat-raised-button color="primary" [disabled]="passengerForm.invalid" (click)="update()">Submit</button>
+                <button mat-stroked-button color="primary" (click)="goBack()">Go Back</button>
+            </mat-card-actions>
+        </mat-card>
+    </div>
+    <ng-template #notFound>
+        Passenger Not Found
+    </ng-template>
+</form>
