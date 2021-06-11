@@ -7,15 +7,15 @@
     <mat-card-content>
         <app-passenger-search></app-passenger-search>
         <mat-nav-list>
-            <a mat-list-item *ngFor="let passenger of passengers" routerLink="/detail/{{passenger.Id}}">
-                <span matLine>
+            <mat-list-item *ngFor="let passenger of passengers">
+                <a matLine routerLink="/detail/{{passenger.Id}}">
                     {{passenger.Name}}
-                </span>
+                </a>
                 <button mat-icon-button title="delete passenger" (click)="delete(passenger)">
                     <mat-icon>delete</mat-icon>
                 </button>
                 <mat-divider></mat-divider>
-            </a>
+            </mat-list-item>
         </mat-nav-list>
     </mat-card-content>
 </mat-card>
