@@ -1,6 +1,6 @@
 /// Rest API for the Integrated ML Demo on the Titanic database<br/>
 /// Business logic class defined by OpenAPI in Titanic.REST.spec<br/>
-/// Updated Jun 10, 2021 08:40:41
+/// Updated Jun 11, 2021 08:49:40
 Class Titanic.REST.impl Extends %REST.Impl [ ProcedureBlock ]
 {
 
@@ -16,17 +16,29 @@ ClassMethod GetInfo() As %Stream.Object
     //Quit (Place response here) ; response may be a string, stream or dynamic object
 }
 
-/// Retreive all the records of Titanic.Table.Passenger
-ClassMethod GetAllPassengers() As %Stream.Object
+/// Retreive all the records of Titanic.Table.Passenger<br/>
+/// The method arguments hold values for:<br/>
+///     currpage, The current page at which the client is<br/>
+///     pagesize, The number of passengers per page<br/>
+/// WARNING: This method's signature has changed.
+ClassMethod GetAllPassengers(currpage As %Float, pagesize As %Float) As %Stream.Object
 {
+    set tStartRow = pagesize * (currpage - 1)
+	set tEndRow = tStartRow + pagesize
+    set tRow = 0
     set tRs = ##class(Titanic.Table.Passenger).ExtentFunc()
     set tDyna = []
-    while tRs.%Next() {
+    do tDyna.%Push(0)
+    while (tRs.%Next() && (tRow < tEndRow)) {
+        set tRow = tRow + 1
+        continue:(tRow<=tStartRow)
         do ##class(Titanic.Table.Passenger).%OpenId(tRs.Id).%JSONExportToStream(.tStream)
         set tElement = {}.%FromJSON(tStream)
         set tElement.Id = tRs.Id
         do tDyna.%Push(tElement)
     }
+    while (tRs.%Next()) {}
+    do tDyna.%Set(0, tRs.%ROWCOUNT)
     Quit tDyna
 }
 

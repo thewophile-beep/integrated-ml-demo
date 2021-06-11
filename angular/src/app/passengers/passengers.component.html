@@ -6,15 +6,20 @@
     </mat-card-header>
     <mat-card-content>
         <app-passenger-search></app-passenger-search>
+        <mat-paginator [length]="totalNum"
+              [pageSize]="pageSize"
+              [pageSizeOptions]="[10, 25, 50, 100]"
+              (page)="updateEvent($event)">
+        </mat-paginator>
         <mat-nav-list>
-            <mat-list-item *ngFor="let passenger of passengers">
-                <a matLine routerLink="/detail/{{passenger.Id}}">
-                    {{passenger.Name}}
-                </a>
+            <mat-list-item *ngFor="let passenger of passengers; let isLast = last;" routerLink="/detail/{{passenger.Id}}">
+                <span matLine>{{passenger.Name}}</span>
                 <button mat-icon-button title="delete passenger" (click)="delete(passenger)">
                     <mat-icon>delete</mat-icon>
                 </button>
-                <mat-divider></mat-divider>
+                <div *ngIf="!isLast">
+                    <mat-divider></mat-divider>
+                </div>
             </mat-list-item>
         </mat-nav-list>
     </mat-card-content>

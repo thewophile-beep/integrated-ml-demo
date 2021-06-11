@@ -48,11 +48,12 @@ export class PassengerService {
 
 
   /** GET Passengers from the server */
-  getAllPassengers(): Observable<Passenger[]> {
-    return this.http.get<Passenger[]>(this.PassengersUrl)
+  getAllPassengers(currPage: number, pageSize: number): Observable<any> {
+    const url = `${this.PassengersUrl}?currpage=${currPage + 1}&pagesize=${pageSize}`
+    return this.http.get<any>(url)
       .pipe(
         tap(_ => this.log('fetched Passengers')),
-        catchError(this.handleError<Passenger[]>('getPassengers', []))
+        catchError(this.handleError<any>('getPassengers', []))
       );
   }
 

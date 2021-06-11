@@ -59,6 +59,20 @@ XData OpenAPI [ MimeType = application/json ]
     },
     "/passengers": {
       "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "currpage",
+            "type": "number",
+            "description": " The current page at which the client is "
+          },
+          {
+            "in": "query",
+            "name": "pagesize",
+            "type": "number",
+            "description": " The number of passengers per page "
+          }
+        ],
         "description": " Retreive all the records of Titanic.Table.Passenger ",
         "summary": " Get all records of Passenger class ",
         "operationId": "GetAllPassengers",

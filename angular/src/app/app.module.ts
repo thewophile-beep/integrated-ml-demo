@@ -27,6 +27,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list'; 
 import {MatAutocompleteModule} from '@angular/material/autocomplete'; 
+import {MatPaginatorModule} from '@angular/material/paginator'; 
 @NgModule({
   declarations: [
     AppComponent,
@@ -55,7 +56,8 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
     MatSidenavModule,
     MatIconModule,
     MatListModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatPaginatorModule
   ],
   providers: [],
   bootstrap: [AppComponent]
