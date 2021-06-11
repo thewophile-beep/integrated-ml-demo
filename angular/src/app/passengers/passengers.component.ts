@@ -10,7 +10,7 @@ import {PageEvent} from '@angular/material/paginator';
 })
 export class PassengersComponent implements OnInit {    
     passengers: Passenger[] = [];
-    pageSize: number = 50;
+    pageSize: number = 100;
     currPage: number = 0;
     totalNum: number | undefined;
 
