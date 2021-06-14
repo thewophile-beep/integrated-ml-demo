@@ -33,7 +33,11 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ExplicationProjetComponent } from './explication-projet/explication-projet.component';
 import { MachineLearningComponent } from './machine-learning/machine-learning.component';
 import { ModelsComponent } from './models/models.component'; 
-import {MatTableModule} from '@angular/material/table'; 
+import {MatTableModule} from '@angular/material/table';
+import { ModelTrainingComponent } from './model-training/model-training.component'; 
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'; 
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import { ModelPredictionComponent } from './model-prediction/model-prediction.component'; 
 @NgModule({
   declarations: [
     AppComponent,
@@ -47,6 +51,8 @@ import {MatTableModule} from '@angular/material/table';
     ExplicationProjetComponent,
     MachineLearningComponent,
     ModelsComponent,
+    ModelTrainingComponent,
+    ModelPredictionComponent,
   ],
   imports: [
     BrowserModule,
@@ -70,6 +76,8 @@ import {MatTableModule} from '@angular/material/table';
     MatPaginatorModule,
     MatTabsModule,
     MatTableModule,
+    MatProgressSpinnerModule,
+    MatButtonToggleModule
   ],
   providers: [],
   bootstrap: [AppComponent]
