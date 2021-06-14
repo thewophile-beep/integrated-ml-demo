@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ML_TRAINING_RUN } from '../ML_TRAINING_RUN';
 import { ML_MODEL } from '../ML_MODEL';
 import { ModelService } from '../model.service';
-import { FormBuilder, Validators, } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-model-training',
@@ -15,7 +15,7 @@ export class ModelTrainingComponent implements OnInit {
   displayedColumns: string[] = ["MODEL_NAME",	"TRAINING_RUN_NAME", 	"PROVIDER",	"START_TIMESTAMP",	"COMPLETED_TIMESTAMP",	"TRAINING_DURATION",	"RUN_STATUS",	"STATUS_CODE",	"LOG",	"SETTINGS",	"ML_CONFIGURATION_NAME",	"TRAINING_RUN_QUERY"]
   loopColumns: string[] = ["TRAINING_RUN_NAME", 	"PROVIDER",	"START_TIMESTAMP",	"COMPLETED_TIMESTAMP",	"TRAINING_DURATION",	"RUN_STATUS",	"STATUS_CODE",	"LOG",	"SETTINGS",	"ML_CONFIGURATION_NAME",	"TRAINING_RUN_QUERY"]
 
-  models: string[] = [];
+  models: ML_MODEL[] = [];
 
   waiting: boolean = false;
 
@@ -35,7 +35,7 @@ export class ModelTrainingComponent implements OnInit {
   getAll(): void {
     this.modelService.getTrainingRuns().subscribe(runs => this.runs = runs);
     this.models = [];
-    this.modelService.getAllModels().subscribe(models => models.forEach(model => this.models.push(model.MODEL_NAME)));
+    this.modelService.getAllModels().subscribe(models => this.models = models);
   }
   
   onSubmit(): void {

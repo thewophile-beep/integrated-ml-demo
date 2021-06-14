@@ -6,6 +6,7 @@ import { ML_MODEL } from './ML_MODEL';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ML_TRAINING_RUN } from './ML_TRAINING_RUN';
+import { ML_TRAINED_MODELS } from './ML_TRAINED_MODELS';
 
 @Injectable({
   providedIn: 'root'
@@ -76,6 +77,14 @@ export class ModelService {
     return this.http.get<ML_TRAINING_RUN[]>(url).pipe(
       tap(_ => this.log('fetched Training Runs')),
       catchError(this.handleError<ML_TRAINING_RUN[]>('getTrainingRuns', []))
+    );
+  }
+
+  getTrainedModels(): Observable<ML_TRAINED_MODELS[]> {
+    const url = this.ModelsUrl + "/trainedmodels";
+    return this.http.get<ML_TRAINED_MODELS[]>(url).pipe(
+      tap(_ => this.log('fetched trained models')),
+      catchError(this.handleError<ML_TRAINED_MODELS[]>('getTrainedModels', []))
     );
   }
 
