@@ -79,7 +79,7 @@ export class PassengerService {
   createPassenger(Passenger: Passenger): Observable<Passenger> {
     return this.http.post<Passenger>(this.PassengersUrl, Passenger, this.httpOptions).pipe(
       tap((newPassenger: Passenger) => this.log(`added Passenger w/ id=${newPassenger.Id}`)),
-      catchError(this.handleError<Passenger>('addPassenger'))
+      catchError(this.handleError<Passenger>('createPassenger'))
     );
   }
 

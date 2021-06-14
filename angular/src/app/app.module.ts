@@ -26,12 +26,14 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list'; 
-import {MatAutocompleteModule} from '@angular/material/autocomplete'; 
-import {MatPaginatorModule} from '@angular/material/paginator';
+import { MatAutocompleteModule } from '@angular/material/autocomplete'; 
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { PresentationDatasetComponent } from './presentation-dataset/presentation-dataset.component'; 
-import {MatTabsModule} from '@angular/material/tabs';
+import { MatTabsModule } from '@angular/material/tabs';
 import { ExplicationProjetComponent } from './explication-projet/explication-projet.component';
-import { MachineLearningComponent } from './machine-learning/machine-learning.component'; 
+import { MachineLearningComponent } from './machine-learning/machine-learning.component';
+import { ModelsComponent } from './models/models.component'; 
+import {MatTableModule} from '@angular/material/table'; 
 @NgModule({
   declarations: [
     AppComponent,
@@ -44,6 +46,7 @@ import { MachineLearningComponent } from './machine-learning/machine-learning.co
     PresentationDatasetComponent,
     ExplicationProjetComponent,
     MachineLearningComponent,
+    ModelsComponent,
   ],
   imports: [
     BrowserModule,
@@ -65,7 +68,8 @@ import { MachineLearningComponent } from './machine-learning/machine-learning.co
     MatListModule,
     MatAutocompleteModule,
     MatPaginatorModule,
-    MatTabsModule
+    MatTabsModule,
+    MatTableModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

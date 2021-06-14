@@ -1,0 +1,94 @@
+
+<!-- List of models -->
+<mat-card class="models-list-card">
+    <mat-card-header>
+        <mat-card-title class="principal-header">
+            Model List
+        </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <div *ngIf="models.length > 0; else isEmpty">
+            <div class="overflow">
+                <table mat-table [dataSource]="models" class="mat-table">
+                    
+                    
+                    <ng-container matColumnDef="MODEL_NAME" sticky>
+                        <th mat-header-cell *matHeaderCellDef>MODEL_NAME</th> 
+                        <td mat-cell *matCellDef="let model"> {{model["MODEL_NAME"]}} </td>
+                    </ng-container> 
+                    
+                    <ng-container [matColumnDef]="column" *ngFor="let column of loopColumns">
+                        <th mat-header-cell *matHeaderCellDef>{{column}}</th>
+                        <td mat-cell *matCellDef="let model"> {{model[column]}} </td>
+                    </ng-container> 
+                    
+                    <ng-container matColumnDef="actions" stickyEnd>
+                        <th mat-header-cell  *matHeaderCellDef>Actions</th>
+                        <td mat-cell *matCellDef="let model" >
+                            <button mat-icon-button title="delete model" (click)="delete(model)">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+                    
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+            </div>
+        </div> 
+        <ng-template #isEmpty>
+            <div class="align-middle">No models to show yet.</div>
+        </ng-template>       
+    </mat-card-content>
+</mat-card>
+
+<!-- Creating a model -->
+<mat-card class="models-list-card">
+    <mat-card-header>
+        <mat-card-title class="principal-header">
+            Add Model
+        </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+        <form [formGroup]="modelForm" novalidate>   
+            <div class="row">
+
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <mat-select formControlName="predicting">
+                            <mat-option value="Survived">Survived</mat-option>
+                            <mat-option value="Pclass">Class</mat-option>
+                            <mat-option value="Sex">Sex</mat-option>
+                            <mat-option value="Age">Age</mat-option>
+                            <mat-option value="SibSp">Siblings / Spouse</mat-option>
+                            <mat-option value="Parch">Parents / Children</mat-option>
+                            <mat-option value="Fare">Fare</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <mat-label>Model Name</mat-label>
+                        <input matInput placeholder="Ex. Survival" formControlName="modelName">
+                        <mat-error *ngIf="modelForm.controls['modelName'].hasError('required')">
+                            Model Name is <strong>required</strong>
+                        </mat-error>
+                        <mat-error *ngIf="modelForm.controls['modelName'].hasError('pattern')">
+                            No white spaces please
+                        </mat-error>
+                        <mat-error *ngIf="modelForm.controls['modelName'].hasError('double')">
+                            Model Name is already taken
+                        </mat-error>
+                    </mat-form-field>        
+                </div>
+
+            </div>
+        </form>
+    </mat-card-content>
+
+    <mat-card-actions>
+        <button mat-raised-button color="primary" [disabled]="modelForm.invalid" (click)="onSubmit()">Submit</button>
+    </mat-card-actions>
+</mat-card>
