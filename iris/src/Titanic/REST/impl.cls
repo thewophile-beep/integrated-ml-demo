@@ -1,6 +1,6 @@
 /// Rest API for the Integrated ML Demo on the Titanic database<br/>
 /// Business logic class defined by OpenAPI in Titanic.REST.spec<br/>
-/// Updated Jun 11, 2021 13:57:06
+/// Updated Jun 14, 2021 08:15:17
 Class Titanic.REST.impl Extends %REST.Impl [ ProcedureBlock ]
 {
 
@@ -16,7 +16,7 @@ ClassMethod GetInfo() As %Stream.Object
     //Quit (Place response here) ; response may be a string, stream or dynamic object
 }
 
-/// Retreive all the records of Titanic.Table.Passenger<br/>
+/// Retreive the total number of Passengers THEN the Passengers from currpage\*(pagesize-1) to currpage\*pagesize<br/>
 /// The method arguments hold values for:<br/>
 ///     currpage, The current page at which the client is<br/>
 ///     pagesize, The number of passengers per page<br/>
@@ -126,6 +126,96 @@ ClassMethod SearchPassengers(name As %String) As %Stream.Object
         do tDyna.%Push(tElement)
     }
     Quit tDyna
+}
+
+/// Retreive all created Models
+ClassMethod GetAllModels() As %Stream.Object
+{
+    set tDyna = []
+    SET myquery = "SELECT * FROM INFORMATION_SCHEMA.ML_MODELS"
+    SET tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    SET tRs = tStatement.%Execute()
+    while (tRs.%Next()) {
+        set tModel = {}
+        set tModel."MODEL_NAME" = tRs."MODEL_NAME"
+        set tModel."DESCRIPTION" = tRs."DESCRIPTION"
+        set tModel."PREDICTING_COLUMN_NAME" = tRs."PREDICTING_COLUMN_NAME"
+        set tModel."PREDICTING_COLUMN_TYPE" = tRs."PREDICTING_COLUMN_TYPE"
+        set tModel."WITH_COLUMNS" = tRs."WITH_COLUMNS"
+        set tModel."CREATE_TIMESTAMP" = tRs."CREATE_TIMESTAMP"
+        set tModel."DEFAULT_TRAINED_MODEL_NAME" = tRs."DEFAULT_TRAINED_MODEL_NAME"
+        set tModel."DEFAULT_SETTINGS" = tRs."DEFAULT_SETTINGS"
+        set tModel."DEFAULT_TRAINING_QUERY" = tRs."DEFAULT_TRAINING_QUERY"
+        do tDyna.%Push(tModel)
+    }
+    Quit tDyna
+}
+
+/// Create a Model named "modelName" and predicting "predicting"<br/>
+/// The method arguments hold values for:<br/>
+///     modelName, The name of the Model to be created<br/>
+///     predicting, The name of the value to predict<br/>
+ClassMethod CreateModel(modelName As %String, predicting As %String) As %Stream.Object
+{
+    set myquery = "CREATE MODEL "_modelName_" PREDICTING("_predicting_") FROM Titanic_Table.Passenger"
+    set tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    set tRs = tStatement.%Execute()
+    Quit {}
+}
+
+/// Delete a Model (along with all of its trained runs)<br/>
+/// The method arguments hold values for:<br/>
+///     modelName, Name of the model to be deleted<br/>
+ClassMethod DeleteModel(modelName As %String) As %Stream.Object
+{
+    set myquery = "DROP MODEL "_modelName
+    set tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    set tRs = tStatement.%Execute()
+    Quit {}
+}
+
+/// Retreive all trained models
+ClassMethod GetTrainedModels() As %Stream.Object
+{
+    //(Place business logic here)
+    //Do ..%SetStatusCode(<HTTP_status_code>)
+    //Do ..%SetHeader(<name>,<value>)
+    //Quit (Place response here) ; response may be a string, stream or dynamic object
+}
+
+/// Train the Model named "modelName"<br/>
+/// The method arguments hold values for:<br/>
+///     modelName, The name of the Model to be trained<br/>
+ClassMethod TrainModel(modelName As %String) As %Stream.Object
+{
+    //(Place business logic here)
+    //Do ..%SetStatusCode(<HTTP_status_code>)
+    //Do ..%SetHeader(<name>,<value>)
+    //Quit (Place response here) ; response may be a string, stream or dynamic object
+}
+
+/// Retreive all training runs
+ClassMethod GetTrainingRuns() As %Stream.Object
+{
+    //(Place business logic here)
+    //Do ..%SetStatusCode(<HTTP_status_code>)
+    //Do ..%SetHeader(<name>,<value>)
+    //Quit (Place response here) ; response may be a string, stream or dynamic object
+}
+
+/// Predict<br/>
+/// The method arguments hold values for:<br/>
+///     model, Model to predict with<br/>
+///     passenger, Id of passenger to predict<br/>
+ClassMethod Predict(model As %String, passenger As %String) As %Stream.Object
+{
+    //(Place business logic here)
+    //Do ..%SetStatusCode(<HTTP_status_code>)
+    //Do ..%SetHeader(<name>,<value>)
+    //Quit (Place response here) ; response may be a string, stream or dynamic object
 }
 
 }

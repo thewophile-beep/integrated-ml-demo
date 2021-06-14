@@ -68,8 +68,8 @@
             "description": " The number of passengers per page "
           }
         ],
-        "description": " Retreive all the records of Titanic.Table.Passenger ",
-        "summary": " Get all records of Passenger class ",
+        "description": " Retreive the total number of Passengers THEN the Passengers from currpage\\*(pagesize-1) to currpage\\*pagesize ",
+        "summary": " Get number of passengers + \"pagesize\" records of Passenger class to print in the \"currpage\" page ",
         "operationId": "GetAllPassengers",
         "x-ISC_ServiceMethod": "GetAllPassengers",
         "responses": {
@@ -78,7 +78,14 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/Passenger"
+                "allOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "$ref": "#/definitions/Passenger"
+                  }
+                ]
               }
             }
           },
@@ -245,14 +252,198 @@
           }
         }
       }
+    },
+    "/ml/models": {
+      "get": {
+        "description": " Retreive all created Models ",
+        "summary": " Get all Models ",
+        "operationId": "GetAllModels",
+        "x-ISC_ServiceMethod": "GetAllModels",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "$ref": "#/definitions/ML_MODELS"
+            }
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      },
+      "post": {
+        "parameters": [
+          {
+            "in": "query",
+            "required": true,
+            "name": "modelName",
+            "type": "string",
+            "description": " The name of the Model to be created "
+          },
+          {
+            "in": "query",
+            "required": true,
+            "name": "predicting",
+            "type": "string",
+            "description": " The name of the value to predict "
+          }
+        ],
+        "description": " Create a Model named \"modelName\" and predicting \"predicting\" ",
+        "summary": " Create a Model ",
+        "operationId": "CreateModel",
+        "x-ISC_ServiceMethod": "CreateModel",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)"
+          },
+          "400": {
+            "description": "(Bad Request)"
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      },
+      "delete": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "modelName",
+            "required": true,
+            "description": " Name of the model to be deleted ",
+            "type": "string"
+          }
+        ],
+        "description": " Delete a Model (along with all of its trained runs) ",
+        "summary": " Delete a Model",
+        "operationId": "DeleteModel",
+        "x-ISC_ServiceMethod": "DeleteModel",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)"
+          },
+          "204": {
+            "description": "(Not Found)"
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      }
+    },
+    "/ml/trainedmodels": {
+      "get": {
+        "description": " Retreive all trained models ",
+        "summary": " Get all trained models ",
+        "operationId": "GetTrainedModels",
+        "x-ISC_ServiceMethod": "GetTrainedModels",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "$ref": "#/definitions/ML_TRAINED_MODELS"
+            }
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      }
+    },
+    "/ml/{modelName}": {
+      "post": {
+        "parameters": [
+          {
+            "in": "path",
+            "required": true,
+            "name": "modelName",
+            "type": "string",
+            "description": " The name of the Model to be trained "
+          }
+        ],
+        "description": " Train the Model named \"modelName\" ",
+        "summary": " Train a Model ",
+        "operationId": "TrainModel",
+        "x-ISC_ServiceMethod": "TrainModel",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)"
+          },
+          "400": {
+            "description": "(Bad Request)"
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      }
+    },
+    "/ml/trainingruns": {
+      "get": {
+        "description": " Retreive all training runs  ",
+        "summary": " Get all training runs ",
+        "operationId": "GetTrainingRuns",
+        "x-ISC_ServiceMethod": "GetTrainingRuns",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "$ref": "#/definitions/ML_TRAINING_RUNS"
+            }
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      }
+    },
+    "/ml/predict": {
+      "post": {
+        "parameters": [
+          {
+            "name": "model",
+            "in": "query",
+            "description": " Model to predict with",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "passenger",
+            "in": "query",
+            "description": " Id of passenger to predict ",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "description": " Predict ",
+        "summary": " Predict one passenger value with model ",
+        "operationId": "Predict",
+        "x-ISC_ServiceMethod": "Predict",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "PredictedValue": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "(Bad Request)"
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      }
     }
   },
   "definitions": {
     "Passenger": {
       "type": "object",
-      "required": [
-        "Name"
-      ],
       "properties": {
         "PassengerId": {
           "type": "integer"
@@ -289,6 +480,111 @@
         },
         "Embarked": {
           "type": "string"
+        }
+      }
+    },
+    "ML_MODELS": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "MODEL_NAME": {
+            "type": "string"
+          },
+          "DESCRIPTION": {
+            "type": "string"
+          },
+          "PREDICTING_COLUMN_NAME": {
+            "type": "string"
+          },
+          "PREDICTING_COLUMN_TYPE": {
+            "type": "string"
+          },
+          "WITH_COLUMNS": {
+            "type": "string"
+          },
+          "CREATE_TIMESTAMP": {
+            "type": "string"
+          },
+          "DEFAULT_TRAINED_MODEL_NAME": {
+            "type": "string"
+          },
+          "DEFAULT_SETTINGS": {
+            "type": "string"
+          },
+          "DEFAULT_TRAINING_QUERY": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ML_TRAINED_MODELS": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "MODEL_NAME": {
+            "type": "string"
+          },
+          "TRAINED_MODEL_NAME": {
+            "type": "string"
+          },
+          "PROVIDER": {
+            "type": "string"
+          },
+          "TRAINED_TIMESTAMP": {
+            "type": "string"
+          },
+          "MODEL_TYPE": {
+            "type": "string"
+          },
+          "MODEL_INFO": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ML_TRAINING_RUNS": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "MODEL_NAME": {
+            "type": "string"
+          },
+          "TRAINING_RUN_NAME": {
+            "type": "string"
+          },
+          "PROVIDER": {
+            "type": "string"
+          },
+          "START_TIMESTAMP": {
+            "type": "string"
+          },
+          "COMPLETED_TIMESTAMP": {
+            "type": "string"
+          },
+          "TRAINING_DURATION": {
+            "type": "string"
+          },
+          "RUN_STATUS": {
+            "type": "string"
+          },
+          "STATUS_CODE": {
+            "type": "string"
+          },
+          "LOG": {
+            "type": "string"
+          },
+          "SETTINGS": {
+            "type": "string"
+          },
+          "ML_CONFIGURATION_NAME": {
+            "type": "string"
+          },
+          "TRAINING_RUN_QUERY": {
+            "type": "string"
+          }
         }
       }
     }
