@@ -1,0 +1,90 @@
+<!-- List of models -->
+<mat-card class="runs-list-card">
+    <mat-card-header>
+        <mat-card-title class="principal-header">
+            Run List
+        </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <div *ngIf="runs.length > 0; else isEmpty">
+            <div class="overflow">
+                <table mat-table [dataSource]="runs" class="mat-table">
+                    
+                    
+                    <ng-container matColumnDef="MODEL_NAME" sticky>
+                        <th mat-header-cell *matHeaderCellDef>MODEL_NAME</th> 
+                        <td mat-cell *matCellDef="let run"> {{run["MODEL_NAME"]}} </td>
+                    </ng-container> 
+                    
+                    <ng-container [matColumnDef]="column" *ngFor="let column of loopColumns">
+                        <th mat-header-cell *matHeaderCellDef>{{column}}</th>
+                        <td mat-cell *matCellDef="let run"> {{run[column]}} </td>
+                    </ng-container> 
+                    
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+            </div>
+        </div> 
+        <ng-template #isEmpty>
+            <div class="align-middle">No runs to show yet.</div>
+        </ng-template>       
+    </mat-card-content>
+</mat-card>
+
+<!-- Creating a model -->
+<mat-card class="runs-list-card">
+    <mat-card-header>
+        <mat-card-title class="principal-header">
+            Train a Model
+        </mat-card-title>
+    </mat-card-header>
+
+    <div *ngIf="waiting; else notWaiting" class="spinner">
+        <mat-spinner></mat-spinner>
+    </div>
+
+    <ng-template #notWaiting>
+        <mat-card-content>
+            
+            
+            <form [formGroup]="runForm" novalidate>   
+                <div class="row">
+                    <mat-button-toggle-group formControlName="MLconfig" aria-label="Font Style">
+                        <mat-button-toggle value="AutoML">AutoML</mat-button-toggle>
+                        <mat-button-toggle value="H2O">H2O</mat-button-toggle>
+                    </mat-button-toggle-group>
+                </div>
+                <div class="row">
+    
+                    <div class="col">
+                        <mat-form-field class="full-width">
+                            <mat-select formControlName="modelName">
+                                <mat-option *ngFor="let model of models" [value]="model">{{model}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+    
+                    <div class="col">
+                        <mat-form-field class="full-width">
+                            <mat-label>Run Name</mat-label>
+                            <input matInput placeholder="Ex. RunSurvival" formControlName="runName">
+                            <mat-error *ngIf="runForm.controls['runName'].hasError('required')">
+                                Run Name is <strong>required</strong>
+                            </mat-error>
+                            <mat-error *ngIf="runForm.controls['runName'].hasError('pattern')">
+                                No white spaces please
+                            </mat-error>
+                        </mat-form-field>        
+                    </div>
+    
+                </div>
+            </form>
+        </mat-card-content>
+    
+        <mat-card-actions>
+            <button mat-raised-button color="primary" [disabled]="runForm.invalid" (click)="onSubmit()">Submit</button>
+        </mat-card-actions>
+    </ng-template>
+    
+</mat-card>

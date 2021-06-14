@@ -5,6 +5,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { ML_MODEL } from './ML_MODEL';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ML_TRAINING_RUN } from './ML_TRAINING_RUN';
 
 @Injectable({
   providedIn: 'root'
@@ -46,8 +47,7 @@ export class ModelService {
   /** GET Models from the server */
   getAllModels(): Observable<ML_MODEL[]> {
     const url = `${this.ModelsUrl}/models`;
-    return this.http.get<ML_MODEL[]>(url)
-      .pipe(
+    return this.http.get<ML_MODEL[]>(url).pipe(
         tap(_ => this.log('fetched Models')),
         catchError(this.handleError<ML_MODEL[]>('getModels', []))
       );
@@ -63,11 +63,35 @@ export class ModelService {
   }
 
     /** POST: add a new Passenger to the server */
-    createModel(modelName: string, predicting: string): Observable<ML_MODEL> {
-      const url = this.ModelsUrl + "/models?modelName=" + modelName + "&predicting=" + predicting
-      return this.http.post<ML_MODEL>(url, this.httpOptions).pipe(
-        tap(_ => this.log(`added Model w/ name=${modelName}`)),
-        catchError(this.handleError<ML_MODEL>('createModel'))
-      );
-    }
+  createModel(modelName: string, predicting: string): Observable<ML_MODEL> {
+    const url = this.ModelsUrl + "/models?modelName=" + modelName + "&predicting=" + predicting
+    return this.http.post<ML_MODEL>(url, this.httpOptions).pipe(
+      tap(_ => this.log(`added Model w/ name=${modelName}`)),
+      catchError(this.handleError<ML_MODEL>('createModel'))
+    );
+  }
+
+  getTrainingRuns(): Observable<ML_TRAINING_RUN[]> {
+    const url = this.ModelsUrl + "/trainingruns";
+    return this.http.get<ML_TRAINING_RUN[]>(url).pipe(
+      tap(_ => this.log('fetched Training Runs')),
+      catchError(this.handleError<ML_TRAINING_RUN[]>('getTrainingRuns', []))
+    );
+  }
+
+  trainModel(modelName: string, runName: string): Observable<any> {
+    const url = `${this.ModelsUrl}/${modelName}/${runName}`;
+    return this.http.post<any>(url, this.httpOptions).pipe(
+      tap(_ => this.log(`trained model ${modelName} as ${runName}`)),
+      catchError(this.handleError<any>('trainModel'))
+    );
+  }
+
+  changeConfiguration(config: string): Observable<any> {
+    const url = this.ModelsUrl + "/configuration";
+    return this.http.post<any>(url, config, this.httpOptions).pipe(
+      tap(_ => this.log(`changed configuration to ${config}`)),
+      catchError(this.handleError<any>('changeConfiguration'))
+    )
+  }
 }

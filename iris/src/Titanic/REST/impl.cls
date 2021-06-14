@@ -1,6 +1,6 @@
 /// Rest API for the Integrated ML Demo on the Titanic database<br/>
 /// Business logic class defined by OpenAPI in Titanic.REST.spec<br/>
-/// Updated Jun 14, 2021 08:15:17
+/// Updated Jun 14, 2021 15:17:01
 Class Titanic.REST.impl Extends %REST.Impl [ ProcedureBlock ]
 {
 
@@ -177,33 +177,65 @@ ClassMethod DeleteModel(modelName As %String) As %Stream.Object
     Quit {}
 }
 
-/// Retreive all trained models
-ClassMethod GetTrainedModels() As %Stream.Object
-{
-    //(Place business logic here)
-    //Do ..%SetStatusCode(<HTTP_status_code>)
-    //Do ..%SetHeader(<name>,<value>)
-    //Quit (Place response here) ; response may be a string, stream or dynamic object
-}
-
-/// Train the Model named "modelName"<br/>
-/// The method arguments hold values for:<br/>
-///     modelName, The name of the Model to be trained<br/>
-ClassMethod TrainModel(modelName As %String) As %Stream.Object
-{
-    //(Place business logic here)
-    //Do ..%SetStatusCode(<HTTP_status_code>)
-    //Do ..%SetHeader(<name>,<value>)
-    //Quit (Place response here) ; response may be a string, stream or dynamic object
-}
-
 /// Retreive all training runs
 ClassMethod GetTrainingRuns() As %Stream.Object
 {
-    //(Place business logic here)
-    //Do ..%SetStatusCode(<HTTP_status_code>)
-    //Do ..%SetHeader(<name>,<value>)
-    //Quit (Place response here) ; response may be a string, stream or dynamic object
+    set tDyna = []
+    SET myquery = "SELECT * FROM INFORMATION_SCHEMA.ML_TRAINING_RUNS"
+    SET tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    SET tRs = tStatement.%Execute()
+    while (tRs.%Next()) {
+        set tModel = {}
+        set tModel."MODEL_NAME" = tRs."MODEL_NAME"
+        set tModel."TRAINING_RUN_NAME" = tRs."TRAINING_RUN_NAME"
+        set tModel."PROVIDER" = tRs."PROVIDER"
+        set tModel."START_TIMESTAMP" = tRs."START_TIMESTAMP"
+        set tModel."COMPLETED_TIMESTAMP" = tRs."COMPLETED_TIMESTAMP"
+        set tModel."TRAINING_DURATION" = tRs."TRAINING_DURATION"
+        set tModel."RUN_STATUS" = tRs."RUN_STATUS"
+        set tModel."STATUS_CODE" = tRs."STATUS_CODE"
+        set tModel."LOG" = tRs."LOG"
+        set tModel."SETTINGS" = tRs."SETTINGS"
+        set tModel."ML_CONFIGURATION_NAME" = tRs."ML_CONFIGURATION_NAME"
+        set tModel."TRAINING_RUN_QUERY" = tRs."TRAINING_RUN_QUERY"
+        do tDyna.%Push(tModel)
+    }
+    Quit tDyna
+}
+
+/// Train the Model named "modelName" and gives the name "runName" to the training run<br/>
+/// The method arguments hold values for:<br/>
+///     modelName, The name of the Model to be trained<br/>
+///     runName, The name of the training run<br/>
+ClassMethod TrainModel(modelName As %String, runName As %String) As %Stream.Object
+{
+    set myquery = "TRAIN MODEL "_modelName_" AS "_runName
+    set tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    set tRs = tStatement.%Execute()
+    Quit {}
+}
+
+/// Retreive all trained models
+ClassMethod GetTrainedModels() As %Stream.Object
+{
+    set tDyna = []
+    SET myquery = "SELECT * FROM INFORMATION_SCHEMA.ML_TRAINED_MODELS"
+    SET tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    SET tRs = tStatement.%Execute()	 	 	
+    while (tRs.%Next()) {
+        set tModel = {}
+        set tModel."MODEL_NAME" = tRs."MODEL_NAME"
+        set tModel."TRAINED_MODEL_NAME" = tRs."TRAINED_MODEL_NAME"
+        set tModel."PROVIDER" = tRs."PROVIDER"
+        set tModel."TRAINED_TIMESTAMP" = tRs."TRAINED_TIMESTAMP"
+        set tModel."MODEL_TYPE" = tRs."MODEL_TYPE"
+        set tModel."MODEL_INFO" = tRs."MODEL_INFO"
+        do tDyna.%Push(tModel)
+    }
+    Quit tDyna
 }
 
 /// Predict<br/>
@@ -216,6 +248,19 @@ ClassMethod Predict(model As %String, passenger As %String) As %Stream.Object
     //Do ..%SetStatusCode(<HTTP_status_code>)
     //Do ..%SetHeader(<name>,<value>)
     //Quit (Place response here) ; response may be a string, stream or dynamic object
+}
+
+/// Change ml configuration (H20 or AutoML)<br/>
+/// The method arguments hold values for:<br/>
+///     payloadBody, Request body contents<br/>
+ClassMethod ChangeConfiguration(payloadBody As %Stream.Object) As %Stream.Object
+{
+    set tConfig = payloadBody.Read()
+    SET myquery = "SET ML CONFIGURATION %"_tConfig
+    SET tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    SET tRs = tStatement.%Execute()
+    Quit {}
 }
 
 }

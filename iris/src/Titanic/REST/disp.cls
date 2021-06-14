@@ -45,11 +45,13 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
   <!--  Get all trained models  -->
   <Route Url="/ml/trainedmodels" Method="get" Call="GetTrainedModels" />
   <!--  Train a Model  -->
-  <Route Url="/ml/:modelName" Method="post" Call="TrainModel" />
+  <Route Url="/ml/:modelName/:runName" Method="post" Call="TrainModel" />
   <!--  Get all training runs  -->
   <Route Url="/ml/trainingruns" Method="get" Call="GetTrainingRuns" />
   <!--  Predict one passenger value with model  -->
   <Route Url="/ml/predict" Method="post" Call="Predict" />
+  <!--  Change ml configuration  -->
+  <Route Url="/ml/configuration" Method="post" Call="ChangeConfiguration" />
 </Routes>
 }
 
@@ -226,10 +228,10 @@ ClassMethod GetTrainedModels() As %Status
 }
 
 ///  Train a Model 
-ClassMethod TrainModel(pmodelName As %String) As %Status
+ClassMethod TrainModel(pmodelName As %String, prunName As %String) As %Status
 {
     Try {
-        Set response=##class(Titanic.REST.impl).TrainModel(pmodelName)
+        Set response=##class(Titanic.REST.impl).TrainModel(pmodelName,prunName)
         Do ##class(Titanic.REST.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
@@ -264,6 +266,20 @@ ClassMethod Predict() As %Status
         }
         Set ppassenger=%request.Data("passenger",1)
         Set response=##class(Titanic.REST.impl).Predict(pmodel,ppassenger)
+        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
+///  Change ml configuration 
+ClassMethod ChangeConfiguration() As %Status
+{
+    Try {
+        If '$isobject(%request.Content) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"payloadBody")) Quit
+        Set ppayloadBody=%request.Content
+        Set response=##class(Titanic.REST.impl).ChangeConfiguration(ppayloadBody)
         Do ##class(Titanic.REST.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))

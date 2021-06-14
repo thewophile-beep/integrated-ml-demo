@@ -268,7 +268,10 @@ XData OpenAPI [ MimeType = application/json ]
           "200": {
             "description": "(Expected Result)",
             "schema": {
-              "$ref": "#/definitions/ML_MODELS"
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ML_MODEL"
+              }
             }
           },
           "default": {
@@ -346,7 +349,10 @@ XData OpenAPI [ MimeType = application/json ]
           "200": {
             "description": "(Expected Result)",
             "schema": {
-              "$ref": "#/definitions/ML_TRAINED_MODELS"
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ML_TRAINED_MODEL"
+              }
             }
           },
           "default": {
@@ -355,7 +361,7 @@ XData OpenAPI [ MimeType = application/json ]
         }
       }
     },
-    "/ml/{modelName}": {
+    "/ml/{modelName}/{runName}": {
       "post": {
         "parameters": [
           {
@@ -364,9 +370,16 @@ XData OpenAPI [ MimeType = application/json ]
             "name": "modelName",
             "type": "string",
             "description": " The name of the Model to be trained "
+          },
+          {
+            "in": "path",
+            "required": true,
+            "name": "runName",
+            "type": "string",
+            "description": " The name of the training run "
           }
         ],
-        "description": " Train the Model named \"modelName\" ",
+        "description": " Train the Model named \"modelName\" and gives the name \"runName\" to the training run ",
         "summary": " Train a Model ",
         "operationId": "TrainModel",
         "x-ISC_ServiceMethod": "TrainModel",
@@ -393,7 +406,10 @@ XData OpenAPI [ MimeType = application/json ]
           "200": {
             "description": "(Expected Result)",
             "schema": {
-              "$ref": "#/definitions/ML_TRAINING_RUNS"
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ML_TRAINING_RUN"
+              }
             }
           },
           "default": {
@@ -435,6 +451,36 @@ XData OpenAPI [ MimeType = application/json ]
                 }
               }
             }
+          },
+          "400": {
+            "description": "(Bad Request)"
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      }
+    },
+    "/ml/configuration": {
+      "post": {
+        "description": " Change ml configuration (H20 or AutoML) ",
+        "summary": " Change ml configuration ",
+        "operationId": "ChangeConfiguration",
+        "x-ISC_ServiceMethod": "ChangeConfiguration",
+        "parameters": [
+          {
+            "name": "payloadBody",
+            "in": "body",
+            "description": "Request body contents",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "(Expected Result)"
           },
           "400": {
             "description": "(Bad Request)"
@@ -488,108 +534,99 @@ XData OpenAPI [ MimeType = application/json ]
         }
       }
     },
-    "ML_MODELS": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "MODEL_NAME": {
-            "type": "string"
-          },
-          "DESCRIPTION": {
-            "type": "string"
-          },
-          "PREDICTING_COLUMN_NAME": {
-            "type": "string"
-          },
-          "PREDICTING_COLUMN_TYPE": {
-            "type": "string"
-          },
-          "WITH_COLUMNS": {
-            "type": "string"
-          },
-          "CREATE_TIMESTAMP": {
-            "type": "string"
-          },
-          "DEFAULT_TRAINED_MODEL_NAME": {
-            "type": "string"
-          },
-          "DEFAULT_SETTINGS": {
-            "type": "string"
-          },
-          "DEFAULT_TRAINING_QUERY": {
-            "type": "string"
-          }
+    "ML_MODEL": {
+      "type": "object",
+      "properties": {
+        "MODEL_NAME": {
+          "type": "string"
+        },
+        "DESCRIPTION": {
+          "type": "string"
+        },
+        "PREDICTING_COLUMN_NAME": {
+          "type": "string"
+        },
+        "PREDICTING_COLUMN_TYPE": {
+          "type": "string"
+        },
+        "WITH_COLUMNS": {
+          "type": "string"
+        },
+        "CREATE_TIMESTAMP": {
+          "type": "string"
+        },
+        "DEFAULT_TRAINED_MODEL_NAME": {
+          "type": "string"
+        },
+        "DEFAULT_SETTINGS": {
+          "type": "string"
+        },
+        "DEFAULT_TRAINING_QUERY": {
+          "type": "string"
         }
       }
     },
-    "ML_TRAINED_MODELS": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "MODEL_NAME": {
-            "type": "string"
-          },
-          "TRAINED_MODEL_NAME": {
-            "type": "string"
-          },
-          "PROVIDER": {
-            "type": "string"
-          },
-          "TRAINED_TIMESTAMP": {
-            "type": "string"
-          },
-          "MODEL_TYPE": {
-            "type": "string"
-          },
-          "MODEL_INFO": {
-            "type": "string"
-          }
+    "ML_TRAINED_MODEL": {
+      "type": "object",
+      "properties": {
+        "MODEL_NAME": {
+          "type": "string"
+        },
+        "TRAINED_MODEL_NAME": {
+          "type": "string"
+        },
+        "PROVIDER": {
+          "type": "string"
+        },
+        "TRAINED_TIMESTAMP": {
+          "type": "string"
+        },
+        "MODEL_TYPE": {
+          "type": "string"
+        },
+        "MODEL_INFO": {
+          "type": "string"
         }
       }
     },
-    "ML_TRAINING_RUNS": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "MODEL_NAME": {
-            "type": "string"
-          },
-          "TRAINING_RUN_NAME": {
-            "type": "string"
-          },
-          "PROVIDER": {
-            "type": "string"
-          },
-          "START_TIMESTAMP": {
-            "type": "string"
-          },
-          "COMPLETED_TIMESTAMP": {
-            "type": "string"
-          },
-          "TRAINING_DURATION": {
-            "type": "string"
-          },
-          "RUN_STATUS": {
-            "type": "string"
-          },
-          "STATUS_CODE": {
-            "type": "string"
-          },
-          "LOG": {
-            "type": "string"
-          },
-          "SETTINGS": {
-            "type": "string"
-          },
-          "ML_CONFIGURATION_NAME": {
-            "type": "string"
-          },
-          "TRAINING_RUN_QUERY": {
-            "type": "string"
-          }
+    "ML_TRAINING_RUN": {
+      "type": "object",
+      "properties": {
+        "MODEL_NAME": {
+          "type": "string"
+        },
+        "TRAINING_RUN_NAME": {
+          "type": "string"
+        },
+        "PROVIDER": {
+          "type": "string"
+        },
+        "START_TIMESTAMP": {
+          "type": "string"
+        },
+        "COMPLETED_TIMESTAMP": {
+          "type": "string"
+        },
+        "TRAINING_DURATION": {
+          "type": "string"
+        },
+        "RUN_STATUS": {
+          "type": "string"
+        },
+        "STATUS_CODE": {
+          "type": "string"
+        },
+        "LOG": {
+          "type": "string"
+        },
+        "SETTINGS": {
+          "type": "string"
+        },
+        "ML_CONFIGURATION_NAME": {
+          "type": "string"
+        },
+        "TRAINING_RUN_QUERY": {
+          "type": "string"
         }
       }
     }
