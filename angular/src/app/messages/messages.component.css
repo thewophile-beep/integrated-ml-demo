@@ -4,6 +4,11 @@
 }
 
 .message-item {
+    font-size: 12px;
     margin: 5px;
     background-color: rgb(226, 226, 226);
-  }
+}
+
+.wrapper {
+    text-align: center;
+}

@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MachineLearningComponent } from './machine-learning.component';
+import { ModelManagerComponent } from './model-manager.component';
 
-describe('MachineLearningComponent', () => {
-  let component: MachineLearningComponent;
-  let fixture: ComponentFixture<MachineLearningComponent>;
+describe('ModelManagerComponent', () => {
+  let component: ModelManagerComponent;
+  let fixture: ComponentFixture<ModelManagerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MachineLearningComponent ]
+      declarations: [ ModelManagerComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MachineLearningComponent);
+    fixture = TestBed.createComponent(ModelManagerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -31,13 +31,13 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { PresentationDatasetComponent } from './presentation-dataset/presentation-dataset.component'; 
 import { MatTabsModule } from '@angular/material/tabs';
 import { ExplicationProjetComponent } from './explication-projet/explication-projet.component';
-import { MachineLearningComponent } from './machine-learning/machine-learning.component';
 import { ModelsComponent } from './models/models.component'; 
 import {MatTableModule} from '@angular/material/table';
 import { ModelTrainingComponent } from './model-training/model-training.component'; 
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'; 
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
-import { ModelPredictionComponent } from './model-prediction/model-prediction.component'; 
+import { ModelPredictionComponent } from './model-prediction/model-prediction.component';
+import { ModelManagerComponent } from './model-manager/model-manager.component'; 
 @NgModule({
   declarations: [
     AppComponent,
@@ -49,10 +49,10 @@ import { ModelPredictionComponent } from './model-prediction/model-prediction.co
     NavigationComponent,
     PresentationDatasetComponent,
     ExplicationProjetComponent,
-    MachineLearningComponent,
     ModelsComponent,
     ModelTrainingComponent,
     ModelPredictionComponent,
+    ModelManagerComponent,
   ],
   imports: [
     BrowserModule,

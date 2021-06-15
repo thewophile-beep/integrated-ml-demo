@@ -40,7 +40,7 @@ export class ModelService {
   }
 
   private log(message: string) {
-    this.messageService.add(`PassengerService: ${message}`);
+    this.messageService.add(`ModelService: ${message}`);
   }
 
   constructor(private http: HttpClient, private messageService: MessageService) { }
