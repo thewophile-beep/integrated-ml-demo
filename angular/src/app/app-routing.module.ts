@@ -7,8 +7,8 @@ import { ModelManagerComponent } from './model-manager/model-manager.component';
 const routes: Routes = [
   { path: '', redirectTo: '/info', pathMatch: 'full'},
   { path: 'detail/:id', component: PassengerDetailComponent },
-  {path: 'info', component: PresentationDatasetComponent},
-  {path: 'ml', component: ModelManagerComponent}
+  { path: 'info', component: PresentationDatasetComponent },
+  { path: 'ml', component: ModelManagerComponent }
 ]
 
 @NgModule({

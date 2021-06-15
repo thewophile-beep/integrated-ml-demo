@@ -429,6 +429,13 @@ XData OpenAPI [ MimeType = application/json ]
             "type": "string"
           },
           {
+            "name": "trainedModel",
+            "in": "query",
+            "description": " Trained Model to predict with ",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "passenger",
             "in": "query",
             "description": " Id of passenger to predict ",

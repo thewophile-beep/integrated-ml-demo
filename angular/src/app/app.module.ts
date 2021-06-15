@@ -13,7 +13,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { PassengerSearchComponent } from './passenger-search/passenger-search.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { CreatePassengerFormComponent } from './create-passenger-form/create-passenger-form.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -32,10 +32,10 @@ import { PresentationDatasetComponent } from './presentation-dataset/presentatio
 import { MatTabsModule } from '@angular/material/tabs';
 import { ExplicationProjetComponent } from './explication-projet/explication-projet.component';
 import { ModelsComponent } from './models/models.component'; 
-import {MatTableModule} from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { ModelTrainingComponent } from './model-training/model-training.component'; 
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'; 
-import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; 
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ModelPredictionComponent } from './model-prediction/model-prediction.component';
 import { ModelManagerComponent } from './model-manager/model-manager.component'; 
 @NgModule({

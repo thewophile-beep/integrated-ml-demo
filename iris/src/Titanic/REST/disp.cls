@@ -260,12 +260,17 @@ ClassMethod Predict() As %Status
             Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"model")) Quit
         }
         Set pmodel=%request.Data("model",1)
+        If '$data(%request.Data("trainedModel",1)) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"trainedModel")) Quit
+        If $data(%request.Data("trainedModel",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"trainedModel")) Quit
+        }
+        Set ptrainedModel=%request.Data("trainedModel",1)
         If '$data(%request.Data("passenger",1)) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"passenger")) Quit
         If $data(%request.Data("passenger",2)) {
             Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"passenger")) Quit
         }
         Set ppassenger=%request.Data("passenger",1)
-        Set response=##class(Titanic.REST.impl).Predict(pmodel,ppassenger)
+        Set response=##class(Titanic.REST.impl).Predict(pmodel,ptrainedModel,ppassenger)
         Do ##class(Titanic.REST.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))

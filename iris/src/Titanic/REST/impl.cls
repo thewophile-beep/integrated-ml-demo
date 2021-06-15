@@ -1,6 +1,6 @@
 /// Rest API for the Integrated ML Demo on the Titanic database<br/>
 /// Business logic class defined by OpenAPI in Titanic.REST.spec<br/>
-/// Updated Jun 14, 2021 15:17:01
+/// Updated Jun 15, 2021 07:50:06
 Class Titanic.REST.impl Extends %REST.Impl [ ProcedureBlock ]
 {
 
@@ -241,13 +241,17 @@ ClassMethod GetTrainedModels() As %Stream.Object
 /// Predict<br/>
 /// The method arguments hold values for:<br/>
 ///     model, Model to predict with<br/>
+///     trainedModel, Trained Model to predict with<br/>
 ///     passenger, Id of passenger to predict<br/>
-ClassMethod Predict(model As %String, passenger As %String) As %Stream.Object
+/// WARNING: This method's signature has changed.
+ClassMethod Predict(model As %String, trainedModel As %String, passenger As %String) As %Stream.Object
 {
-    //(Place business logic here)
-    //Do ..%SetStatusCode(<HTTP_status_code>)
-    //Do ..%SetHeader(<name>,<value>)
-    //Quit (Place response here) ; response may be a string, stream or dynamic object
+    set myquery = "SELECT PREDICT("_model_" USE "_trainedModel_") AS Result FROM Titanic_Table.Passenger WHERE ID="_passenger
+    set tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    set tRs = tStatement.%Execute()
+    do tRs.%Next()
+    Quit tRs."Result"
 }
 
 /// Change ml configuration (H20 or AutoML)<br/>

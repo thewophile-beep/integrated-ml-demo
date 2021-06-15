@@ -103,4 +103,12 @@ export class ModelService {
       catchError(this.handleError<any>('changeConfiguration'))
     )
   }
+
+  predict(model: string, trainedModel: string, passenger: string): Observable<any> {
+    const url = `${this.ModelsUrl}/predict?model=${model}&trainedModel=${trainedModel}&passenger=${passenger}`;
+    return this.http.post<any>(url, this.httpOptions).pipe(
+      tap(predicted => this.log(`Predicted Value = ${predicted}`)),
+      catchError(this.handleError<any>('predict'))
+    )
+  }
 }

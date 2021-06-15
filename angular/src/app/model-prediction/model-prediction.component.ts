@@ -16,6 +16,8 @@ export class ModelPredictionComponent implements OnInit {
 
   models: ML_MODEL[] = [];
 
+  predictedValue: string = "";
+
   predictForm = this.fb.group({
     modelName: [null, Validators.required],
     trainedModelName: [null, Validators.required],
@@ -36,7 +38,9 @@ export class ModelPredictionComponent implements OnInit {
     }
     
     predict(): void {
-      
+      this.modelService.predict(this.predictForm.value.modelName, this.predictForm.value.trainedModelname, this.predictForm.value.id).subscribe(
+        predicted => this.predictedValue = predicted
+      )
     }
   }
   
