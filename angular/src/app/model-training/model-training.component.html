@@ -56,15 +56,14 @@
                     </mat-button-toggle-group>
                 </div>
                 <div class="row">
-    
                     <div class="col">
                         <mat-form-field class="full-width">
+                            <mat-label>Model to train</mat-label>
                             <mat-select formControlName="modelName">
                                 <mat-option *ngFor="let model of models" [value]="model.MODEL_NAME">{{model.MODEL_NAME}}</mat-option>
                             </mat-select>
                         </mat-form-field>
                     </div>
-    
                     <div class="col">
                         <mat-form-field class="full-width">
                             <mat-label>Run Name</mat-label>

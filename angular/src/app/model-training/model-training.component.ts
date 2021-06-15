@@ -22,7 +22,7 @@ export class ModelTrainingComponent implements OnInit {
   
   runForm = this.fb.group({
     runName: ['', [Validators.required, Validators.pattern(/^\S*$/)]],
-    modelName: [null, Validators.required, Validators.pattern(/^\S*$/)],
+    modelName: ['', Validators.required],
     MLconfig: ["AutoML", Validators.required]
   })
   
@@ -34,7 +34,6 @@ export class ModelTrainingComponent implements OnInit {
   
   getAll(): void {
     this.modelService.getTrainingRuns().subscribe(runs => this.runs = runs);
-    this.models = [];
     this.modelService.getAllModels().subscribe(models => this.models = models);
   }
   

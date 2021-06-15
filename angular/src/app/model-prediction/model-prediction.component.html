@@ -43,16 +43,22 @@
         <form [formGroup]="predictForm" novalidate>   
             <div class="row">
                 <div class="col">
-                <mat-form-field class="full-width">
-                    <mat-select formControlName="modelName">
-                        <mat-option *ngFor="let model of trainedModels" [value]="model.MODEL_NAME">{{model.MODEL_NAME}}</mat-option>
-                    </mat-select>
-                </mat-form-field>
+                    <mat-form-field class="full-width">
+                        <mat-label>Model to use</mat-label>
+                        <mat-select formControlName="modelName">
+                            <mat-option *ngFor="let model of models" [value]="model.MODEL_NAME">{{model.MODEL_NAME}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
                 </div>
                 <div class="col">
                     <mat-form-field class="full-width">
+                        <mat-label>Trained Model to use</mat-label>
                         <mat-select formControlName="trainedModelName">
-                            <mat-option *ngFor="let model of trainedModels" [value]="model.TRAINED_MODEL_NAME">{{model.TRAINED_MODEL_NAME}}</mat-option>
+                            <div *ngFor="let model of trainedModels">
+                                <mat-option *ngIf="model.MODEL_NAME === predictForm.value.modelName" [value]="model.TRAINED_MODEL_NAME">
+                                    {{model.TRAINED_MODEL_NAME}}
+                                </mat-option>
+                            </div>
                         </mat-select>
                     </mat-form-field>
                 </div>
