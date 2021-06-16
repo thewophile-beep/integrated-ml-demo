@@ -39,7 +39,6 @@ import { ModelPredictionComponent } from './model-prediction/model-prediction.co
 import { NavigationDatasetPresentationComponent } from './navigation-dataset-presentation/navigation-dataset-presentation.component';
 import { NavigationModelManagerComponent } from './navigation-model-manager/navigation-model-manager.component';
 import { NavigationMakePredictionsComponent } from './navigation-make-predictions/navigation-make-predictions.component';
-import { PassengerDetailDialogComponent } from './passenger-detail-dialog/passenger-detail-dialog.component'; 
 import { MatDialogModule } from '@angular/material/dialog'; 
 @NgModule({
   declarations: [
@@ -57,7 +56,6 @@ import { MatDialogModule } from '@angular/material/dialog';
     NavigationDatasetPresentationComponent,
     NavigationModelManagerComponent,
     NavigationMakePredictionsComponent,
-    PassengerDetailDialogComponent,
   ],
   imports: [
     BrowserModule,

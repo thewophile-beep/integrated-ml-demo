@@ -3,6 +3,8 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { mlTrainedModel } from '../mlTrainedModel';
 import { ModelService } from '../model.service'
 import { mlModel } from '../mlModel';
+import { MessageService } from '../message.service';
+import { ThisReceiver } from '@angular/compiler';
 
 @Component({
   selector: 'app-model-prediction',
@@ -13,34 +15,46 @@ export class ModelPredictionComponent implements OnInit {
   trainedModels: mlTrainedModel[] = [];
   displayedColumns: string[] = ["modelName",	"trainedModelName",	"provider",	"trainedTimestamp",	"modelType",	"modelInfo"]
   loopColumns: string[] = ["trainedModelName",	"provider",	"trainedTimestamp",	"modelType",	"modelInfo"]
-
-  models: mlModel[] = [];
-
-  predictedValue: string = "";
-
-  predictForm = this.fb.group({
-    modelName: [null, Validators.required],
-    trainedModelName: [null, Validators.required],
-    id: [null, Validators.required],
-  })
+  chosenModel: mlTrainedModel | undefined;
+  chosenPassenger: string | undefined;
+  waiting: boolean = false;
+  predictedValues: string[] = [];
+  newPrediction: string = "";
   
-  constructor(private fb: FormBuilder, private modelService: ModelService) { }
+  constructor(private fb: FormBuilder, private modelService: ModelService, private messageService: MessageService) { }
   
   ngOnInit(): void {
     this.getAll();
   }
   
   getAll() {
-    this.modelService.getTrainedModels().subscribe(
-      trainedModels => this.trainedModels = trainedModels
-    )
-    this.modelService.getAllModels().subscribe(models => this.models = models);
-    }
+    this.modelService.getTrainedModels().subscribe(trainedModels => this.trainedModels = trainedModels)
+  }
     
-    predict(): void {
-      this.modelService.predict(this.predictForm.value.modelName, this.predictForm.value.trainedModelName, this.predictForm.value.id).subscribe(
-        predicted => this.predictedValue = predicted
+  predict(): void {
+    if (this.chosenModel && this.chosenPassenger) {
+      this.modelService.predict(this.chosenModel.modelName, this.chosenModel.trainedModelName, this.chosenPassenger).subscribe(
+        predicted => {
+          this.newPrediction = String(predicted.predictedValue);
+          if (this.newPrediction.length === 0)
+            this.newPrediction = "Error :( try another model ?";
+          if (this.chosenModel && this.chosenPassenger)
+            this.predictedValues.push(this.chosenModel.modelName + "_" + this.chosenModel.trainedModelName + " for n°" 
+              + this.chosenPassenger + ": " + this.newPrediction);
+          this.toggleWaiting();}
       )
+      
+      this.toggleWaiting();
     }
   }
-  
+
+  toggleWaiting(): void {
+    this.waiting = !this.waiting;
+  }
+
+  choosingModel(choice: mlTrainedModel) {
+    this.chosenModel = choice;
+  }
+}
+
+    

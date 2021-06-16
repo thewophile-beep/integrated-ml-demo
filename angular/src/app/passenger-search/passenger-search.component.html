@@ -5,13 +5,10 @@
           placeholder="Enter a name"
           #searchBox id="search-box" 
           (input)="search(searchBox.value)">
-        </mat-form-field>
-        <mat-option *ngFor="let passenger of passengers$ | async" (click)="openDialog(passenger)" class="passenger-autocomplete">
-          <a class="passenger-text-autocomplete">
-            {{passenger.name}}
-          </a>
-          <button mat-icon-button class="modify-button" title="modify passenger" routerLink="/detail/{{passenger.passengerId}}">
-            <mat-icon>settings</mat-icon>
-          </button>
-        </mat-option>
+  </mat-form-field>
+  <mat-option *ngFor="let passenger of passengers$ | async" (click)="openDialog(passenger)" class="passenger-autocomplete">
+    <a class="passenger-text-autocomplete">
+      n°{{passenger.passengerId}}: {{passenger.name}}
+    </a>
+  </mat-option>
 </form>

@@ -8,7 +8,7 @@ import { Passenger } from '../passenger';
 import { PassengerService } from '../passenger.service';
 
 import { MatDialog } from '@angular/material/dialog';
-import { PassengerDetailDialogComponent } from '../passenger-detail-dialog/passenger-detail-dialog.component';
+import { PassengerDetailComponent } from '../passenger-detail/passenger-detail.component';
 
 @Component({
   selector: 'app-passenger-search',
@@ -40,8 +40,8 @@ export class PassengerSearchComponent implements OnInit {
   }
 
   openDialog(passenger: Passenger) {
-    this.dialog.open(PassengerDetailDialogComponent, {
-      data: passenger
+    this.dialog.open(PassengerDetailComponent, {
+      data: passenger.passengerId
     });
   }
 }

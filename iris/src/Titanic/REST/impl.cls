@@ -140,15 +140,7 @@ ClassMethod getAllModels() As %Stream.Object
 ClassMethod createModel(createInfo As %Stream.Object) As %Stream.Object
 {
     set tInfo = {}.%FromJSON(createInfo)
-    set myquery = "CREATE MODEL "_tInfo.modelName_" PREDICTING("_tInfo.predictValue_") FROM "_tInfo.tableName
-    #; if ($Data(tInfo.withVariables)) {
-    #;     set iter = tInfo.withVariables.%GetIterator()
-    #;     set myquery = myquery_" WITH ("
-    #;     while iter.%GetNext(.key, .value) {
-    #;         set myquery = myquery_value_", "
-    #;     }
-    #;     set myquery = myquery_")"
-    #; }
+    set myquery = "CREATE MODEL "_tInfo.modelName_" PREDICTING("_tInfo.predictValue_") FROM (SELECT * FROM Titanic_Table.Passenger WHERE ID < 892)"
     set tStatement = ##class(%SQL.Statement).%New()
     $$$ThrowOnError(tStatement.%Prepare(myquery))
     set tRs = tStatement.%Execute()

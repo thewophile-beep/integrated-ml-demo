@@ -1,11 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { Passenger } from "../passenger";
 
 import { PassengerService } from "../passenger.service"
-import { ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
 
 import { FormBuilder, Validators } from '@angular/forms';
+
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+
 
 
 @Component({
@@ -33,8 +34,7 @@ export class PassengerDetailComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private passengerService: PassengerService,
-    private route: ActivatedRoute,
-    private location: Location
+    @Inject(MAT_DIALOG_DATA) public passengerId: number
   ) { }
 
   ngOnInit(): void {
@@ -43,8 +43,7 @@ export class PassengerDetailComponent implements OnInit {
   }
 
   getPassenger(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.passengerService.getPassenger(id).subscribe(passenger => {
+    this.passengerService.getPassenger(this.passengerId).subscribe(passenger => {
       this.passenger = passenger;
       this.passengerForm.patchValue({
         name: passenger.name,
@@ -62,14 +61,10 @@ export class PassengerDetailComponent implements OnInit {
     });
   }
 
-  goBack(): void {
-    this.location.back();
-  }
-
   update(): void {
     if (this.passenger) {
       this.passengerService.updatePassenger(this.passenger.passengerId, this.passengerForm.value)
-        .subscribe(() => this.goBack());
+        .subscribe();
     }
   }
 

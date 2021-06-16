@@ -3,6 +3,10 @@ import { Passenger } from '../passenger';
 import { PassengerService } from '../passenger.service';
 import {PageEvent} from '@angular/material/paginator';
 
+import { MatDialog } from '@angular/material/dialog';
+import { PassengerDetailComponent } from '../passenger-detail/passenger-detail.component';
+
+
 @Component({
     selector: 'app-passengers',
     templateUrl: './passengers.component.html',
@@ -14,7 +18,7 @@ export class PassengersComponent implements OnInit {
     currPage: number = 0;
     totalNum: number | undefined;
 
-    constructor(private passengerService: PassengerService) {}
+    constructor(private passengerService: PassengerService, public dialog: MatDialog) {}
     
     ngOnInit() {
         this.getAll();
@@ -41,5 +45,11 @@ export class PassengersComponent implements OnInit {
         this.currPage = event.pageIndex;
         this.getAll();
     }
+
+    openDialog(passenger: Passenger) {
+        this.dialog.open(PassengerDetailComponent, {
+          data: passenger.passengerId
+        });
+      }
 
 }

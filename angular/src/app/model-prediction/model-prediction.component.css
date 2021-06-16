@@ -67,7 +67,18 @@
 }
 
 .spinner {
-    display: flex; 
-    justify-content: center; 
+    display: flex;
     align-items: center;
+    padding-left: 10px;
+}
+.mat-row .mat-cell {
+    cursor: pointer;
+}
+
+.mat-row:hover .mat-cell {
+    background: whitesmoke;
+}
+
+.active-row {
+    font-weight: bold;
 }
