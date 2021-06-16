@@ -11,9 +11,9 @@
                 <table mat-table [dataSource]="trainedModels" class="mat-table">
                     
                     
-                    <ng-container matColumnDef="MODEL_NAME" sticky>
-                        <th mat-header-cell *matHeaderCellDef>MODEL_NAME</th> 
-                        <td mat-cell *matCellDef="let model"> {{model["MODEL_NAME"]}} </td>
+                    <ng-container matColumnDef="modelName" sticky>
+                        <th mat-header-cell *matHeaderCellDef>modelName</th> 
+                        <td mat-cell *matCellDef="let model"> {{model["modelName"]}} </td>
                     </ng-container> 
                     
                     <ng-container [matColumnDef]="column" *ngFor="let column of loopColumns">
@@ -46,7 +46,7 @@
                     <mat-form-field class="full-width">
                         <mat-label>Model to use</mat-label>
                         <mat-select formControlName="modelName">
-                            <mat-option *ngFor="let model of models" [value]="model.MODEL_NAME">{{model.MODEL_NAME}}</mat-option>
+                            <mat-option *ngFor="let model of models" [value]="model.modelName">{{model.modelName}}</mat-option>
                         </mat-select>
                     </mat-form-field>
                 </div>
@@ -55,8 +55,8 @@
                         <mat-label>Trained Model to use</mat-label>
                         <mat-select formControlName="trainedModelName">
                             <div *ngFor="let model of trainedModels">
-                                <mat-option *ngIf="model.MODEL_NAME === predictForm.value.modelName" [value]="model.TRAINED_MODEL_NAME">
-                                    {{model.TRAINED_MODEL_NAME}}
+                                <mat-option *ngIf="model.modelName === predictForm.value.modelName" [value]="model.trainedModelName">
+                                    {{model.trainedModelName}}
                                 </mat-option>
                             </div>
                         </mat-select>

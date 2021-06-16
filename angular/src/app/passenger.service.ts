@@ -49,12 +49,34 @@ export class PassengerService {
 
   /** GET Passengers from the server */
   getAllPassengers(currPage: number, pageSize: number): Observable<any> {
-    const url = `${this.PassengersUrl}?currpage=${currPage + 1}&pagesize=${pageSize}`
+    const url = `${this.PassengersUrl}?currPage=${currPage + 1}&pageSize=${pageSize}`
     return this.http.get<any>(url)
       .pipe(
         tap(_ => this.log('fetched Passengers')),
         catchError(this.handleError<any>('getPassengers', []))
       );
+  }
+
+  /* GET Passengers whose name contains search term */
+  searchPassengers(term: string): Observable<any> {
+    if (!term.trim() || term.length < 3) {
+      // if not search term, return empty Passenger array.
+      return of([]);
+    }
+    return this.http.get<any>(`${this.PassengersUrl}?name=${term}`).pipe(
+      tap(x => x.length ?
+        this.log(`found Passengers matching "${term}"`) :
+        this.log(`no Passengers matching "${term}"`)),
+      catchError(this.handleError<any>('searchPassengers', []))
+    );
+  }
+  
+  /** POST: add a new Passenger to the server */
+  createPassenger(Passenger: Passenger): Observable<any> {
+    return this.http.post<any>(this.PassengersUrl, Passenger, this.httpOptions).pipe(
+      tap(response => this.log(`added Passenger w/ id=${response.passengerId}`)),
+      catchError(this.handleError<any>('createPassenger'))
+    );
   }
 
   /** GET Passenger by id. Will 404 if id not found */
@@ -69,41 +91,22 @@ export class PassengerService {
 
   /** PUT: update the Passenger on the server */
   updatePassenger(id: number, Passenger: Passenger): Observable<any> {
-    return this.http.put(`${this.PassengersUrl}/${id}`, Passenger, this.httpOptions).pipe(
-      tap(_ => this.log(`updated Passenger id=${Passenger.Id}`)),
-      catchError(this.handleError<any>('updatePassenger'))
-    );
-  }
-
-  /** POST: add a new Passenger to the server */
-  createPassenger(Passenger: Passenger): Observable<Passenger> {
-    return this.http.post<Passenger>(this.PassengersUrl, Passenger, this.httpOptions).pipe(
-      tap((newPassenger: Passenger) => this.log(`added Passenger w/ id=${newPassenger.Id}`)),
-      catchError(this.handleError<Passenger>('createPassenger'))
-    );
+    return this.http.put(`${this.PassengersUrl}/${id}`, Passenger, this.httpOptions)
+      .pipe(
+        tap(_ => this.log(`updated Passenger id=${id}`)),
+        catchError(this.handleError<any>('updatePassenger'))
+      );
   }
 
   /** DELETE: delete the Passenger from the server */
   deletePassenger(id: number): Observable<Passenger> {
     const url = `${this.PassengersUrl}/${id}`;
 
-    return this.http.delete<Passenger>(url, this.httpOptions).pipe(
-      tap(_ => this.log(`deleted Passenger id=${id}`)),
-      catchError(this.handleError<Passenger>('deletePassenger'))
-    );
+    return this.http.delete<Passenger>(url, this.httpOptions)
+      .pipe(
+        tap(_ => this.log(`deleted Passenger id=${id}`)),
+        catchError(this.handleError<Passenger>('deletePassenger'))
+      );
   }
 
-  /* GET Passengers whose name contains search term */
-  searchPassengers(term: string): Observable<Passenger[]> {
-    if (!term.trim() || term.length < 3) {
-      // if not search term, return empty Passenger array.
-      return of([]);
-    }
-    return this.http.get<Passenger[]>(`${this.PassengersUrl}/?name=${term}`).pipe(
-      tap(x => x.length ?
-        this.log(`found Passengers matching "${term}"`) :
-        this.log(`no Passengers matching "${term}"`)),
-      catchError(this.handleError<Passenger[]>('searchPassengers', []))
-    );
-  }
 }

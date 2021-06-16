@@ -2,7 +2,7 @@
     <div *ngIf="passenger; else notFound">
         <mat-card class="passenger-card">
             <mat-card-header>
-                <mat-card-title class="principal-header">Passenger n°{{passenger.PassengerId}} : {{passenger.Name | uppercase}} </mat-card-title>
+                <mat-card-title class="principal-header">Passenger n°{{passenger.passengerId}} : {{passenger.name | uppercase}} </mat-card-title>
             </mat-card-header>
             <mat-card-content>
                 
@@ -19,8 +19,8 @@
                                     <div class="col">
                                         <mat-form-field class="full-width">
                                             <mat-label>Passenger Name</mat-label>
-                                            <input matInput placeholder="Enter a name" formControlName="Name">
-                                            <mat-error *ngIf="passengerForm.controls['Name'].hasError('required')">
+                                            <input matInput placeholder="Enter a name" formControlName="name">
+                                            <mat-error *ngIf="passengerForm.controls['name'].hasError('required')">
                                                 Name is <strong>required</strong>
                                             </mat-error>
                                         </mat-form-field>
@@ -33,13 +33,13 @@
                                             <mat-label>Passenger Age</mat-label>
                                             <input type="number"
                                             matInput placeholder="Enter a number" 
-                                            formControlName="Age"
+                                            formControlName="age"
                                             min="0"
                                             >
-                                            <mat-error *ngIf="passengerForm.controls['Age'].hasError('required')">
+                                            <mat-error *ngIf="passengerForm.controls['age'].hasError('required')">
                                                 Age is <strong>required</strong>
                                             </mat-error>
-                                            <mat-error *ngIf="passengerForm.controls['Age'].hasError('min')">No negative values</mat-error>
+                                            <mat-error *ngIf="passengerForm.controls['age'].hasError('min')">No negative values</mat-error>
                                         </mat-form-field>
                                     </div>
                                 </div>
@@ -47,7 +47,7 @@
                             <!-- Right : Sex -->
                             <div class="col">
                                 <mat-label>Passenger Sex</mat-label>
-                                <mat-radio-group formControlName="Sex">
+                                <mat-radio-group formControlName="sex">
                                     <mat-radio-button value="male">Male</mat-radio-button>
                                     <mat-radio-button value="female">Female</mat-radio-button>
                                     <mat-radio-button value="">Other</mat-radio-button>
@@ -69,22 +69,22 @@
                             <div class="row">
                                 <mat-form-field class="full-width">
                                     <mat-label>Ticket Number</mat-label>
-                                    <input matInput placeholder="Enter a ticket number" formControlName="Ticket">
+                                    <input matInput placeholder="Enter a ticket number" formControlName="ticket">
                                 </mat-form-field>
                             </div>
                             <!-- Fare -->
                             <div class="row">
                                 <mat-form-field class="full-width">
                                     <mat-label>Fare</mat-label>
-                                    <input type="number" min="0" matInput placeholder="Enter a price" formControlName="Fare">
+                                    <input type="number" min="0" matInput placeholder="Enter a price" formControlName="fare">
                                 </mat-form-field>
-                                <mat-error *ngIf="passengerForm.controls['Fare'].hasError('min')">No negative values</mat-error>
+                                <mat-error *ngIf="passengerForm.controls['fare'].hasError('min')">No negative values</mat-error>
                             </div>
                             <!-- Cabin -->
                             <div class="row">
                                 <mat-form-field class="full-width">
                                     <mat-label>Cabin Number</mat-label>
-                                    <input type="string" matInput placeholder="Enter a cabin number" formControlName="Cabin">
+                                    <input type="string" matInput placeholder="Enter a cabin number" formControlName="cabin">
                                 </mat-form-field>
                             </div>
                         </div>
@@ -93,7 +93,7 @@
                             <!-- Class -->
                             <div class="col">
                                 <mat-label>Passenger Class</mat-label>
-                                <mat-radio-group formControlName="Pclass">
+                                <mat-radio-group formControlName="class">
                                     <mat-radio-button [value]=1>First Class</mat-radio-button>
                                     <mat-radio-button [value]=2>Second Class</mat-radio-button>
                                     <mat-radio-button [value]=3>Third Class</mat-radio-button>
@@ -102,7 +102,7 @@
                             <!-- Port -->
                             <div class="col">
                                 <mat-label>Port of Embarkation</mat-label>
-                                <mat-radio-group formControlName="Embarked">
+                                <mat-radio-group formControlName="embarked">
                                     <mat-radio-button value="C">Cherbourg</mat-radio-button>
                                     <mat-radio-button value="Q">Queenstown</mat-radio-button>
                                     <mat-radio-button value="S">Southampton</mat-radio-button>

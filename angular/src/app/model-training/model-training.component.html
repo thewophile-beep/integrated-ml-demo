@@ -11,9 +11,9 @@
                 <table mat-table [dataSource]="runs" class="mat-table">
                     
                     
-                    <ng-container matColumnDef="MODEL_NAME" sticky>
-                        <th mat-header-cell *matHeaderCellDef>MODEL_NAME</th> 
-                        <td mat-cell *matCellDef="let run"> {{run["MODEL_NAME"]}} </td>
+                    <ng-container matColumnDef="modelName" sticky>
+                        <th mat-header-cell *matHeaderCellDef>modelName</th> 
+                        <td mat-cell *matCellDef="let run"> {{run["modelName"]}} </td>
                     </ng-container> 
                     
                     <ng-container [matColumnDef]="column" *ngFor="let column of loopColumns">
@@ -60,7 +60,7 @@
                         <mat-form-field class="full-width">
                             <mat-label>Model to train</mat-label>
                             <mat-select formControlName="modelName">
-                                <mat-option *ngFor="let model of models" [value]="model.MODEL_NAME">{{model.MODEL_NAME}}</mat-option>
+                                <mat-option *ngFor="let model of models" [value]="model.modelName">{{model.modelName}}</mat-option>
                             </mat-select>
                         </mat-form-field>
                     </div>

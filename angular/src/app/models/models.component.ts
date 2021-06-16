@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ML_MODEL } from '../ML_MODEL';
+import { mlModel } from '../mlModel';
 import { ModelService } from '../model.service';
 import { FormBuilder, Validators, } from '@angular/forms';
 
@@ -9,9 +9,9 @@ import { FormBuilder, Validators, } from '@angular/forms';
   styleUrls: ['./models.component.css']
 })
 export class ModelsComponent implements OnInit {
-  models: ML_MODEL[] = [];
-  displayedColumns: string[] = ["MODEL_NAME", "DESCRIPTION", "PREDICTING_COLUMN_NAME", "PREDICTING_COLUMN_TYPE", "WITH_COLUMNS", "CREATE_TIMESTAMP", "DEFAULT_TRAINED_MODEL_NAME", "DEFAULT_SETTINGS", "DEFAULT_TRAINING_QUERY", "actions"]
-  loopColumns: string[] = ["DESCRIPTION", "PREDICTING_COLUMN_NAME", "PREDICTING_COLUMN_TYPE", "WITH_COLUMNS", "CREATE_TIMESTAMP", "DEFAULT_TRAINED_MODEL_NAME", "DEFAULT_SETTINGS", "DEFAULT_TRAINING_QUERY"]
+  models: mlModel[] = [];
+  displayedColumns: string[] = ["modelName", "description", "predictingColumnName", "predictingColumnType", "withColumns", "createTimestamp", "defaultTrainedModelName", "defaultSettings", "defaultTrainingQuery", "actions"]
+  loopColumns: string[] = ["description", "predictingColumnName", "predictingColumnType", "withColumns", "createTimestamp", "defaultTrainedModelName", "defaultSettings", "defaultTrainingQuery"]
 
   modelForm = this.fb.group({
     modelName: ['', [Validators.required, Validators.pattern(/^\S*$/)]],
@@ -28,9 +28,9 @@ export class ModelsComponent implements OnInit {
     this.modelService.getAllModels().subscribe(models => this.models = models);
   }
   
-  delete(model: ML_MODEL): void {
+  delete(model: mlModel): void {
     this.models = this.models.filter(h => h !== model);
-    this.modelService.deleteModel(model.MODEL_NAME).subscribe(
+    this.modelService.deleteModel(model.modelName).subscribe(
       _ => this.getAll()
     );
   }
@@ -38,12 +38,12 @@ export class ModelsComponent implements OnInit {
   onSubmit(): void {
     var isValid = true;
     this.models.forEach(model => {
-      if (this.modelForm.value.modelName === model.MODEL_NAME) {
+      if (this.modelForm.value.modelName === model.modelName) {
         isValid = false;
       }
     })
     if (isValid) {
-      this.modelService.createModel(this.modelForm.value.modelName, this.modelForm.value.predicting).subscribe(
+      this.modelService.createModel(this.modelForm.value.modelName, this.modelForm.value.predicting, "Titanic_Table.Passenger", []).subscribe(
         _ => this.getAll()
       );
     } else {

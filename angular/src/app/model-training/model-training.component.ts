@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ML_TRAINING_RUN } from '../ML_TRAINING_RUN';
-import { ML_MODEL } from '../ML_MODEL';
+import { mlTrainingModel } from '../mlTrainingModel';
+import { mlModel } from '../mlModel';
 import { ModelService } from '../model.service';
 import { FormBuilder, Validators } from '@angular/forms';
 
@@ -11,11 +11,11 @@ import { FormBuilder, Validators } from '@angular/forms';
 })
 export class ModelTrainingComponent implements OnInit {
 
-  runs: ML_TRAINING_RUN[] = [];
-  displayedColumns: string[] = ["MODEL_NAME",	"TRAINING_RUN_NAME", 	"PROVIDER",	"START_TIMESTAMP",	"COMPLETED_TIMESTAMP",	"TRAINING_DURATION",	"RUN_STATUS",	"STATUS_CODE",	"LOG",	"SETTINGS",	"ML_CONFIGURATION_NAME",	"TRAINING_RUN_QUERY"]
-  loopColumns: string[] = ["TRAINING_RUN_NAME", 	"PROVIDER",	"START_TIMESTAMP",	"COMPLETED_TIMESTAMP",	"TRAINING_DURATION",	"RUN_STATUS",	"STATUS_CODE",	"LOG",	"SETTINGS",	"ML_CONFIGURATION_NAME",	"TRAINING_RUN_QUERY"]
+  runs: mlTrainingModel[] = [];
+  displayedColumns: string[] = ["modelName",	"trainingRunName", 	"provider",	"startTimestamp",	"completedTimestamp",	"trainingDuration",	"runStatus",	"statusCode",	"log",	"settings",	"mlConfigurationName",	"trainingRunQuery"]
+  loopColumns: string[] = ["trainingRunName", 	"provider",	"startTimestamp",	"completedTimestamp",	"trainingDuration",	"runStatus",	"statusCode",	"log",	"settings",	"mlConfigurationName",	"trainingRunQuery"]
 
-  models: ML_MODEL[] = [];
+  models: mlModel[] = [];
 
   waiting: boolean = false;
 

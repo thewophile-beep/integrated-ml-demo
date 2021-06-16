@@ -31,7 +31,7 @@ export class PassengersComponent implements OnInit {
 
     delete(passenger: Passenger): void {
         this.passengers = this.passengers.filter(h => h !== passenger);
-        this.passengerService.deletePassenger(passenger.Id).subscribe(
+        this.passengerService.deletePassenger(passenger.passengerId).subscribe(
             _ => this.getAll()
         );
     }

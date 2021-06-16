@@ -12,8 +12,8 @@
               (page)="updateEvent($event)">
         </mat-paginator>
         <mat-nav-list>
-            <mat-list-item *ngFor="let passenger of passengers; let isLast = last;" routerLink="/detail/{{passenger.Id}}">
-                <span matLine>{{passenger.Name}}</span>
+            <mat-list-item *ngFor="let passenger of passengers; let isLast = last;" routerLink="/detail/{{passenger.passengerId}}">
+                <span matLine>{{passenger.name}}</span>
                 <button mat-icon-button title="delete passenger" (click)="delete(passenger)">
                     <mat-icon>delete</mat-icon>
                 </button>

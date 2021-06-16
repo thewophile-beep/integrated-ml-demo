@@ -8,8 +8,8 @@
           [matAutocomplete]="auto">
     <mat-autocomplete #auto="matAutocomplete">
       <mat-option *ngFor="let passenger of passengers$ | async" [value]="passenger">
-        <a class="passenger-autocomplete" routerLink="/detail/{{passenger.Id}}">
-          {{passenger.Name}}
+        <a class="passenger-autocomplete" routerLink="/detail/{{passenger.passengerId}}">
+          {{passenger.name}}
         </a>
       </mat-option>
     </mat-autocomplete>

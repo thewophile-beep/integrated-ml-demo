@@ -17,16 +17,16 @@ export class PassengerDetailComponent implements OnInit {
   passenger: Passenger | undefined;
 
   passengerForm = this.fb.group({
-    Name: [null, Validators.required],
-    Sex: [null, Validators.required],
-    Age: [null, Validators.min(0)],
-    Pclass: [null, Validators.required],
+    name: [null, Validators.required],
+    sex: [null, Validators.required],
+    age: [null, Validators.min(0)],
+    class: [null, Validators.required],
     SibSp: [0, Validators.min(0)],
     Parch: [0, Validators.min(0)],
-    Ticket: null, 
-    Fare: [null, Validators.min(0)],
-    Cabin: null,
-    Embarked: null,
+    ticket: null, 
+    fare: [null, Validators.min(0)],
+    cabin: null,
+    embarked: null,
   });
 
   constructor(
@@ -46,16 +46,16 @@ export class PassengerDetailComponent implements OnInit {
     this.passengerService.getPassenger(id).subscribe(passenger => {
       this.passenger = passenger;
       this.passengerForm.patchValue({
-        Name: passenger.Name,
-        Sex: passenger.Sex,
-        Ticket: passenger.Ticket, 
-        Pclass: passenger.Pclass,
-        SibSp: passenger.SibSp,
-        Parch: passenger.Parch,
-        Fare: passenger.Fare,
-        Cabin: passenger.Cabin,
-        Embarked: passenger.Embarked,
-        Age: passenger.Age,
+        name: passenger.name,
+        sex: passenger.sex,
+        ticket: passenger.ticket, 
+        class: passenger.class,
+        SibSp: passenger.sibSp,
+        Parch: passenger.parCh,
+        fare: passenger.fare,
+        cabin: passenger.cabin,
+        embarked: passenger.embarked,
+        age: passenger.age,
       });
     });
   }
@@ -66,7 +66,7 @@ export class PassengerDetailComponent implements OnInit {
 
   update(): void {
     if (this.passenger) {
-      this.passengerService.updatePassenger(this.passenger.Id, this.passenger)
+      this.passengerService.updatePassenger(this.passenger.passengerId, this.passengerForm.value)
         .subscribe(() => this.goBack());
     }
   }

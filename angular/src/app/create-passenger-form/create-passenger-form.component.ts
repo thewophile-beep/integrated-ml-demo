@@ -12,16 +12,16 @@ import { PassengerService } from "../passenger.service"
 })
 export class CreatePassengerFormComponent {
   passengerForm = this.fb.group({
-    Name: [null, Validators.required],
-    Sex: [null, Validators.required],
-    Age: [null, Validators.min(0)],
-    Pclass: [null, Validators.required],
-    SibSp: [0, Validators.min(0)],
-    Parch: [0, Validators.min(0)],
-    Ticket: null, 
-    Fare: [null, Validators.min(0)],
-    Cabin: null,
-    Embarked: null,
+    name: [null, Validators.required],
+    sex: [null, Validators.required],
+    age: [null, Validators.min(0)],
+    class: [null, Validators.required],
+    sibSp: [0, Validators.min(0)],
+    parCh: [0, Validators.min(0)],
+    ticket: null, 
+    fare: [null, Validators.min(0)],
+    cabin: null,
+    embarked: null,
   });
 
   constructor(private fb: FormBuilder, private passengerService: PassengerService) {}
@@ -30,9 +30,11 @@ export class CreatePassengerFormComponent {
   }
 
   onSubmit(): void {
-    let passenger = this.passengerForm.value;
-    this.passengerService.createPassenger(passenger).subscribe(
-      (newPassenger: Passenger) => alert("New Passenger created with id : " + newPassenger.Id)
+    this.passengerService.createPassenger(this.passengerForm.value).subscribe(
+      (newPassenger: Passenger) => {
+        alert("New Passenger created with id : " + newPassenger.passengerId);
+        this.passengerForm.reset();
+      }
     );
   }
 }

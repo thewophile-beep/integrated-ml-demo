@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
-import { ML_MODEL } from './ML_MODEL';
+import { mlModel } from './mlModel';
+import { mlTrainingModel } from './mlTrainingModel';
+import { mlTrainedModel } from './mlTrainedModel';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ML_TRAINING_RUN } from './ML_TRAINING_RUN';
-import { ML_TRAINED_MODELS } from './ML_TRAINED_MODELS';
 
 @Injectable({
   providedIn: 'root'
@@ -46,68 +46,78 @@ export class ModelService {
   constructor(private http: HttpClient, private messageService: MessageService) { }
 
   /** GET Models from the server */
-  getAllModels(): Observable<ML_MODEL[]> {
-    const url = `${this.ModelsUrl}/models`;
-    return this.http.get<ML_MODEL[]>(url).pipe(
+  getAllModels(): Observable<mlModel[]> {
+    const url = this.ModelsUrl + "/models";
+    return this.http.get<mlModel[]>(url).pipe(
         tap(_ => this.log('fetched Models')),
-        catchError(this.handleError<ML_MODEL[]>('getModels', []))
+        catchError(this.handleError<mlModel[]>('getModels', []))
       );
   }
 
-  deleteModel(name: string): Observable<ML_MODEL> {
+    /** POST: add a new Passenger to the server */
+  createModel(modelName: string, predictValue: string, tableName: string, withVariables: string[]): Observable<mlModel> {
+    const url = this.ModelsUrl + "/models";
+    const payloadBody = {
+      modelName: modelName,
+      predictValue: predictValue,
+      tableName: tableName
+    }
+    return this.http.post<mlModel>(url, payloadBody, this.httpOptions).pipe(
+      tap(_ => this.log(`added Model w/ name=${modelName}`)),
+      catchError(this.handleError<mlModel>('createModel'))
+    );
+  }
+ 
+  deleteModel(name: string): Observable<mlModel> {
     const url = `${this.ModelsUrl}/models?modelName=${name}`;
 
-    return this.http.delete<ML_MODEL>(url, this.httpOptions).pipe(
+    return this.http.delete<mlModel>(url, this.httpOptions).pipe(
       tap(_ => this.log(`deleted Model ${name}`)),
-      catchError(this.handleError<ML_MODEL>('deletePassenger'))
+      catchError(this.handleError<mlModel>('deletePassenger'))
     );
   }
 
-    /** POST: add a new Passenger to the server */
-  createModel(modelName: string, predicting: string): Observable<ML_MODEL> {
-    const url = this.ModelsUrl + "/models?modelName=" + modelName + "&predicting=" + predicting
-    return this.http.post<ML_MODEL>(url, this.httpOptions).pipe(
-      tap(_ => this.log(`added Model w/ name=${modelName}`)),
-      catchError(this.handleError<ML_MODEL>('createModel'))
-    );
-  }
-
-  getTrainingRuns(): Observable<ML_TRAINING_RUN[]> {
-    const url = this.ModelsUrl + "/trainingruns";
-    return this.http.get<ML_TRAINING_RUN[]>(url).pipe(
+  getTrainingRuns(): Observable<mlTrainingModel[]> {
+    const url = this.ModelsUrl + "/trainings";
+    return this.http.get<mlTrainingModel[]>(url).pipe(
       tap(_ => this.log('fetched Training Runs')),
-      catchError(this.handleError<ML_TRAINING_RUN[]>('getTrainingRuns', []))
+      catchError(this.handleError<mlTrainingModel[]>('getTrainingRuns', []))
     );
   }
 
-  getTrainedModels(): Observable<ML_TRAINED_MODELS[]> {
-    const url = this.ModelsUrl + "/trainedmodels";
-    return this.http.get<ML_TRAINED_MODELS[]>(url).pipe(
-      tap(_ => this.log('fetched trained models')),
-      catchError(this.handleError<ML_TRAINED_MODELS[]>('getTrainedModels', []))
-    );
-  }
-
-  trainModel(modelName: string, runName: string): Observable<any> {
-    const url = `${this.ModelsUrl}/${modelName}/${runName}`;
-    return this.http.post<any>(url, this.httpOptions).pipe(
-      tap(_ => this.log(`trained model ${modelName} as ${runName}`)),
+  trainModel(modelName: string, trainingName: string): Observable<any> {
+    const url = this.ModelsUrl + "/trainings";
+    const payloadBody = {
+      modelName: modelName,
+      trainingName: trainingName
+    }
+    return this.http.post<any>(url, payloadBody, this.httpOptions).pipe(
+      tap(_ => this.log(`trained model ${modelName} as ${trainingName}`)),
       catchError(this.handleError<any>('trainModel'))
     );
   }
-
+  
   changeConfiguration(config: string): Observable<any> {
-    const url = this.ModelsUrl + "/configuration";
-    return this.http.post<any>(url, config, this.httpOptions).pipe(
+    const url = this.ModelsUrl + "/trainings/configurations";
+    return this.http.put<any>(url, config, this.httpOptions).pipe(
       tap(_ => this.log(`changed configuration to ${config}`)),
       catchError(this.handleError<any>('changeConfiguration'))
     )
   }
+  
+  getTrainedModels(): Observable<mlTrainedModel[]> {
+    const url = this.ModelsUrl + "/predictions/models";
+    return this.http.get<mlTrainedModel[]>(url).pipe(
+      tap(_ => this.log('fetched trained models')),
+      catchError(this.handleError<mlTrainedModel[]>('getTrainedModels', []))
+    );
+  }
 
-  predict(model: string, trainedModel: string, passenger: string): Observable<any> {
-    const url = `${this.ModelsUrl}/predict?model=${model}&trainedModel=${trainedModel}&passenger=${passenger}`;
-    return this.http.post<any>(url, this.httpOptions).pipe(
-      tap(predicted => this.log(`Predicted Value = ${predicted}`)),
+
+  predict(model: string, trainedModelName: string, passenger: string): Observable<any> {
+    const url = `${this.ModelsUrl}/predictions?model=${model}&trainedModel=${trainedModelName}&passenger=${passenger}`;
+    return this.http.get<any>(url, this.httpOptions).pipe(
+      tap(predicted => this.log(`Predicted Value = ${predicted.predictedValue}`)),
       catchError(this.handleError<any>('predict'))
     )
   }

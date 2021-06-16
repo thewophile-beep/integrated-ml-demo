@@ -22,141 +22,62 @@ Parameter CONTENTTYPE = "application/json";
 XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 {
 <Routes>
-  <!--  Server Info  -->
-  <Route Url="/" Method="get" Call="GetInfo" />
-  <!--  Get number of passengers + "pagesize" records of Passenger class to print in the "currpage" page  -->
-  <Route Url="/passengers" Method="get" Call="GetAllPassengers" />
-  <!--  Create a Passenger  -->
-  <Route Url="/passengers" Method="post" Call="CreatePassenger" />
-  <!--  GET method to return JSON for a given passenger id -->
-  <Route Url="/passengers/:id" Method="get" Call="GetPassenger" />
-  <!--  Update a passenger with id -->
-  <Route Url="/passengers/:id" Method="put" Call="UpdatePassenger" />
-  <!--  Delete a passenger with id -->
-  <Route Url="/passengers/:id" Method="delete" Call="DeletePassenger" />
-  <!--  Get all records of Passenger class with "name" in their name  -->
-  <Route Url="/passengers/" Method="get" Call="SearchPassengers" />
-  <!--  Get all Models  -->
-  <Route Url="/ml/models" Method="get" Call="GetAllModels" />
-  <!--  Create a Model  -->
-  <Route Url="/ml/models" Method="post" Call="CreateModel" />
-  <!--  Delete a Model -->
-  <Route Url="/ml/models" Method="delete" Call="DeleteModel" />
-  <!--  Get all trained models  -->
-  <Route Url="/ml/trainedmodels" Method="get" Call="GetTrainedModels" />
-  <!--  Train a Model  -->
-  <Route Url="/ml/:modelName/:runName" Method="post" Call="TrainModel" />
-  <!--  Get all training runs  -->
-  <Route Url="/ml/trainingruns" Method="get" Call="GetTrainingRuns" />
-  <!--  Predict one passenger value with model  -->
-  <Route Url="/ml/predict" Method="post" Call="Predict" />
-  <!--  Change ml configuration  -->
-  <Route Url="/ml/configuration" Method="post" Call="ChangeConfiguration" />
+  <!-- Get passengers with pagination and search by name possible -->
+  <Route Url="/passengers" Method="get" Call="getAllPassengers" />
+  <!-- Create a passenger -->
+  <Route Url="/passengers" Method="post" Call="createPassenger" />
+  <!-- Get passenger n°{id} info -->
+  <Route Url="/passengers/:id" Method="get" Call="getPassenger" />
+  <!-- Update passenger {id} info -->
+  <Route Url="/passengers/:id" Method="put" Call="updatePassenger" />
+  <!-- Delete passenger {id} -->
+  <Route Url="/passengers/:id" Method="delete" Call="deletePassenger" />
+  <!-- Get all models -->
+  <Route Url="/ml/models" Method="get" Call="getAllModels" />
+  <!-- Create a Model -->
+  <Route Url="/ml/models" Method="post" Call="createModel" />
+  <!-- Delete a model -->
+  <Route Url="/ml/models" Method="delete" Call="deleteModel" />
+  <!-- Get all training runs -->
+  <Route Url="/ml/trainings" Method="get" Call="getTrainingRuns" />
+  <!-- Train a Model -->
+  <Route Url="/ml/trainings" Method="post" Call="trainModel" />
+  <!-- Get configuration -->
+  <Route Url="/ml/trainings/configurations" Method="get" Call="getConfiguration" />
+  <!-- Update configuration -->
+  <Route Url="/ml/trainings/configurations" Method="put" Call="changeConfiguration" />
+  <!-- Get all trained models -->
+  <Route Url="/ml/predictions/models" Method="get" Call="getTrainedModels" />
+  <!-- Predict with a model and an id -->
+  <Route Url="/ml/predictions" Method="get" Call="predict" />
 </Routes>
 }
 
-///  Server Info 
-ClassMethod GetInfo() As %Status
+/// Get passengers with pagination and search by name possible
+ClassMethod getAllPassengers() As %Status
 {
     Try {
-        Set response=##class(Titanic.REST.impl).GetInfo()
-        Do ##class(Titanic.REST.impl).%WriteResponse(response)
-    } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
-    }
-    Quit $$$OK
-}
-
-///  Get number of passengers + "pagesize" records of Passenger class to print in the "currpage" page 
-ClassMethod GetAllPassengers() As %Status
-{
-    Try {
-        If $data(%request.Data("currpage",2)) {
-            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"currpage")) Quit
+        If $data(%request.Data("currPage",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"currPage")) Quit
         }
-        If $data(%request.Data("currpage",1)) {
-            Set pcurrpage=%request.Data("currpage",1)
-            If '$isvalidnum(pcurrpage) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"currpage",pcurrpage)) Quit
+        If $data(%request.Data("currPage",1)) {
+            Set pcurrPage=%request.Data("currPage",1)
+            If '$isvalidnum(pcurrPage) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"currPage",pcurrPage)) Quit
         }
-        If $data(%request.Data("pagesize",2)) {
-            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"pagesize")) Quit
+        If $data(%request.Data("pageSize",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"pageSize")) Quit
         }
-        If $data(%request.Data("pagesize",1)) {
-            Set ppagesize=%request.Data("pagesize",1)
-            If '$isvalidnum(ppagesize) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"pagesize",ppagesize)) Quit
+        If $data(%request.Data("pageSize",1)) {
+            Set ppageSize=%request.Data("pageSize",1)
+            If '$isvalidnum(ppageSize) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"pageSize",ppageSize)) Quit
         }
-        Set response=##class(Titanic.REST.impl).GetAllPassengers(.pcurrpage,.ppagesize)
-        Do ##class(Titanic.REST.impl).%WriteResponse(response)
-    } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
-    }
-    Quit $$$OK
-}
-
-///  Create a Passenger 
-ClassMethod CreatePassenger() As %Status
-{
-    Try {
-        If $isobject(%request.Content) Set ppayloadBody=%request.Content
-        Set response=##class(Titanic.REST.impl).CreatePassenger(.ppayloadBody)
-        Do ##class(Titanic.REST.impl).%WriteResponse(response)
-    } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
-    }
-    Quit $$$OK
-}
-
-///  GET method to return JSON for a given passenger id
-ClassMethod GetPassenger(pid As %String) As %Status
-{
-    Try {
-        If ($number(pid,"I")="") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"id",pid)) Quit
-        Set response=##class(Titanic.REST.impl).GetPassenger(pid)
-        Do ##class(Titanic.REST.impl).%WriteResponse(response)
-    } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
-    }
-    Quit $$$OK
-}
-
-///  Update a passenger with id
-ClassMethod UpdatePassenger(pid As %String) As %Status
-{
-    Try {
-        If ($number(pid,"I")="") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"id",pid)) Quit
-        If $isobject(%request.Content) Set ppayloadBody=%request.Content
-        Set response=##class(Titanic.REST.impl).UpdatePassenger(pid,.ppayloadBody)
-        Do ##class(Titanic.REST.impl).%WriteResponse(response)
-    } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
-    }
-    Quit $$$OK
-}
-
-///  Delete a passenger with id
-ClassMethod DeletePassenger(pid As %String) As %Status
-{
-    Try {
-        If ($number(pid,"I")="") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"id",pid)) Quit
-        Set response=##class(Titanic.REST.impl).DeletePassenger(pid)
-        Do ##class(Titanic.REST.impl).%WriteResponse(response)
-    } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
-    }
-    Quit $$$OK
-}
-
-///  Get all records of Passenger class with "name" in their name 
-ClassMethod SearchPassengers() As %Status
-{
-    Try {
         If $data(%request.Data("name",2)) {
             Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"name")) Quit
         }
         If $data(%request.Data("name",1)) {
             Set pname=%request.Data("name",1)
         }
-        Set response=##class(Titanic.REST.impl).SearchPassengers(.pname)
+        Set response=##class(Titanic.REST.impl).getAllPassengers(.pcurrPage,.ppageSize,.pname)
         Do ##class(Titanic.REST.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
@@ -164,11 +85,12 @@ ClassMethod SearchPassengers() As %Status
     Quit $$$OK
 }
 
-///  Get all Models 
-ClassMethod GetAllModels() As %Status
+/// Create a passenger
+ClassMethod createPassenger() As %Status
 {
     Try {
-        Set response=##class(Titanic.REST.impl).GetAllModels()
+        If $isobject(%request.Content) Set ppayloadBody=%request.Content
+        Set response=##class(Titanic.REST.impl).createPassenger(.ppayloadBody)
         Do ##class(Titanic.REST.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
@@ -176,8 +98,74 @@ ClassMethod GetAllModels() As %Status
     Quit $$$OK
 }
 
-///  Create a Model 
-ClassMethod CreateModel() As %Status
+/// Get passenger n°{id} info
+ClassMethod getPassenger(pid As %String) As %Status
+{
+    Try {
+        If ($number(pid,"I")="") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"id",pid)) Quit
+        Set response=##class(Titanic.REST.impl).getPassenger(pid)
+        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
+/// Update passenger {id} info
+ClassMethod updatePassenger(pid As %String) As %Status
+{
+    Try {
+        If ($number(pid,"I")="") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"id",pid)) Quit
+        If $isobject(%request.Content) Set ppayloadBody=%request.Content
+        Set response=##class(Titanic.REST.impl).updatePassenger(pid,.ppayloadBody)
+        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
+/// Delete passenger {id}
+ClassMethod deletePassenger(pid As %String) As %Status
+{
+    Try {
+        If ($number(pid,"I")="") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"id",pid)) Quit
+        Set response=##class(Titanic.REST.impl).deletePassenger(pid)
+        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
+/// Get all models
+ClassMethod getAllModels() As %Status
+{
+    Try {
+        Set response=##class(Titanic.REST.impl).getAllModels()
+        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
+/// Create a Model
+ClassMethod createModel() As %Status
+{
+    Try {
+        If '$isobject(%request.Content) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"createInfo")) Quit
+        Set pcreateInfo=%request.Content
+        Set response=##class(Titanic.REST.impl).createModel(pcreateInfo)
+        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
+/// Delete a model
+ClassMethod deleteModel() As %Status
 {
     Try {
         If '$data(%request.Data("modelName",1)) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"modelName")) Quit
@@ -185,12 +173,7 @@ ClassMethod CreateModel() As %Status
             Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"modelName")) Quit
         }
         Set pmodelName=%request.Data("modelName",1)
-        If '$data(%request.Data("predicting",1)) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"predicting")) Quit
-        If $data(%request.Data("predicting",2)) {
-            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"predicting")) Quit
-        }
-        Set ppredicting=%request.Data("predicting",1)
-        Set response=##class(Titanic.REST.impl).CreateModel(pmodelName,ppredicting)
+        Set response=##class(Titanic.REST.impl).deleteModel(pmodelName)
         Do ##class(Titanic.REST.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
@@ -198,16 +181,11 @@ ClassMethod CreateModel() As %Status
     Quit $$$OK
 }
 
-///  Delete a Model
-ClassMethod DeleteModel() As %Status
+/// Get all training runs
+ClassMethod getTrainingRuns() As %Status
 {
     Try {
-        If '$data(%request.Data("modelName",1)) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"modelName")) Quit
-        If $data(%request.Data("modelName",2)) {
-            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"modelName")) Quit
-        }
-        Set pmodelName=%request.Data("modelName",1)
-        Set response=##class(Titanic.REST.impl).DeleteModel(pmodelName)
+        Set response=##class(Titanic.REST.impl).getTrainingRuns()
         Do ##class(Titanic.REST.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
@@ -215,11 +193,13 @@ ClassMethod DeleteModel() As %Status
     Quit $$$OK
 }
 
-///  Get all trained models 
-ClassMethod GetTrainedModels() As %Status
+/// Train a Model
+ClassMethod trainModel() As %Status
 {
     Try {
-        Set response=##class(Titanic.REST.impl).GetTrainedModels()
+        If '$isobject(%request.Content) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"trainingInfo")) Quit
+        Set ptrainingInfo=%request.Content
+        Set response=##class(Titanic.REST.impl).trainModel(ptrainingInfo)
         Do ##class(Titanic.REST.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
@@ -227,11 +207,11 @@ ClassMethod GetTrainedModels() As %Status
     Quit $$$OK
 }
 
-///  Train a Model 
-ClassMethod TrainModel(pmodelName As %String, prunName As %String) As %Status
+/// Get configuration
+ClassMethod getConfiguration() As %Status
 {
     Try {
-        Set response=##class(Titanic.REST.impl).TrainModel(pmodelName,prunName)
+        Set response=##class(Titanic.REST.impl).getConfiguration()
         Do ##class(Titanic.REST.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
@@ -239,11 +219,13 @@ ClassMethod TrainModel(pmodelName As %String, prunName As %String) As %Status
     Quit $$$OK
 }
 
-///  Get all training runs 
-ClassMethod GetTrainingRuns() As %Status
+/// Update configuration
+ClassMethod changeConfiguration() As %Status
 {
     Try {
-        Set response=##class(Titanic.REST.impl).GetTrainingRuns()
+        If '$isobject(%request.Content) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"configName")) Quit
+        Set pconfigName=%request.Content
+        Set response=##class(Titanic.REST.impl).changeConfiguration(pconfigName)
         Do ##class(Titanic.REST.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
@@ -251,8 +233,20 @@ ClassMethod GetTrainingRuns() As %Status
     Quit $$$OK
 }
 
-///  Predict one passenger value with model 
-ClassMethod Predict() As %Status
+/// Get all trained models
+ClassMethod getTrainedModels() As %Status
+{
+    Try {
+        Set response=##class(Titanic.REST.impl).getTrainedModels()
+        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
+/// Predict with a model and an id
+ClassMethod predict() As %Status
 {
     Try {
         If '$data(%request.Data("model",1)) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"model")) Quit
@@ -270,21 +264,7 @@ ClassMethod Predict() As %Status
             Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"passenger")) Quit
         }
         Set ppassenger=%request.Data("passenger",1)
-        Set response=##class(Titanic.REST.impl).Predict(pmodel,ptrainedModel,ppassenger)
-        Do ##class(Titanic.REST.impl).%WriteResponse(response)
-    } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
-    }
-    Quit $$$OK
-}
-
-///  Change ml configuration 
-ClassMethod ChangeConfiguration() As %Status
-{
-    Try {
-        If '$isobject(%request.Content) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"payloadBody")) Quit
-        Set ppayloadBody=%request.Content
-        Set response=##class(Titanic.REST.impl).ChangeConfiguration(ppayloadBody)
+        Set response=##class(Titanic.REST.impl).predict(pmodel,ptrainedModel,ppassenger)
         Do ##class(Titanic.REST.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))

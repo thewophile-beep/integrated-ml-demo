@@ -12,9 +12,9 @@
                 <table mat-table [dataSource]="models" class="mat-table">
                     
                     
-                    <ng-container matColumnDef="MODEL_NAME" sticky>
-                        <th mat-header-cell *matHeaderCellDef>MODEL_NAME</th> 
-                        <td mat-cell *matCellDef="let model"> {{model["MODEL_NAME"]}} </td>
+                    <ng-container matColumnDef="modelName" sticky>
+                        <th mat-header-cell *matHeaderCellDef>modelName</th> 
+                        <td mat-cell *matCellDef="let model"> {{model["modelName"]}} </td>
                     </ng-container> 
                     
                     <ng-container [matColumnDef]="column" *ngFor="let column of loopColumns">
@@ -58,13 +58,13 @@
                     <mat-form-field class="full-width">
                         <mat-label>Value to predict</mat-label>
                         <mat-select formControlName="predicting">
-                            <mat-option value="Survived">Survived</mat-option>
-                            <mat-option value="Pclass">Class</mat-option>
-                            <mat-option value="Sex">Sex</mat-option>
-                            <mat-option value="Age">Age</mat-option>
+                            <mat-option value="survived">Survived</mat-option>
+                            <mat-option value="class">Class</mat-option>
+                            <mat-option value="sex">Sex</mat-option>
+                            <mat-option value="age">Age</mat-option>
                             <mat-option value="SibSp">Siblings / Spouse</mat-option>
                             <mat-option value="Parch">Parents / Children</mat-option>
-                            <mat-option value="Fare">Fare</mat-option>
+                            <mat-option value="fare">Fare</mat-option>
                         </mat-select>
                     </mat-form-field>
                 </div>

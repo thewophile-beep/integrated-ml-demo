@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { ML_TRAINED_MODELS } from '../ML_TRAINED_MODELS';
+import { mlTrainedModel } from '../mlTrainedModel';
 import { ModelService } from '../model.service'
-import { ML_MODEL } from '../ML_MODEL';
+import { mlModel } from '../mlModel';
 
 @Component({
   selector: 'app-model-prediction',
@@ -10,11 +10,11 @@ import { ML_MODEL } from '../ML_MODEL';
   styleUrls: ['./model-prediction.component.css']
 })
 export class ModelPredictionComponent implements OnInit {
-  trainedModels: ML_TRAINED_MODELS[] = [];
-  displayedColumns: string[] = ["MODEL_NAME",	"TRAINED_MODEL_NAME",	"PROVIDER",	"TRAINED_TIMESTAMP",	"MODEL_TYPE",	"MODEL_INFO"]
-  loopColumns: string[] = ["TRAINED_MODEL_NAME",	"PROVIDER",	"TRAINED_TIMESTAMP",	"MODEL_TYPE",	"MODEL_INFO"]
+  trainedModels: mlTrainedModel[] = [];
+  displayedColumns: string[] = ["modelName",	"trainedModelName",	"provider",	"trainedTimestamp",	"modelType",	"modelInfo"]
+  loopColumns: string[] = ["trainedModelName",	"provider",	"trainedTimestamp",	"modelType",	"modelInfo"]
 
-  models: ML_MODEL[] = [];
+  models: mlModel[] = [];
 
   predictedValue: string = "";
 
@@ -38,7 +38,7 @@ export class ModelPredictionComponent implements OnInit {
     }
     
     predict(): void {
-      this.modelService.predict(this.predictForm.value.modelName, this.predictForm.value.trainedModelname, this.predictForm.value.id).subscribe(
+      this.modelService.predict(this.predictForm.value.modelName, this.predictForm.value.trainedModelName, this.predictForm.value.id).subscribe(
         predicted => this.predictedValue = predicted
       )
     }
