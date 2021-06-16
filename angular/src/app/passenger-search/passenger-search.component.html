@@ -4,14 +4,14 @@
     <input matInput
           placeholder="Enter a name"
           #searchBox id="search-box" 
-          (input)="search(searchBox.value)"
-          [matAutocomplete]="auto">
-    <mat-autocomplete #auto="matAutocomplete">
-      <mat-option *ngFor="let passenger of passengers$ | async" [value]="passenger">
-        <a class="passenger-autocomplete" routerLink="/detail/{{passenger.passengerId}}">
-          {{passenger.name}}
-        </a>
-      </mat-option>
-    </mat-autocomplete>
-  </mat-form-field>
+          (input)="search(searchBox.value)">
+        </mat-form-field>
+        <mat-option *ngFor="let passenger of passengers$ | async" (click)="openDialog(passenger)" class="passenger-autocomplete">
+          <a class="passenger-text-autocomplete">
+            {{passenger.name}}
+          </a>
+          <button mat-icon-button class="modify-button" title="modify passenger" routerLink="/detail/{{passenger.passengerId}}">
+            <mat-icon>settings</mat-icon>
+          </button>
+        </mat-option>
 </form>

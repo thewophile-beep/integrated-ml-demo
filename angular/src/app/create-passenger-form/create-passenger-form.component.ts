@@ -22,6 +22,7 @@ export class CreatePassengerFormComponent {
     fare: [null, Validators.min(0)],
     cabin: null,
     embarked: null,
+    survived: null,
   });
 
   constructor(private fb: FormBuilder, private passengerService: PassengerService) {}

@@ -1,14 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PassengerDetailComponent } from './passenger-detail/passenger-detail.component';
-import { PresentationDatasetComponent } from './presentation-dataset/presentation-dataset.component'
-import { ModelManagerComponent } from './model-manager/model-manager.component';
+import { NavigationDatasetPresentationComponent } from './navigation-dataset-presentation/navigation-dataset-presentation.component'
+import { NavigationModelManagerComponent } from './navigation-model-manager/navigation-model-manager.component';
+import { NavigationMakePredictionsComponent } from './navigation-make-predictions/navigation-make-predictions.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/info', pathMatch: 'full'},
   { path: 'detail/:id', component: PassengerDetailComponent },
-  { path: 'info', component: PresentationDatasetComponent },
-  { path: 'ml', component: ModelManagerComponent }
+  { path: 'info', component: NavigationDatasetPresentationComponent },
+  { path: 'ml', component: NavigationModelManagerComponent },
+  { path: 'ml/predictions', component: NavigationMakePredictionsComponent}
 ]
 
 @NgModule({

@@ -1,0 +1,18 @@
+<mat-tab-group mat-align-tabs="center">
+
+    <mat-tab label="Overview"> 
+    </mat-tab>
+
+    <mat-tab label="Model List">
+        <ng-template matTabContent>
+            <app-models></app-models>
+        </ng-template>  
+    </mat-tab>
+
+    <mat-tab label="Train Model"> 
+        <ng-template matTabContent>
+            <app-model-training></app-model-training>
+        </ng-template>
+    </mat-tab>
+</mat-tab-group>
+  

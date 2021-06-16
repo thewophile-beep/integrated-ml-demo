@@ -27,6 +27,7 @@ export class PassengerDetailComponent implements OnInit {
     fare: [null, Validators.min(0)],
     cabin: null,
     embarked: null,
+    survived: null,
   });
 
   constructor(
@@ -55,6 +56,7 @@ export class PassengerDetailComponent implements OnInit {
         fare: passenger.fare,
         cabin: passenger.cabin,
         embarked: passenger.embarked,
+        survived: passenger.survived,
         age: passenger.age,
       });
     });

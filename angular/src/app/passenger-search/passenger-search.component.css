@@ -8,7 +8,19 @@
   flex-direction: row;
 }
 
-.passenger-autocomplete {
+.passenger-text-autocomplete {
   color: #000;
   text-decoration: none;
+}
+.passenger-autocomplete {
+  border-radius: 5px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #eee;
+  margin: 5px;
+}
+
+.modify-button {
+  float: right;
+  display: flex;
 }

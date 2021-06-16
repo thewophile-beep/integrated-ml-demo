@@ -1,4 +1,4 @@
-<!-- List of models -->
+<!-- List of runs -->
 <mat-card class="runs-list-card">
     <mat-card-header>
         <mat-card-title class="principal-header">
@@ -32,7 +32,7 @@
     </mat-card-content>
 </mat-card>
 
-<!-- Creating a model -->
+<!-- Train a model -->
 <mat-card class="runs-list-card">
     <mat-card-header>
         <mat-card-title class="principal-header">
@@ -40,50 +40,52 @@
         </mat-card-title>
     </mat-card-header>
 
-    <div *ngIf="waiting; else notWaiting" class="spinner">
-        <mat-spinner></mat-spinner>
-    </div>
-
-    <ng-template #notWaiting>
-        <mat-card-content>
-            
-            
-            <form [formGroup]="runForm" novalidate>   
-                <div class="row">
-                    <mat-button-toggle-group formControlName="MLconfig" aria-label="Font Style">
+    
+    <mat-card-content>
+        
+        
+        <form [formGroup]="runForm" novalidate>   
+            <div class="row" style="margin-bottom: 10px;">
+                <p> Provider:
+                    <mat-button-toggle-group formControlName="MLconfig" aria-label="Font Style" style="margin-left: 10px;">
                         <mat-button-toggle value="AutoML">AutoML</mat-button-toggle>
                         <mat-button-toggle value="H2O">H2O</mat-button-toggle>
                     </mat-button-toggle-group>
+                </p>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <mat-label>Model to train</mat-label>
+                        <mat-select formControlName="modelName">
+                            <mat-option *ngFor="let model of models" [value]="model.modelName">{{model.modelName}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
                 </div>
-                <div class="row">
-                    <div class="col">
-                        <mat-form-field class="full-width">
-                            <mat-label>Model to train</mat-label>
-                            <mat-select formControlName="modelName">
-                                <mat-option *ngFor="let model of models" [value]="model.modelName">{{model.modelName}}</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
-                    <div class="col">
-                        <mat-form-field class="full-width">
-                            <mat-label>Run Name</mat-label>
-                            <input matInput placeholder="Ex. RunSurvival" formControlName="runName">
-                            <mat-error *ngIf="runForm.controls['runName'].hasError('required')">
-                                Run Name is <strong>required</strong>
-                            </mat-error>
-                            <mat-error *ngIf="runForm.controls['runName'].hasError('pattern')">
-                                No white spaces please
-                            </mat-error>
-                        </mat-form-field>        
-                    </div>
-    
+                <div class="col">
+                    <mat-form-field class="full-width">
+                        <mat-label>Run Name</mat-label>
+                        <input matInput placeholder="Ex. RunSurvival" formControlName="runName">
+                        <mat-error *ngIf="runForm.controls['runName'].hasError('required')">
+                            Run Name is <strong>required</strong>
+                        </mat-error>
+                        <mat-error *ngIf="runForm.controls['runName'].hasError('pattern')">
+                            No white spaces please
+                        </mat-error>
+                    </mat-form-field>        
                 </div>
-            </form>
-        </mat-card-content>
+                
+            </div>
+        </form>
+    </mat-card-content>
     
-        <mat-card-actions>
-            <button mat-raised-button color="primary" [disabled]="runForm.invalid" (click)="onSubmit()">Submit</button>
-        </mat-card-actions>
-    </ng-template>
+    <mat-card-actions>
+        <div class="row">
+            <button mat-raised-button color="primary" [disabled]="runForm.invalid || waiting" (click)="onSubmit()">Submit</button>
+            <div *ngIf="waiting" class="spinner">
+                <mat-progress-spinner diameter="20" mode="indeterminate"></mat-progress-spinner>
+            </div>
+        </div>
+    </mat-card-actions>
     
 </mat-card>

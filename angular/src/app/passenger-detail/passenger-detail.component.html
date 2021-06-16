@@ -142,6 +142,23 @@
                     </mat-card-content>
                 </mat-card>
 
+
+                <!-- Card : Survived -->
+                <mat-card class="passenger-creation-card">
+                    <mat-card-header>
+                        <mat-card-title>Did the passenger Survive ?</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <div class="row">
+                            <mat-radio-group formControlName="survived">
+                                <mat-radio-button [value]="1">Yes!</mat-radio-button>
+                                <mat-radio-button [value]="0">No...</mat-radio-button>
+                                <mat-radio-button [value]="">Unknown</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+
             </mat-card-content>
             <mat-card-actions>
                 <button mat-raised-button color="primary" [disabled]="passengerForm.invalid" (click)="update()">Submit</button>

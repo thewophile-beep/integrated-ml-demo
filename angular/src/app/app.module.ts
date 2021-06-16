@@ -28,7 +28,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list'; 
 import { MatAutocompleteModule } from '@angular/material/autocomplete'; 
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { PresentationDatasetComponent } from './presentation-dataset/presentation-dataset.component'; 
 import { MatTabsModule } from '@angular/material/tabs';
 import { ExplicationProjetComponent } from './explication-projet/explication-projet.component';
 import { ModelsComponent } from './models/models.component'; 
@@ -37,7 +36,11 @@ import { ModelTrainingComponent } from './model-training/model-training.componen
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; 
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ModelPredictionComponent } from './model-prediction/model-prediction.component';
-import { ModelManagerComponent } from './model-manager/model-manager.component'; 
+import { NavigationDatasetPresentationComponent } from './navigation-dataset-presentation/navigation-dataset-presentation.component';
+import { NavigationModelManagerComponent } from './navigation-model-manager/navigation-model-manager.component';
+import { NavigationMakePredictionsComponent } from './navigation-make-predictions/navigation-make-predictions.component';
+import { PassengerDetailDialogComponent } from './passenger-detail-dialog/passenger-detail-dialog.component'; 
+import { MatDialogModule } from '@angular/material/dialog'; 
 @NgModule({
   declarations: [
     AppComponent,
@@ -47,12 +50,14 @@ import { ModelManagerComponent } from './model-manager/model-manager.component';
     PassengerSearchComponent,
     CreatePassengerFormComponent,
     NavigationComponent,
-    PresentationDatasetComponent,
     ExplicationProjetComponent,
     ModelsComponent,
     ModelTrainingComponent,
     ModelPredictionComponent,
-    ModelManagerComponent,
+    NavigationDatasetPresentationComponent,
+    NavigationModelManagerComponent,
+    NavigationMakePredictionsComponent,
+    PassengerDetailDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -77,7 +82,8 @@ import { ModelManagerComponent } from './model-manager/model-manager.component';
     MatTabsModule,
     MatTableModule,
     MatProgressSpinnerModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]

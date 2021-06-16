@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 
 import { Observable, Subject } from 'rxjs';
 
-import {
-   debounceTime, distinctUntilChanged, switchMap
- } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 import { Passenger } from '../passenger';
 import { PassengerService } from '../passenger.service';
+
+import { MatDialog } from '@angular/material/dialog';
+import { PassengerDetailDialogComponent } from '../passenger-detail-dialog/passenger-detail-dialog.component';
 
 @Component({
   selector: 'app-passenger-search',
@@ -18,7 +19,7 @@ export class PassengerSearchComponent implements OnInit {
   passengers$!: Observable<Passenger[]>;
   private searchTerms = new Subject<string>();
 
-  constructor(private passengerService: PassengerService) {}
+  constructor(private passengerService: PassengerService, public dialog: MatDialog) {}
 
   // Push a search term into the observable stream.
   search(term: string): void {
@@ -36,5 +37,11 @@ export class PassengerSearchComponent implements OnInit {
       // switch to new search observable each time the term changes
       switchMap((term: string) => this.passengerService.searchPassengers(term)),
     );
+  }
+
+  openDialog(passenger: Passenger) {
+    this.dialog.open(PassengerDetailDialogComponent, {
+      data: passenger
+    });
   }
 }
