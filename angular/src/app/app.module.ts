@@ -42,6 +42,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { OverviewModelManagerComponent } from './overview-model-manager/overview-model-manager.component';
 import { OverviewDatasetPresentationComponent } from './overview-dataset-presentation/overview-dataset-presentation.component';
 import { OverviewMakePredictionsComponent } from './overview-make-predictions/overview-make-predictions.component'; 
+import {MatCheckboxModule} from '@angular/material/checkbox'; 
+import {MatSlideToggleModule} from '@angular/material/slide-toggle'; 
 @NgModule({
   declarations: [
     AppComponent,
@@ -85,7 +87,9 @@ import { OverviewMakePredictionsComponent } from './overview-make-predictions/ov
     MatTableModule,
     MatProgressSpinnerModule,
     MatButtonToggleModule,
-    MatDialogModule
+    MatDialogModule,
+    MatCheckboxModule,
+    MatSlideToggleModule
   ],
   providers: [],
   bootstrap: [AppComponent]
