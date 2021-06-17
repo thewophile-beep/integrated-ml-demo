@@ -217,9 +217,17 @@
           "200": {
             "description": "(Expected Result)",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/mlModel"
+              "type": "object",
+              "properties": {
+                "models": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/mlModel"
+                  }
+                },
+                "query": {
+                  "type": "string"
+                }
               }
             }
           },
@@ -241,10 +249,10 @@
                 "modelName": {
                   "type": "string"
                 },
-                "predictValue": {
+                "predicValue": {
                   "type": "string"
                 },
-                "tableName": {
+                "fromTable": {
                   "type": "string"
                 },
                 "withVariables": {
@@ -263,7 +271,15 @@
         "x-ISC_ServiceMethod": "createModel",
         "responses": {
           "200": {
-            "description": "(Expected Result)"
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "400": {
             "description": "(Bad Request)"
@@ -289,7 +305,15 @@
         "x-ISC_ServiceMethod": "deleteModel",
         "responses": {
           "200": {
-            "description": "(Expected Result)"
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "204": {
             "description": "(Not Found)"
@@ -310,9 +334,17 @@
           "200": {
             "description": "(Expected Result)",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/mlTrainingRun"
+              "type": "object",
+              "properties": {
+                "trainingRuns": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/mlTrainingRun"
+                  }
+                },
+                "query": {
+                  "type": "string"
+                }
               }
             }
           },
@@ -347,7 +379,15 @@
         "x-ISC_ServiceMethod": "trainModel",
         "responses": {
           "200": {
-            "description": "(Expected Result)"
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "400": {
             "description": "(Bad Request)"
@@ -359,28 +399,6 @@
       }
     },
     "/ml/trainings/configurations": {
-      "get": {
-        "description": "Get current ml configuration (AutoML or H2O, for now)",
-        "summary": "Get configuration",
-        "operationId": "getConfiguration",
-        "x-ISC_ServiceMethod": "getConfiguration",
-        "responses": {
-          "200": {
-            "description": "(Expected Result)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "currConfig": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "default": {
-            "description": "(Unexpected Error)"
-          }
-        }
-      },
       "put": {
         "description": "Update ml configuration (H20 or AutoML, for now)",
         "summary": "Update configuration",
@@ -393,13 +411,26 @@
             "description": "Configuration name to use",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "object",
+              "properties": {
+                "configName": {
+                  "type": "string"
+                }
+              }
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "(Expected Result)"
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "400": {
             "description": "(Bad Request)"
@@ -420,9 +451,17 @@
           "200": {
             "description": "(Expected Result)",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/mlTrainedModel"
+              "type": "object",
+              "properties": {
+                "models": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/mlTrainedModel"
+                  }
+                },
+                "query": {
+                  "type": "string"
+                }
               }
             }
           },
@@ -468,6 +507,9 @@
               "type": "object",
               "properties": {
                 "predictedValue": {
+                  "type": "string"
+                },
+                "query": {
                   "type": "string"
                 }
               }

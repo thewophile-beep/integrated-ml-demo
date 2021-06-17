@@ -124,8 +124,8 @@
                                 <!-- SibSp -->
                                 <div class="col">
                                     <mat-form-field class="full-width">
-                                        <input type="number" matInput placeholder="Siblings / Spouses aboard" formControlName="SibSp">
-                                        <mat-error *ngIf="passengerForm.controls['SibSp'].hasError('required')">
+                                        <input type="number" matInput placeholder="Siblings / Spouses aboard" formControlName="sibSp">
+                                        <mat-error *ngIf="passengerForm.controls['sibSp'].hasError('required')">
                                             Number of siblings / spouses aboard is <strong>required</strong>
                                         </mat-error>
                                     </mat-form-field>
@@ -133,8 +133,8 @@
                                 <!-- Parch -->
                                 <div class="col">
                                     <mat-form-field class="full-width">
-                                        <input type="number" matInput placeholder="Parents / Children aboard" formControlName="Parch">
-                                        <mat-error *ngIf="passengerForm.controls['Parch'].hasError('required')">
+                                        <input type="number" matInput placeholder="Parents / Children aboard" formControlName="parCh">
+                                        <mat-error *ngIf="passengerForm.controls['parCh'].hasError('required')">
                                             Number of parents / children aboard is <strong>required</strong>
                                         </mat-error>
                                     </mat-form-field>

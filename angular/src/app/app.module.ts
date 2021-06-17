@@ -29,7 +29,6 @@ import { MatListModule } from '@angular/material/list';
 import { MatAutocompleteModule } from '@angular/material/autocomplete'; 
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTabsModule } from '@angular/material/tabs';
-import { ExplicationProjetComponent } from './explication-projet/explication-projet.component';
 import { ModelsComponent } from './models/models.component'; 
 import { MatTableModule } from '@angular/material/table';
 import { ModelTrainingComponent } from './model-training/model-training.component'; 
@@ -39,7 +38,10 @@ import { ModelPredictionComponent } from './model-prediction/model-prediction.co
 import { NavigationDatasetPresentationComponent } from './navigation-dataset-presentation/navigation-dataset-presentation.component';
 import { NavigationModelManagerComponent } from './navigation-model-manager/navigation-model-manager.component';
 import { NavigationMakePredictionsComponent } from './navigation-make-predictions/navigation-make-predictions.component';
-import { MatDialogModule } from '@angular/material/dialog'; 
+import { MatDialogModule } from '@angular/material/dialog';
+import { OverviewModelManagerComponent } from './overview-model-manager/overview-model-manager.component';
+import { OverviewDatasetPresentationComponent } from './overview-dataset-presentation/overview-dataset-presentation.component';
+import { OverviewMakePredictionsComponent } from './overview-make-predictions/overview-make-predictions.component'; 
 @NgModule({
   declarations: [
     AppComponent,
@@ -49,13 +51,15 @@ import { MatDialogModule } from '@angular/material/dialog';
     PassengerSearchComponent,
     CreatePassengerFormComponent,
     NavigationComponent,
-    ExplicationProjetComponent,
     ModelsComponent,
     ModelTrainingComponent,
     ModelPredictionComponent,
     NavigationDatasetPresentationComponent,
     NavigationModelManagerComponent,
     NavigationMakePredictionsComponent,
+    OverviewModelManagerComponent,
+    OverviewDatasetPresentationComponent,
+    OverviewMakePredictionsComponent,
   ],
   imports: [
     BrowserModule,

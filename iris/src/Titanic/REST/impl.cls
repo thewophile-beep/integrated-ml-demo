@@ -199,15 +199,6 @@ ClassMethod trainModel(trainingInfo As %Stream.Object) As %Stream.Object
     quit {}
 }
 
-/// Get current ml configuration (AutoML or H2O, for now)
-ClassMethod getConfiguration() As %Stream.Object
-{
-    //(Place business logic here)
-    //Do ..%SetStatusCode(<HTTP_status_code>)
-    //Do ..%SetHeader(<name>,<value>)
-    //quit (Place response here) ; response may be a string, stream or dynamic object
-}
-
 /// Update ml configuration (H20 or AutoML, for now)<br/>
 /// The method arguments hold values for:<br/>
 ///     configName, Configuration name to use<br/>

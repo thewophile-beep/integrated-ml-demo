@@ -31,9 +31,9 @@
                                     <mat-form-field class="full-width">
                                         <mat-label>Passenger Age</mat-label>
                                         <input type="number"
-                                        matInput placeholder="Enter a number" 
-                                        formControlName="age"
-                                        min="0"
+                                            matInput placeholder="Enter a number" 
+                                            formControlName="age"
+                                            min="0"
                                         >
                                         <mat-error *ngIf="passengerForm.controls['age'].hasError('required')">
                                             Age is <strong>required</strong>
@@ -49,7 +49,7 @@
                             <mat-radio-group formControlName="sex">
                                 <mat-radio-button value="male">Male</mat-radio-button>
                                 <mat-radio-button value="female">Female</mat-radio-button>
-                                <mat-radio-button value="">Other</mat-radio-button>
+                                <mat-radio-button [value]="">Other</mat-radio-button>
                             </mat-radio-group>
                         </div>
                     </div>
@@ -122,19 +122,21 @@
                         <!-- sibSp -->
                         <div class="col">
                             <mat-form-field class="full-width">
-                                <input type="number" matInput placeholder="Siblings / Spouses aboard" formControlName="sibSp">
+                                <input type="number" matInput placeholder="Siblings / Spouses aboard" formControlName="sibSp" min="0">
                                 <mat-error *ngIf="passengerForm.controls['sibSp'].hasError('required')">
                                     Number of siblings / spouses aboard is <strong>required</strong>
                                 </mat-error>
+                                <mat-error *ngIf="passengerForm.controls['sibSp'].hasError('min')">No negative values</mat-error>
                             </mat-form-field>
                         </div>
                         <!-- parCh -->
                         <div class="col">
                             <mat-form-field class="full-width">
-                                <input type="number" matInput placeholder="Parents / Children aboard" formControlName="parCh">
+                                <input type="number" matInput placeholder="Parents / Children aboard" formControlName="parCh" min="0">
                                 <mat-error *ngIf="passengerForm.controls['parCh'].hasError('required')">
                                     Number of parents / children aboard is <strong>required</strong>
                                 </mat-error>
+                                <mat-error *ngIf="passengerForm.controls['parCh'].hasError('min')">No negative values</mat-error>
                             </mat-form-field>
                         </div>
                     </div>

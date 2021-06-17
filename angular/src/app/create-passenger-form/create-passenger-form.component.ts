@@ -13,7 +13,7 @@ import { PassengerService } from "../passenger.service"
 export class CreatePassengerFormComponent {
   passengerForm = this.fb.group({
     name: [null, Validators.required],
-    sex: [null, Validators.required],
+    sex: [null],
     age: [null, Validators.min(0)],
     class: [null, Validators.required],
     sibSp: [0, Validators.min(0)],

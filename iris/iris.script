@@ -1,18 +1,30 @@
-zn "%SYS"
-Do ##class(Security.Users).UnExpireUserPasswords("*")
-set $namespace="%SYS", name="DefaultSSL" do:'##class(Security.SSLConfigs).Exists(name) ##class(Security.SSLConfigs).Create(name) set url="https://pm.community.intersystems.com/packages/zpm/latest/installer" Do ##class(%Net.URLParser).Parse(url,.comp) set ht = ##class(%Net.HttpRequest).%New(), ht.Server = comp("host"), ht.Port = 443, ht.Https=1, ht.SSLConfiguration=name, st=ht.Get(comp("path")) quit:'st $System.Status.GetErrorText(st) set xml=##class(%File).TempFilename("xml"), tFile = ##class(%Stream.FileBinary).%New(), tFile.Filename = xml do tFile.CopyFromAndSave(ht.HttpResponse.Data) do ht.%Close(), $system.OBJ.Load(xml,"ck") do ##class(%File).Delete(xml)
+    zn "%SYS"
+    Do ##class(Security.Users).UnExpireUserPasswords("*")
+    set $namespace="%SYS", name="DefaultSSL" do:'##class(Security.SSLConfigs).Exists(name) ##class(Security.SSLConfigs).Create(name) set url="https://pm.community.intersystems.com/packages/zpm/latest/installer" Do ##class(%Net.URLParser).Parse(url,.comp) set ht = ##class(%Net.HttpRequest).%New(), ht.Server = comp("host"), ht.Port = 443, ht.Https=1, ht.SSLConfiguration=name, st=ht.Get(comp("path")) quit:'st $System.Status.GetErrorText(st) set xml=##class(%File).TempFilename("xml"), tFile = ##class(%Stream.FileBinary).%New(), tFile.Filename = xml do tFile.CopyFromAndSave(ht.HttpResponse.Data) do ht.%Close(), $system.OBJ.Load(xml,"ck") do ##class(%File).Delete(xml)
 
-zn "USER"
-; run installer to create namespace
-do $SYSTEM.OBJ.Load("/tmp/iris/Installer.cls", "ck")
-set sc = ##class(App.Installer).setup() 
+    zn "USER"
+    ; run installer to create namespace
+    do $SYSTEM.OBJ.Load("/tmp/iris/Installer.cls", "ck")
+    set sc = ##class(App.Installer).setup() 
 
-zn "IRISAPP"
-zw $SYSTEM.OBJ.ImportDir("/tmp/iris/src", "*.cls", "cubk", .tErrors, 1)
+    zn "IRISAPP"
+    zw $SYSTEM.OBJ.ImportDir("/tmp/iris/src", "*.cls", "cubk", .tErrors, 1)
+    zw $SYSTEM.OBJ.Load("/tmp/iris/src/REST/disp.cls", "cubk", .tErrors, 1)
 
-zpm "install csvgen"
+    zpm "install csvgen"
 
-do ##class(community.csvgen).Generate("/tmp/iris/misc/titanic.csv",,"Titanic.Table.Passenger")
+    do ##class(community.csvgen).Generate("/tmp/iris/misc/titanic.csv",,"Titanic.Table.Passenger")
 
+    zn "%SYS"
+    set props("NameSpace") = "IRISAPP"
+    set props("DispatchClass") = "Titanic.REST.disp"
+    set props("CookiePath") = "/api/titanic"
+    set props("Description") = "IntegratedML Demo REST API"
+    set props("MatchRoles") = ":%All"
+    set props("AutheEnabled") = 64
+    set tSC = ##class(Security.Applications).Create("/api/titanic", .props)
+    zw tSC
 
-h
+    zn "IRISAPP"
+
+    h
