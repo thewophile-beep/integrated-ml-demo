@@ -40,48 +40,61 @@ export class ModelService {
   }
 
   private log(message: string) {
-    this.messageService.add(`ModelService: ${message}`);
+    this.messageService.add(`SQL query: ${message}`);
   }
 
   constructor(private http: HttpClient, private messageService: MessageService) { }
 
   /** GET Models from the server */
-  getAllModels(): Observable<mlModel[]> {
+  getAllModels(): Observable<any> {
     const url = this.ModelsUrl + "/models";
-    return this.http.get<mlModel[]>(url).pipe(
-        tap(_ => this.log('fetched Models')),
-        catchError(this.handleError<mlModel[]>('getModels', []))
+    return this.http.get<any>(url).pipe(
+        // tap(response => this.log(response.query)),
+        catchError(this.handleError<any>('getModels', []))
       );
   }
 
     /** POST: add a new Passenger to the server */
-  createModel(modelName: string, predictValue: string, tableName: string, withVariables: string[]): Observable<mlModel> {
+  createModel(modelName: string, predictValue: string, fromTable: string, withVariables: string[]): Observable<any> {
     const url = this.ModelsUrl + "/models";
+    if (withVariables.length > 0) {
     const payloadBody = {
-      modelName: modelName,
-      predictValue: predictValue,
-      tableName: tableName
+        modelName: modelName,
+        predictValue: predictValue,
+        fromTable: fromTable,
+        withVariables: withVariables
+      }
+      return this.http.post<any>(url, payloadBody, this.httpOptions).pipe(
+        tap(response => this.log(response.query)),
+        catchError(this.handleError<any>('createModel'))
+      );
+    } else {
+      const payloadBody = {
+        modelName: modelName,
+        predictValue: predictValue,
+        fromTable: fromTable,
+      }
+      return this.http.post<any>(url, payloadBody, this.httpOptions).pipe(
+        tap(response => this.log(response.query)),
+        catchError(this.handleError<any>('createModel'))
+      );
     }
-    return this.http.post<mlModel>(url, payloadBody, this.httpOptions).pipe(
-      tap(_ => this.log(`added Model w/ name=${modelName}`)),
-      catchError(this.handleError<mlModel>('createModel'))
-    );
   }
  
-  deleteModel(name: string): Observable<mlModel> {
+  deleteModel(name: string): Observable<any> {
     const url = `${this.ModelsUrl}/models?modelName=${name}`;
 
-    return this.http.delete<mlModel>(url, this.httpOptions).pipe(
-      tap(_ => this.log(`deleted Model ${name}`)),
-      catchError(this.handleError<mlModel>('deletePassenger'))
+    return this.http.delete<any>(url, this.httpOptions).pipe(
+      tap(response => this.log(response.query)),
+      catchError(this.handleError<any>('deletePassenger'))
     );
   }
 
-  getTrainingRuns(): Observable<mlTrainingModel[]> {
+  getTrainingRuns(): Observable<any> {
     const url = this.ModelsUrl + "/trainings";
-    return this.http.get<mlTrainingModel[]>(url).pipe(
-      tap(_ => this.log('fetched Training Runs')),
-      catchError(this.handleError<mlTrainingModel[]>('getTrainingRuns', []))
+    return this.http.get<any>(url).pipe(
+      // tap(response => this.log(response.query)),
+      catchError(this.handleError<any>('getTrainingRuns', []))
     );
   }
 
@@ -92,24 +105,27 @@ export class ModelService {
       trainingName: trainingName
     }
     return this.http.post<any>(url, payloadBody, this.httpOptions).pipe(
-      tap(_ => this.log(`trained model ${modelName} as ${trainingName}`)),
+      tap(response => this.log(response.query)),
       catchError(this.handleError<any>('trainModel'))
     );
   }
   
   changeConfiguration(config: string): Observable<any> {
     const url = this.ModelsUrl + "/trainings/configurations";
-    return this.http.put<any>(url, config, this.httpOptions).pipe(
-      tap(_ => this.log(`changed configuration to ${config}`)),
+    const payloadBody = {
+      configName: config
+    }
+    return this.http.put<any>(url, payloadBody, this.httpOptions).pipe(
+      tap(response => this.log(response.query)),
       catchError(this.handleError<any>('changeConfiguration'))
     )
   }
   
-  getTrainedModels(): Observable<mlTrainedModel[]> {
+  getTrainedModels(): Observable<any> {
     const url = this.ModelsUrl + "/predictions/models";
-    return this.http.get<mlTrainedModel[]>(url).pipe(
-      tap(_ => this.log('fetched trained models')),
-      catchError(this.handleError<mlTrainedModel[]>('getTrainedModels', []))
+    return this.http.get<any>(url).pipe(
+      // tap(response => this.log(response.query)),
+      catchError(this.handleError<any>('getTrainedModels', []))
     );
   }
 
@@ -117,7 +133,7 @@ export class ModelService {
   predict(model: string, trainedModelName: string, passenger: string): Observable<any> {
     const url = `${this.ModelsUrl}/predictions?model=${model}&trainedModel=${trainedModelName}&passenger=${passenger}`;
     return this.http.get<any>(url, this.httpOptions).pipe(
-      tap(predicted => this.log(`Predicted Value = ${predicted.predictedValue}`)),
+      tap(response => this.log(response.query)),
       catchError(this.handleError<any>('predict'))
     )
   }

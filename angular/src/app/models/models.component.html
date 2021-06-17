@@ -85,6 +85,25 @@
                     </mat-form-field>        
                 </div>
 
+                <div class="col">
+                    <mat-slide-toggle formControlName="fromTable">Use created passengers?</mat-slide-toggle>
+                </div>
+            </div>
+
+            <h2>Variables to use:</h2>
+            <p class="subtitle">If none selected, it will chose all the variables except the one to predict.</p>
+            <div class="row">
+                <mat-checkbox class="check-var" formControlName="survived">survived</mat-checkbox>
+                <mat-checkbox class="check-var" formControlName="class">class</mat-checkbox>
+                <mat-checkbox class="check-var" formControlName="name">name</mat-checkbox>
+                <mat-checkbox class="check-var" formControlName="sex">sex</mat-checkbox>
+                <mat-checkbox class="check-var" formControlName="age">age</mat-checkbox>
+                <mat-checkbox class="check-var" formControlName="sibSp">sibSp</mat-checkbox>
+                <mat-checkbox class="check-var" formControlName="parCh">parCh</mat-checkbox>
+                <mat-checkbox class="check-var" formControlName="ticket">ticket</mat-checkbox>
+                <mat-checkbox class="check-var" formControlName="fare">fare</mat-checkbox>
+                <mat-checkbox class="check-var" formControlName="cabin">cabin</mat-checkbox>
+                <mat-checkbox class="check-var" formControlName="embarked">embarked</mat-checkbox>
             </div>
         </form>
     </mat-card-content>

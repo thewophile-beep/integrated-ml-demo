@@ -35,7 +35,7 @@ export class PassengerSearchComponent implements OnInit {
       distinctUntilChanged(),
 
       // switch to new search observable each time the term changes
-      switchMap((term: string) => this.passengerService.searchPassengers(term)),
+      switchMap((term: string) => this.passengerService.searchPassengers(term))
     );
   }
 

@@ -42,8 +42,6 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
   <Route Url="/ml/trainings" Method="get" Call="getTrainingRuns" />
   <!-- Train a Model -->
   <Route Url="/ml/trainings" Method="post" Call="trainModel" />
-  <!-- Get configuration -->
-  <Route Url="/ml/trainings/configurations" Method="get" Call="getConfiguration" />
   <!-- Update configuration -->
   <Route Url="/ml/trainings/configurations" Method="put" Call="changeConfiguration" />
   <!-- Get all trained models -->
@@ -200,18 +198,6 @@ ClassMethod trainModel() As %Status
         If '$isobject(%request.Content) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"trainingInfo")) Quit
         Set ptrainingInfo=%request.Content
         Set response=##class(Titanic.REST.impl).trainModel(ptrainingInfo)
-        Do ##class(Titanic.REST.impl).%WriteResponse(response)
-    } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
-    }
-    Quit $$$OK
-}
-
-/// Get configuration
-ClassMethod getConfiguration() As %Status
-{
-    Try {
-        Set response=##class(Titanic.REST.impl).getConfiguration()
         Do ##class(Titanic.REST.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))

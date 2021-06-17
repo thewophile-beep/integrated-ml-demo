@@ -1,6 +1,6 @@
 /// Rest API for the Integrated ML Demo on the Titanic database<br/>
 /// Business logic class defined by OpenAPI in Titanic.REST.spec<br/>
-/// Created Jun 15, 2021 10:29:46
+/// Updated Jun 17, 2021 10:05:11
 Class Titanic.REST.impl Extends %REST.Impl [ ProcedureBlock ]
 {
 
@@ -14,7 +14,8 @@ Parameter ExposeServerExceptions = 1;
 ///     name, Search passenger by name<br/>
 ClassMethod getAllPassengers(currPage As %Float, pageSize As %Float, name As %String) As %Stream.Object
 {
-    set tDyna = []
+    set tDyna = {}
+    set tPassengers = []
     if ($Data(name)) {
         set myquery = "SELECT Id FROM Titanic_Table.Passenger WHERE Titanic_Table.Passenger.name %STARTSWITH ?"
         set tStatement = ##class(%SQL.Statement).%New()
@@ -22,28 +23,25 @@ ClassMethod getAllPassengers(currPage As %Float, pageSize As %Float, name As %St
         set tRs = tStatement.%Execute(name)
         while tRs.%Next() {
             do ##class(Titanic.Table.Passenger).%OpenId(tRs.Id).%JSONExportToStream(.tStream)
-            set tElement = {}.%FromJSON(tStream)
-            #; set tElement.Id = tRs.Id
-            do tDyna.%Push(tElement) 
+            do tPassengers.%Push({}.%FromJSON(tStream)) 
         }
+        set tDyna."total" = tRs.%ROWCOUNT
     } 
     else {
         set tStartRow = pageSize * (currPage - 1)
         set tEndRow = tStartRow + pageSize
         set tRow = 0
         set tRs = ##class(Titanic.Table.Passenger).ExtentFunc()
-        do tDyna.%Push(0)
         while (tRs.%Next() && (tRow < tEndRow)) {
             set tRow = tRow + 1
             continue:(tRow<=tStartRow)
             do ##class(Titanic.Table.Passenger).%OpenId(tRs.Id).%JSONExportToStream(.tStream)
-            set tElement = {}.%FromJSON(tStream)
-            #; set tElement.Id = tRs.Id
-            do tDyna.%Push(tElement)
+            do tPassengers.%Push({}.%FromJSON(tStream))
         }
         while (tRs.%Next()) {}
-        do tDyna.%Set(0, tRs.%ROWCOUNT)
+        set tDyna."total" = tRs.%ROWCOUNT
     }
+    set tDyna."passengers" = tPassengers
     quit tDyna
 }
 
@@ -113,7 +111,8 @@ ClassMethod deletePassenger(id As %Integer) As %Stream.Object
 /// Retreive all created models
 ClassMethod getAllModels() As %Stream.Object
 {
-    set tDyna = []
+    set tDyna = {}
+    set tModels = []
     set myquery = "SELECT * FROM INFORMATION_SCHEMA.ML_MODELS"
     set tStatement = ##class(%SQL.Statement).%New()
     $$$ThrowOnError(tStatement.%Prepare(myquery))
@@ -129,8 +128,10 @@ ClassMethod getAllModels() As %Stream.Object
         set tModel."defaultTrainedModelName" = tRs."DEFAULT_TRAINED_MODEL_NAME"
         set tModel."defaultSettings" = tRs."DEFAULT_SETTINGS"
         set tModel."defaultTrainingQuery" = tRs."DEFAULT_TRAINING_QUERY"
-        do tDyna.%Push(tModel)
+        do tModels.%Push(tModel)
     }
+    set tDyna."models" = tModels
+    set tDyna."query" = myquery
     quit tDyna
 }
 
@@ -140,11 +141,31 @@ ClassMethod getAllModels() As %Stream.Object
 ClassMethod createModel(createInfo As %Stream.Object) As %Stream.Object
 {
     set tInfo = {}.%FromJSON(createInfo)
-    set myquery = "CREATE MODEL "_tInfo.modelName_" PREDICTING("_tInfo.predictValue_") FROM (SELECT * FROM Titanic_Table.Passenger WHERE ID < 892)"
+    set myquery = "CREATE MODEL "_tInfo.modelName_" PREDICTING("_tInfo.predictValue_")"
+    if (tInfo.%IsDefined("withVariables")) {
+        set myquery = myquery_" WITH("
+        set titer = tInfo.withVariables.%GetIterator()
+        do titer.%GetNext(, .value)
+        set myquery = myquery_value
+        while titer.%GetNext(, .value) {
+            set myquery = myquery_", "
+            set myquery = myquery_value
+        }
+        set myquery = myquery_")"
+    }
+    set myquery = myquery_" FROM "_tInfo.fromTable
     set tStatement = ##class(%SQL.Statement).%New()
     $$$ThrowOnError(tStatement.%Prepare(myquery))
     set tRs = tStatement.%Execute()
-    quit {}
+    set tDyna = {}
+    set tDyna."query" = myquery
+    quit tDyna
+}
+
+/// Description
+Method variablesToQuery(var As %Stream.Object) As %String
+{
+    return "yes"
 }
 
 /// Delete a model (along with all of its trained runs)<br/>
@@ -156,13 +177,16 @@ ClassMethod deleteModel(modelName As %String) As %Stream.Object
     set tStatement = ##class(%SQL.Statement).%New()
     $$$ThrowOnError(tStatement.%Prepare(myquery))
     set tRs = tStatement.%Execute()
-    quit {}
+    set tDyna = {}
+    set tDyna."query" = myquery
+    quit tDyna
 }
 
 /// Get all training runs
 ClassMethod getTrainingRuns() As %Stream.Object
 {
-    set tDyna = []
+    set tDyna = {}
+    set tModels = []
     set myquery = "SELECT * FROM INFORMATION_SCHEMA.ML_TRAINING_RUNS"
     set tStatement = ##class(%SQL.Statement).%New()
     $$$ThrowOnError(tStatement.%Prepare(myquery))
@@ -181,8 +205,10 @@ ClassMethod getTrainingRuns() As %Stream.Object
         set tModel."settings" = tRs."SETTINGS"
         set tModel."mlConfigurationName" = tRs."ML_CONFIGURATION_NAME"
         set tModel."trainingRunQuery" = tRs."TRAINING_RUN_QUERY"
-        do tDyna.%Push(tModel)
+        do tModels.%Push(tModel)
     }
+    set tDyna."trainingRuns" = tModels
+    set tDyna."query" = myquery
     quit tDyna
 }
 
@@ -196,7 +222,9 @@ ClassMethod trainModel(trainingInfo As %Stream.Object) As %Stream.Object
     set tStatement = ##class(%SQL.Statement).%New()
     $$$ThrowOnError(tStatement.%Prepare(myquery))
     set tRs = tStatement.%Execute()
-    quit {}
+    set tDyna = {}
+    set tDyna."query" = myquery
+    quit tDyna
 }
 
 /// Update ml configuration (H20 or AutoML, for now)<br/>
@@ -204,18 +232,21 @@ ClassMethod trainModel(trainingInfo As %Stream.Object) As %Stream.Object
 ///     configName, Configuration name to use<br/>
 ClassMethod changeConfiguration(configName As %Stream.Object) As %Stream.Object
 {
-    set tConfig = configName.Read()
-    set myquery = "set ML CONFIGURATION %"_tConfig
+    set tInfo = {}.%FromJSON(configName)    
+    set myquery = "SET ML CONFIGURATION %"_tInfo.configName
     set tStatement = ##class(%SQL.Statement).%New()
     $$$ThrowOnError(tStatement.%Prepare(myquery))
     set tRs = tStatement.%Execute()
-    quit {}
+    set tDyna = {}
+    set tDyna."query" = myquery
+    quit tDyna
 }
 
 /// Get all trained models
 ClassMethod getTrainedModels() As %Stream.Object
 {
-    set tDyna = []
+    set tDyna = {}
+    set tModels = []
     set myquery = "SELECT * FROM INFORMATION_SCHEMA.ML_TRAINED_MODELS"
     set tStatement = ##class(%SQL.Statement).%New()
     $$$ThrowOnError(tStatement.%Prepare(myquery))
@@ -228,8 +259,10 @@ ClassMethod getTrainedModels() As %Stream.Object
         set tModel."trainedTimestamp" = tRs."TRAINED_TIMESTAMP"
         set tModel."modelType" = tRs."MODEL_TYPE"
         set tModel."modelInfo" = tRs."MODEL_INFO"
-        do tDyna.%Push(tModel)
+        do tModels.%Push(tModel)
     }
+    set tDyna."models" = tModels
+    set tDyna."query" = myquery
     quit tDyna
 }
 
@@ -247,6 +280,7 @@ ClassMethod predict(model As %String, trainedModel As %String, passenger As %Str
     do tRs.%Next()
     set tDyna = {}
     set tDyna."predictedValue" = tRs.%Get("Expression_1") 
+    set tDyna."query" = myquery
     quit tDyna
 }
 

@@ -4,625 +4,667 @@ Class Titanic.REST.spec Extends %REST.Spec [ ProcedureBlock ]
 XData OpenAPI [ MimeType = application/json ]
 {
 {
-  "swagger":"2.0",
-  "info":{
-    "title":"InterSystems IRIS REST CRUD for Integrated ML Demo",
-    "description":"Rest API for the Integrated ML Demo on the Titanic database",
-    "version":"0.2",
-    "contact":{
-      "email":"theophile.thierry@intersystems.com"
+  "swagger": "2.0",
+  "info": {
+    "title": "InterSystems IRIS REST CRUD for Integrated ML Demo",
+    "description": "Rest API for the Integrated ML Demo on the Titanic database",
+    "version": "0.2",
+    "contact": {
+      "email": "theophile.thierry@intersystems.com"
     },
-    "license":{
-      "name":" 2.0",
-      "url":"http://www.apache.org/licenses/LICENSE-2.0.html"
+    "license": {
+      "name": " 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     }
   },
-  "basePath":"/api/titanic",
-  "schemes":[
+  "host": "localhost:52775",
+  "basePath": "/api/titanic",
+  "schemes": [
     "http",
     "https"
   ],
-  "securityDefinitions":{
-    "basicAuth":{
-      "type":"basic"
+  "securityDefinitions": {
+    "basicAuth": {
+      "type": "basic"
     }
   },
-  "security":[
+  "security": [
     {
-      "basicAuth":[
-      ]
+      "basicAuth": []
     }
   ],
-  "paths":{
-    "/passengers":{
-      "get":{
-        "description":"Retreive the total number of Passengers THEN the Passengers from currPage\\*(pageSize-1) to currPage\\*pageSize. Search by name possible too.",
-        "summary":"Get passengers with pagination and search by name possible",
-        "parameters":[
+  "paths": {
+    "/passengers": {
+      "get": {
+        "description": "Retreive the total number of Passengers THEN the Passengers from currPage\\*(pageSize-1) to currPage\\*pageSize. Search by name possible too.",
+        "summary": "Get passengers with pagination and search by name possible",
+        "parameters": [
           {
-            "in":"query",
-            "name":"currPage",
-            "type":"number",
-            "description":"The current page at which the client is"
+            "in": "query",
+            "name": "currPage",
+            "type": "number",
+            "description": "The current page at which the client is"
           },
           {
-            "in":"query",
-            "name":"pageSize",
-            "type":"number",
-            "description":"The number of passengers per page"
+            "in": "query",
+            "name": "pageSize",
+            "type": "number",
+            "description": "The number of passengers per page"
           },
           {
-            "in":"query",
-            "name":"name",
-            "type":"string",
-            "description":"Search passenger by name"
+            "in": "query",
+            "name": "name",
+            "type": "string",
+            "description": "Search passenger by name"
           }
         ],
-        "operationId":"getAllPassengers",
-        "x-ISC_ServiceMethod":"getAllPassengers",
-        "responses":{
-          "200":{
-            "description":"(Expected Result)",
-            "schema":{
-              "type":"object",
-              "properties":{
-                "total":{
-                  "type":"number"
+        "operationId": "getAllPassengers",
+        "x-ISC_ServiceMethod": "getAllPassengers",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "total": {
+                  "type": "number"
                 },
-                "passengers":{
-                  "type":"array",
-                  "items":{
-                    "$ref":"#/definitions/passenger"
+                "passengers": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/passenger"
                   }
                 }
               }
             }
           },
-          "default":{
-            "description":"(Unexpected Error)"
+          "default": {
+            "description": "(Unexpected Error)"
           }
         }
       },
-      "post":{
-        "description":"Create a new passenger to put in the table",
-        "summary":"Create a passenger",
-        "operationId":"createPassenger",
-        "x-ISC_ServiceMethod":"createPassenger",
-        "parameters":[
+      "post": {
+        "description": "Create a new passenger to put in the table",
+        "summary": "Create a passenger",
+        "operationId": "createPassenger",
+        "x-ISC_ServiceMethod": "createPassenger",
+        "parameters": [
           {
-            "name":"payloadBody",
-            "in":"body",
-            "description":"Request body contents",
-            "required":false,
-            "schema":{
-              "$ref":"#/definitions/passenger"
+            "name": "payloadBody",
+            "in": "body",
+            "description": "Request body contents",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/passenger"
             }
           }
         ],
-        "responses":{
-          "200":{
-            "description":"(Expected Result)",
-            "schema":{
-              "type":"object",
-              "properties":{
-                "passengerId":{
-                  "type":"integer"
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "passengerId": {
+                  "type": "integer"
                 }
               }
             }
           },
-          "400":{
-            "description":"(Bad Request)"
+          "400": {
+            "description": "(Bad Request)"
           },
-          "default":{
-            "description":"(Unexpected Error)"
+          "default": {
+            "description": "(Unexpected Error)"
           }
         }
       }
     },
-    "/passengers/{id}":{
-      "get":{
-        "description":"Return the saved informations of passenger n°{id}",
-        "summary":"Get passenger n°{id} info",
-        "operationId":"getPassenger",
-        "x-ISC_ServiceMethod":"getPassenger",
-        "parameters":[
+    "/passengers/{id}": {
+      "get": {
+        "description": "Return the saved informations of passenger n°{id}",
+        "summary": "Get passenger n°{id} info",
+        "operationId": "getPassenger",
+        "x-ISC_ServiceMethod": "getPassenger",
+        "parameters": [
           {
-            "name":"id",
-            "in":"path",
-            "required":true,
-            "type":"integer"
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
           }
         ],
-        "responses":{
-          "200":{
-            "description":"(Expected Result)",
-            "schema":{
-              "$ref":"#/definitions/passenger"
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "$ref": "#/definitions/passenger"
             }
           },
-          "204":{
-            "description":"(Not Found)"
+          "204": {
+            "description": "(Not Found)"
           },
-          "default":{
-            "description":"(Unexpected Error)"
+          "default": {
+            "description": "(Unexpected Error)"
           }
         }
       },
-      "put":{
-        "description":"Update already existing passenger {id} with information in the payload",
-        "summary":"Update passenger {id} info",
-        "operationId":"updatePassenger",
-        "x-ISC_ServiceMethod":"updatePassenger",
-        "parameters":[
+      "put": {
+        "description": "Update already existing passenger {id} with information in the payload",
+        "summary": "Update passenger {id} info",
+        "operationId": "updatePassenger",
+        "x-ISC_ServiceMethod": "updatePassenger",
+        "parameters": [
           {
-            "name":"id",
-            "in":"path",
-            "required":true,
-            "type":"integer"
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
           },
           {
-            "name":"payloadBody",
-            "in":"body",
-            "description":"Request body contents",
-            "required":false,
-            "schema":{
-              "$ref":"#/definitions/passenger"
+            "name": "payloadBody",
+            "in": "body",
+            "description": "Request body contents",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/passenger"
             }
           }
         ],
-        "responses":{
-          "200":{
-            "description":"(Expected Result)"
+        "responses": {
+          "200": {
+            "description": "(Expected Result)"
           },
-          "204":{
-            "description":"(Not Found)"
+          "204": {
+            "description": "(Not Found)"
           },
-          "400":{
-            "description":"(Bad Request)"
+          "400": {
+            "description": "(Bad Request)"
           },
-          "default":{
-            "description":"(Unexpected Error)"
+          "default": {
+            "description": "(Unexpected Error)"
           }
         }
       },
-      "delete":{
-        "description":"Delete existing passenger with {id}",
-        "summary":"Delete passenger {id}",
-        "operationId":"deletePassenger",
-        "x-ISC_ServiceMethod":"deletePassenger",
-        "parameters":[
+      "delete": {
+        "description": "Delete existing passenger with {id}",
+        "summary": "Delete passenger {id}",
+        "operationId": "deletePassenger",
+        "x-ISC_ServiceMethod": "deletePassenger",
+        "parameters": [
           {
-            "name":"id",
-            "in":"path",
-            "required":true,
-            "type":"integer"
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
           }
         ],
-        "responses":{
-          "200":{
-            "description":"(Expected Result)"
+        "responses": {
+          "200": {
+            "description": "(Expected Result)"
           },
-          "204":{
-            "description":"(Not Found)"
+          "204": {
+            "description": "(Not Found)"
           },
-          "default":{
-            "description":"(Unexpected Error)"
+          "default": {
+            "description": "(Unexpected Error)"
           }
         }
       }
     },
-    "/ml/models":{
-      "get":{
-        "description":"Retreive all created models",
-        "summary":"Get all models",
-        "operationId":"getAllModels",
-        "x-ISC_ServiceMethod":"getAllModels",
-        "responses":{
-          "200":{
-            "description":"(Expected Result)",
-            "schema":{
-              "type":"array",
-              "items":{
-                "$ref":"#/definitions/mlModel"
+    "/ml/models": {
+      "get": {
+        "description": "Retreive all created models",
+        "summary": "Get all models",
+        "operationId": "getAllModels",
+        "x-ISC_ServiceMethod": "getAllModels",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "models": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/mlModel"
+                  }
+                },
+                "query": {
+                  "type": "string"
+                }
               }
             }
           },
-          "default":{
-            "description":"(Unexpected Error)"
+          "default": {
+            "description": "(Unexpected Error)"
           }
         }
       },
-      "post":{
-        "parameters":[
+      "post": {
+        "parameters": [
           {
-            "in":"body",
-            "name":"createInfo",
-            "required":true,
-            "description":"Information about model creation",
-            "schema":{
-              "type":"object",
-              "properties":{
-                "modelName":{
-                  "type":"string"
+            "in": "body",
+            "name": "createInfo",
+            "required": true,
+            "description": "Information about model creation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "modelName": {
+                  "type": "string"
                 },
-                "predictValue":{
-                  "type":"string"
+                "predicValue": {
+                  "type": "string"
                 },
-                "tableName":{
-                  "type":"string"
+                "fromTable": {
+                  "type": "string"
                 },
-                "withVariables":{
-                  "type":"array",
-                  "items":{
-                    "type":"string"
+                "withVariables": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
                   }
                 }
               }
             }
           }
         ],
-        "description":"Create a model modelName that predicts predictValue from the table tableName using the variables in the array withVariables",
-        "summary":"Create a Model",
-        "operationId":"createModel",
-        "x-ISC_ServiceMethod":"createModel",
-        "responses":{
-          "200":{
-            "description":"(Expected Result)"
+        "description": "Create a model modelName that predicts predictValue from the table tableName using the variables in the array withVariables",
+        "summary": "Create a Model",
+        "operationId": "createModel",
+        "x-ISC_ServiceMethod": "createModel",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string"
+                }
+              }
+            }
           },
-          "400":{
-            "description":"(Bad Request)"
+          "400": {
+            "description": "(Bad Request)"
           },
-          "default":{
-            "description":"(Unexpected Error)"
+          "default": {
+            "description": "(Unexpected Error)"
           }
         }
       },
-      "delete":{
-        "parameters":[
+      "delete": {
+        "parameters": [
           {
-            "in":"query",
-            "name":"modelName",
-            "required":true,
-            "description":"Name of the model to be deleted",
-            "type":"string"
+            "in": "query",
+            "name": "modelName",
+            "required": true,
+            "description": "Name of the model to be deleted",
+            "type": "string"
           }
         ],
-        "description":"Delete a model (along with all of its trained runs)",
-        "summary":"Delete a model",
-        "operationId":"deleteModel",
-        "x-ISC_ServiceMethod":"deleteModel",
-        "responses":{
-          "200":{
-            "description":"(Expected Result)"
+        "description": "Delete a model (along with all of its trained runs)",
+        "summary": "Delete a model",
+        "operationId": "deleteModel",
+        "x-ISC_ServiceMethod": "deleteModel",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string"
+                }
+              }
+            }
           },
-          "204":{
-            "description":"(Not Found)"
+          "204": {
+            "description": "(Not Found)"
           },
-          "default":{
-            "description":"(Unexpected Error)"
+          "default": {
+            "description": "(Unexpected Error)"
           }
         }
       }
     },
-    "/ml/trainings":{
-      "get":{
-        "description":"Get all training runs",
-        "summary":"Get all training runs",
-        "operationId":"getTrainingRuns",
-        "x-ISC_ServiceMethod":"getTrainingRuns",
-        "responses":{
-          "200":{
-            "description":"(Expected Result)",
-            "schema":{
-              "type":"array",
-              "items":{
-                "$ref":"#/definitions/mlTrainingRun"
-              }
-            }
-          },
-          "default":{
-            "description":"(Unexpected Error)"
-          }
-        }
-      },
-      "post":{
-        "parameters":[
-          {
-            "in":"body",
-            "name":"trainingInfo",
-            "required":true,
-            "description":"Training informations",
-            "schema":{
-              "type":"object",
-              "properties":{
-                "modelName":{
-                  "type":"string"
+    "/ml/trainings": {
+      "get": {
+        "description": "Get all training runs",
+        "summary": "Get all training runs",
+        "operationId": "getTrainingRuns",
+        "x-ISC_ServiceMethod": "getTrainingRuns",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "trainingRuns": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/mlTrainingRun"
+                  }
                 },
-                "trainingName":{
-                  "type":"string"
-                }
-              }
-            }
-          }
-        ],
-        "description":"Train the Model named modelName and gives the name runName to the training run",
-        "summary":"Train a Model",
-        "operationId":"trainModel",
-        "x-ISC_ServiceMethod":"trainModel",
-        "responses":{
-          "200":{
-            "description":"(Expected Result)"
-          },
-          "400":{
-            "description":"(Bad Request)"
-          },
-          "default":{
-            "description":"(Unexpected Error)"
-          }
-        }
-      }
-    },
-    "/ml/trainings/configurations":{
-      "get":{
-        "description":"Get current ml configuration (AutoML or H2O, for now)",
-        "summary":"Get configuration",
-        "operationId":"getConfiguration",
-        "x-ISC_ServiceMethod":"getConfiguration",
-        "responses":{
-          "200":{
-            "description":"(Expected Result)",
-            "schema":{
-              "type":"object",
-              "properties":{
-                "currConfig":{
-                  "type":"string"
+                "query": {
+                  "type": "string"
                 }
               }
             }
           },
-          "default":{
-            "description":"(Unexpected Error)"
+          "default": {
+            "description": "(Unexpected Error)"
           }
         }
       },
-      "put":{
-        "description":"Update ml configuration (H20 or AutoML, for now)",
-        "summary":"Update configuration",
-        "operationId":"changeConfiguration",
-        "x-ISC_ServiceMethod":"changeConfiguration",
-        "parameters":[
+      "post": {
+        "parameters": [
           {
-            "name":"configName",
-            "in":"body",
-            "description":"Configuration name to use",
-            "required":true,
-            "schema":{
-              "type":"string"
-            }
-          }
-        ],
-        "responses":{
-          "200":{
-            "description":"(Expected Result)"
-          },
-          "400":{
-            "description":"(Bad Request)"
-          },
-          "default":{
-            "description":"(Unexpected Error)"
-          }
-        }
-      }
-    },
-    "/ml/predictions/models":{
-      "get":{
-        "description":"Get all trained models",
-        "summary":"Get all trained models",
-        "operationId":"getTrainedModels",
-        "x-ISC_ServiceMethod":"getTrainedModels",
-        "responses":{
-          "200":{
-            "description":"(Expected Result)",
-            "schema":{
-              "type":"array",
-              "items":{
-                "$ref":"#/definitions/mlTrainedModel"
+            "in": "body",
+            "name": "trainingInfo",
+            "required": true,
+            "description": "Training informations",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "modelName": {
+                  "type": "string"
+                },
+                "trainingName": {
+                  "type": "string"
+                }
               }
             }
-          },
-          "default":{
-            "description":"(Unexpected Error)"
-          }
-        }
-      }
-    },
-    "/ml/predictions":{
-      "get":{
-        "parameters":[
-          {
-            "name":"model",
-            "in":"query",
-            "description":"Model to predict with",
-            "required":true,
-            "type":"string"
-          },
-          {
-            "name":"trainedModel",
-            "in":"query",
-            "description":"Trained Model to predict with",
-            "required":true,
-            "type":"string"
-          },
-          {
-            "name":"passenger",
-            "in":"query",
-            "description":"Id of passenger to predict",
-            "required":true,
-            "type":"string"
           }
         ],
-        "description":"Predict with a certain model, a certain trained model and a certain passenger",
-        "summary":"Predict with a model and an id",
-        "operationId":"predict",
-        "x-ISC_ServiceMethod":"predict",
-        "responses":{
-          "200":{
-            "description":"(Expected Result)",
-            "schema":{
-              "type":"object",
-              "properties":{
-                "PredictedValue":{
-                  "type":"string"
+        "description": "Train the Model named modelName and gives the name runName to the training run",
+        "summary": "Train a Model",
+        "operationId": "trainModel",
+        "x-ISC_ServiceMethod": "trainModel",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string"
                 }
               }
             }
           },
-          "400":{
-            "description":"(Bad Request)"
+          "400": {
+            "description": "(Bad Request)"
           },
-          "default":{
-            "description":"(Unexpected Error)"
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      }
+    },
+    "/ml/trainings/configurations": {
+      "put": {
+        "description": "Update ml configuration (H20 or AutoML, for now)",
+        "summary": "Update configuration",
+        "operationId": "changeConfiguration",
+        "x-ISC_ServiceMethod": "changeConfiguration",
+        "parameters": [
+          {
+            "name": "configName",
+            "in": "body",
+            "description": "Configuration name to use",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "configName": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "(Bad Request)"
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      }
+    },
+    "/ml/predictions/models": {
+      "get": {
+        "description": "Get all trained models",
+        "summary": "Get all trained models",
+        "operationId": "getTrainedModels",
+        "x-ISC_ServiceMethod": "getTrainedModels",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "models": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/mlTrainedModel"
+                  }
+                },
+                "query": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      }
+    },
+    "/ml/predictions": {
+      "get": {
+        "parameters": [
+          {
+            "name": "model",
+            "in": "query",
+            "description": "Model to predict with",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "trainedModel",
+            "in": "query",
+            "description": "Trained Model to predict with",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "passenger",
+            "in": "query",
+            "description": "Id of passenger to predict",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "description": "Predict with a certain model, a certain trained model and a certain passenger",
+        "summary": "Predict with a model and an id",
+        "operationId": "predict",
+        "x-ISC_ServiceMethod": "predict",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "predictedValue": {
+                  "type": "string"
+                },
+                "query": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "(Bad Request)"
+          },
+          "default": {
+            "description": "(Unexpected Error)"
           }
         }
       }
     }
   },
-  "definitions":{
-    "passenger":{
-      "type":"object",
-      "properties":{
-        "passengerId":{
-          "type":"integer"
+  "definitions": {
+    "passenger": {
+      "type": "object",
+      "properties": {
+        "passengerId": {
+          "type": "integer"
         },
-        "survived":{
-          "type":"boolean"
+        "survived": {
+          "type": "boolean"
         },
-        "class":{
-          "type":"integer"
+        "class": {
+          "type": "integer"
         },
-        "name":{
-          "type":"string"
+        "name": {
+          "type": "string"
         },
-        "sex":{
-          "type":"string"
+        "sex": {
+          "type": "string"
         },
-        "age":{
-          "type":"number"
+        "age": {
+          "type": "number"
         },
-        "sibSp":{
-          "type":"integer"
+        "sibSp": {
+          "type": "integer"
         },
-        "parCh":{
-          "type":"integer"
+        "parCh": {
+          "type": "integer"
         },
-        "ticket":{
-          "type":"string"
+        "ticket": {
+          "type": "string"
         },
-        "fare":{
-          "type":"number"
+        "fare": {
+          "type": "number"
         },
-        "cabin":{
-          "type":"string"
+        "cabin": {
+          "type": "string"
         },
-        "embarked":{
-          "type":"string"
+        "embarked": {
+          "type": "string"
         }
       }
     },
-    "mlModel":{
-      "type":"object",
-      "properties":{
-        "modelName":{
-          "type":"string"
+    "mlModel": {
+      "type": "object",
+      "properties": {
+        "modelName": {
+          "type": "string"
         },
-        "description":{
-          "type":"string"
+        "description": {
+          "type": "string"
         },
-        "predictingColumnName":{
-          "type":"string"
+        "predictingColumnName": {
+          "type": "string"
         },
-        "predictingColumntype":{
-          "type":"string"
+        "predictingColumntype": {
+          "type": "string"
         },
-        "withColumns":{
-          "type":"string"
+        "withColumns": {
+          "type": "string"
         },
-        "createTimestamp":{
-          "type":"string"
+        "createTimestamp": {
+          "type": "string"
         },
-        "defaultTrainedModelName":{
-          "type":"string"
+        "defaultTrainedModelName": {
+          "type": "string"
         },
-        "defaultSettings":{
-          "type":"string"
+        "defaultSettings": {
+          "type": "string"
         },
-        "defaultTrainingQuery":{
-          "type":"string"
+        "defaultTrainingQuery": {
+          "type": "string"
         }
       }
     },
-    "mlTrainingRun":{
-      "type":"object",
-      "properties":{
-        "modelName":{
-          "type":"string"
+    "mlTrainingRun": {
+      "type": "object",
+      "properties": {
+        "modelName": {
+          "type": "string"
         },
-        "trainingRunName":{
-          "type":"string"
+        "trainingRunName": {
+          "type": "string"
         },
-        "provider":{
-          "type":"string"
+        "provider": {
+          "type": "string"
         },
-        "startTimestamp":{
-          "type":"string"
+        "startTimestamp": {
+          "type": "string"
         },
-        "completedTimestamp":{
-          "type":"string"
+        "completedTimestamp": {
+          "type": "string"
         },
-        "trainingDuration":{
-          "type":"string"
+        "trainingDuration": {
+          "type": "string"
         },
-        "runStatus":{
-          "type":"string"
+        "runStatus": {
+          "type": "string"
         },
-        "statusCode":{
-          "type":"string"
+        "statusCode": {
+          "type": "string"
         },
-        "log":{
-          "type":"string"
+        "log": {
+          "type": "string"
         },
-        "settings":{
-          "type":"string"
+        "settings": {
+          "type": "string"
         },
-        "mlConfigurationName":{
-          "type":"string"
+        "mlConfigurationName": {
+          "type": "string"
         },
-        "trainingRunQuery":{
-          "type":"string"
+        "trainingRunQuery": {
+          "type": "string"
         }
       }
     },
-    "mlTrainedModel":{
-      "type":"object",
-      "properties":{
-        "modelName":{
-          "type":"string"
+    "mlTrainedModel": {
+      "type": "object",
+      "properties": {
+        "modelName": {
+          "type": "string"
         },
-        "trainedModelName":{
-          "type":"string"
+        "trainedModelName": {
+          "type": "string"
         },
-        "provider":{
-          "type":"string"
+        "provider": {
+          "type": "string"
         },
-        "trainedTimestamp":{
-          "type":"string"
+        "trainedTimestamp": {
+          "type": "string"
         },
-        "modelType":{
-          "type":"string"
+        "modelType": {
+          "type": "string"
         },
-        "modelInfo":{
-          "type":"string"
+        "modelInfo": {
+          "type": "string"
         }
       }
     }

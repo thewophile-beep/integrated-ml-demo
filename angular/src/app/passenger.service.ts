@@ -39,7 +39,7 @@ export class PassengerService {
   }
   
   private log(message: string) {
-    this.messageService.add(`PassengerService: ${message}`);
+    // this.messageService.add(`PassengerService: ${message}`);
   }
   
   constructor(
@@ -58,12 +58,13 @@ export class PassengerService {
   }
 
   /* GET Passengers whose name contains search term */
-  searchPassengers(term: string): Observable<any> {
+  searchPassengers(term: string): Observable<Passenger[]> {
     if (!term.trim() || term.length < 3) {
       // if not search term, return empty Passenger array.
       return of([]);
     }
     return this.http.get<any>(`${this.PassengersUrl}?name=${term}`).pipe(
+      map(res => res.passengers),
       tap(x => x.length ?
         this.log(`found Passengers matching "${term}"`) :
         this.log(`no Passengers matching "${term}"`)),

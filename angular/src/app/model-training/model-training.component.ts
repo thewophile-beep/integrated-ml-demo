@@ -33,8 +33,8 @@ export class ModelTrainingComponent implements OnInit {
   }
   
   getAll(): void {
-    this.modelService.getTrainingRuns().subscribe(runs => this.runs = runs);
-    this.modelService.getAllModels().subscribe(models => this.models = models);
+    this.modelService.getTrainingRuns().subscribe(response => this.runs = response.trainingRuns);
+    this.modelService.getAllModels().subscribe(response => this.models = response.models);
   }
   
   onSubmit(): void {

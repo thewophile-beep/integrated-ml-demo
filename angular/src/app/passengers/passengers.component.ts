@@ -26,9 +26,9 @@ export class PassengersComponent implements OnInit {
     
     getAll(): void {
         this.passengerService.getAllPassengers(this.currPage, this.pageSize).subscribe(
-            passengers => {
-                this.totalNum = Number(passengers[0]),
-                this.passengers = passengers.slice(1, this.pageSize + 1)
+            response => {
+                this.totalNum = Number(response.total),
+                this.passengers = response.passengers
             }
         );
     }

@@ -2,9 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { mlTrainedModel } from '../mlTrainedModel';
 import { ModelService } from '../model.service'
-import { mlModel } from '../mlModel';
 import { MessageService } from '../message.service';
-import { ThisReceiver } from '@angular/compiler';
 
 @Component({
   selector: 'app-model-prediction',
@@ -28,7 +26,7 @@ export class ModelPredictionComponent implements OnInit {
   }
   
   getAll() {
-    this.modelService.getTrainedModels().subscribe(trainedModels => this.trainedModels = trainedModels)
+    this.modelService.getTrainedModels().subscribe(response => this.trainedModels = response.models)
   }
     
   predict(): void {

@@ -6,9 +6,10 @@
           #searchBox id="search-box" 
           (input)="search(searchBox.value)">
   </mat-form-field>
-  <mat-option *ngFor="let passenger of passengers$ | async" (click)="openDialog(passenger)" class="passenger-autocomplete">
-    <a class="passenger-text-autocomplete">
-      n°{{passenger.passengerId}}: {{passenger.name}}
-    </a>
-  </mat-option>
+  <mat-nav-list>
+    <mat-list-item *ngFor="let passenger of passengers$ | async" (click)="openDialog(passenger)"  class="drop-down-box">
+      <span matLine>n°{{passenger.passengerId}}: {{passenger.name}}</span>
+    </mat-list-item>
+  </mat-nav-list>
+
 </form>

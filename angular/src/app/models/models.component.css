@@ -56,3 +56,12 @@
   color: #ccc;
   text-align: center;
 }
+
+.check-var {
+  flex: 1;
+}
+
+.subtitle{
+  color: #888;
+  padding-bottom: 10px;
+}
