@@ -1,15 +1,29 @@
 <form class="full-width">
-  <mat-form-field class="full-width">
-    <mat-label>Search a passenger</mat-label>
-    <input matInput
-          placeholder="Enter a name"
-          #searchBox id="search-box" 
-          (input)="search(searchBox.value)">
-  </mat-form-field>
-  <mat-nav-list>
-    <mat-list-item *ngFor="let passenger of passengers$ | async" (click)="openDialog(passenger)"  class="drop-down-box">
-      <span matLine>n°{{passenger.passengerId}}: {{passenger.name}}</span>
-    </mat-list-item>
-  </mat-nav-list>
-
+    <mat-form-field class="full-width">
+        <mat-label>Search a passenger</mat-label>
+        <input matInput
+        placeholder="Enter a name"
+        #searchBox id="search-box" 
+        (input)="search(searchBox.value)">
+    </mat-form-field>
+    <div *ngIf="passengers$ | async as passengers">
+        <ng-container *ngIf="passengers.length; else noItems">
+            <mat-nav-list>
+                <mat-list-item *ngFor="let passenger of passengers; let isLast = last;" (click)="openDialog(passenger)">
+                    <span matLine>{{passenger.passengerId}} - {{passenger.name}}</span>
+                    <div *ngIf="!isLast">
+                        <mat-divider></mat-divider>
+                    </div>
+                </mat-list-item>
+            </mat-nav-list>
+        </ng-container>
+        <ng-template #noItems>
+            <div *ngIf="searchBox.value.length > 2; else notEnoughLetters">
+                No match.
+            </div>
+            <ng-template #notEnoughLetters>
+                Please, enter at least 3 characters.
+            </ng-template>
+        </ng-template>
+    </div>
 </form>

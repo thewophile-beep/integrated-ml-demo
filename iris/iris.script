@@ -9,7 +9,6 @@
 
     zn "IRISAPP"
     zw $SYSTEM.OBJ.ImportDir("/tmp/iris/src", "*.cls", "cubk", .tErrors, 1)
-    zw $SYSTEM.OBJ.Load("/tmp/iris/src/REST/disp.cls", "cubk", .tErrors, 1)
 
     zpm "install csvgen"
 
@@ -26,5 +25,6 @@
     zw tSC
 
     zn "IRISAPP"
+    zw $SYSTEM.OBJ.Load("/tmp/iris/src/Titanic/REST/disp.cls", "ck")
 
     h
