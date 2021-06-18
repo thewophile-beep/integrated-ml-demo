@@ -57,8 +57,9 @@ export class ModelValidationComponent implements OnInit {
         this.fromTable = "Titanic_Table.Passenger WHERE ID<892"
       }
       this.modelService.validateModel(this.chosenModel.modelName, this.validationForm.value.validationName, this.chosenModel.trainedModelName, this.fromTable).subscribe(
-        _=> this.getAll()
+        _=> {this.getAll(); this.toggleWaiting()}
       );
+      this.toggleWaiting();
     }
   }
 

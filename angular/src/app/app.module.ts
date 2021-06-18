@@ -42,8 +42,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { OverviewModelManagerComponent } from './overview-model-manager/overview-model-manager.component';
 import { OverviewDatasetPresentationComponent } from './overview-dataset-presentation/overview-dataset-presentation.component';
 import { OverviewMakePredictionsComponent } from './overview-make-predictions/overview-make-predictions.component'; 
-import {MatCheckboxModule} from '@angular/material/checkbox'; 
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { MatCheckboxModule } from '@angular/material/checkbox'; 
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ModelPredictionDetailComponent } from './model-prediction-detail/model-prediction-detail.component';
 import { ModelValidationComponent } from './model-validation/model-validation.component';
 import { ModelValidationMetricsComponent } from './model-validation-metrics/model-validation-metrics.component'; 
@@ -95,7 +95,7 @@ import { ModelValidationMetricsComponent } from './model-validation-metrics/mode
     MatButtonToggleModule,
     MatDialogModule,
     MatCheckboxModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -7,6 +7,7 @@
     flex: 1;
     margin-right: 20px;
 }
+
 .prediction-list-card {
     min-width: 120px;
     margin: 20px;
@@ -81,4 +82,8 @@
 
 .active-row {
     font-weight: bold;
+}
+
+.passenger-selection-row {
+    width: 100%;
 }
