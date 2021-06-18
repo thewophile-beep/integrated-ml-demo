@@ -42,6 +42,12 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
   <Route Url="/ml/trainings" Method="get" Call="getTrainingRuns" />
   <!-- Train a Model -->
   <Route Url="/ml/trainings" Method="post" Call="trainModel" />
+  <!-- Get all validation runs -->
+  <Route Url="/ml/validations" Method="get" Call="getValidationRuns" />
+  <!-- Validate a Model -->
+  <Route Url="/ml/validations" Method="post" Call="validateModel" />
+  <!-- Get metrics from validation run -->
+  <Route Url="/ml/validations/metrics" Method="get" Call="getMetrics" />
   <!-- Update configuration -->
   <Route Url="/ml/trainings/configurations" Method="put" Call="changeConfiguration" />
   <!-- Get all trained models -->
@@ -198,6 +204,50 @@ ClassMethod trainModel() As %Status
         If '$isobject(%request.Content) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"trainingInfo")) Quit
         Set ptrainingInfo=%request.Content
         Set response=##class(Titanic.REST.impl).trainModel(ptrainingInfo)
+        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
+/// Get all validation runs
+ClassMethod getValidationRuns() As %Status
+{
+    Try {
+        Set response=##class(Titanic.REST.impl).getValidationRuns()
+        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
+/// Validate a Model
+ClassMethod validateModel() As %Status
+{
+    Try {
+        If '$isobject(%request.Content) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"validationInfo")) Quit
+        Set pvalidationInfo=%request.Content
+        Set response=##class(Titanic.REST.impl).validateModel(pvalidationInfo)
+        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
+/// Get metrics from validation run
+ClassMethod getMetrics() As %Status
+{
+    Try {
+        If $data(%request.Data("validationName",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"validationName")) Quit
+        }
+        If $data(%request.Data("validationName",1)) {
+            Set pvalidationName=%request.Data("validationName",1)
+        }
+        Set response=##class(Titanic.REST.impl).getMetrics(.pvalidationName)
         Do ##class(Titanic.REST.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))

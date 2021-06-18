@@ -1,6 +1,6 @@
 /// Rest API for the Integrated ML Demo on the Titanic database<br/>
 /// Business logic class defined by OpenAPI in Titanic.REST.spec<br/>
-/// Updated Jun 17, 2021 10:05:11
+/// Updated Jun 18, 2021 10:20:54
 Class Titanic.REST.impl Extends %REST.Impl [ ProcedureBlock ]
 {
 
@@ -212,7 +212,7 @@ ClassMethod getTrainingRuns() As %Stream.Object
     quit tDyna
 }
 
-/// Train the Model named modelName and gives the name runName to the training run<br/>
+/// Train the Model named modelName and gives the name trainingName to the training run<br/>
 /// The method arguments hold values for:<br/>
 ///     trainingInfo, Training informations<br/>
 ClassMethod trainModel(trainingInfo As %Stream.Object) As %Stream.Object
@@ -280,6 +280,69 @@ ClassMethod predict(model As %String, trainedModel As %String, passenger As %Str
     do tRs.%Next()
     set tDyna = {}
     set tDyna."predictedValue" = tRs.%Get("Expression_1") 
+    set tDyna."query" = myquery
+    quit tDyna
+}
+
+/// Get all validation runs
+ClassMethod getValidationRuns() As %Stream.Object
+{
+    set tDyna = {}
+    set tRuns = []
+    set myquery = "SELECT * FROM INFORMATION_SCHEMA.ML_VALIDATION_RUNS"
+    set tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    set tRs = tStatement.%Execute()	 	 	
+    while (tRs.%Next()) {
+        set tModel = {}
+        set tModel."modelName" = tRs."MODEL_NAME"
+        set tModel."trainedModelName" = tRs."TRAINED_MODEL_NAME"
+        set tModel."validationRunName" = tRs."VALIDATION_RUN_NAME"
+        set tModel."startTimestamp" = tRs."START_TIMESTAMP"
+        set tModel."completedTimestamp" = tRs."COMPLETED_TIMESTAMP"
+        set tModel."validationDuration" = tRs."VALIDATION_DURATION"
+        set tModel."runStatus" = tRs."RUN_STATUS"
+        set tModel."statusCode" = tRs."STATUS_CODE"
+        set tModel."log" = tRs."LOG"
+        set tModel."settings" = tRs."SETTINGS"
+        set tModel."validationRunQuery" = tRs."VALIDATION_RUN_QUERY"
+        do tRuns.%Push(tModel)
+    }
+    set tDyna."trainingRuns" = tRuns
+    set tDyna."query" = myquery
+    quit tDyna
+}
+
+/// Validate the Model named modelName using trainedModelName trained model on the fromTable table and gives the name validationName to the validation run<br/>
+/// The method arguments hold values for:<br/>
+///     validationInfo, Validation informations<br/>
+ClassMethod validateModel(validationInfo As %Stream.Object) As %Stream.Object
+{
+    set tInfo = {}.%FromJSON(validationInfo)
+    set myquery = "VALIDATE MODEL "_tInfo.modelName_" AS "_tInfo.validationName_" USE "_tInfo.trainedModelName_" FROM "_tInfo.fromTable
+    set tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    set tRs = tStatement.%Execute()
+    set tDyna = {}
+    set tDyna."query" = myquery
+    quit tDyna
+}
+
+/// Get all metrics for given validation run<br/>
+/// The method arguments hold values for:<br/>
+///     validationName, The validation run we want to retreive the metrics from<br/>
+ClassMethod getMetrics(validationName As %String) As %Stream.Object
+{
+    set tDyna = {}
+    set tMetrics = []
+    set myquery = "SELECT * FROM INFORMATION_SCHEMA.ML_VALIDATION_METRICS WHERE (VALIDATION_RUN_NAME='"_validationName_"')"
+    set tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    set tRs = tStatement.%Execute()	 	 
+    while (tRs.%Next()) {
+        do tMetrics.%Push(tRs."METRIC_NAME"_" : "_tRs."METRIC_VALUE")
+    }
+    set tDyna."metrics" = tMetrics
     set tDyna."query" = myquery
     quit tDyna
 }

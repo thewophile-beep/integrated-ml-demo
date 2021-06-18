@@ -254,7 +254,7 @@ XData OpenAPI [ MimeType = application/json ]
                 "modelName": {
                   "type": "string"
                 },
-                "predicValue": {
+                "predictValue": {
                   "type": "string"
                 },
                 "fromTable": {
@@ -378,7 +378,7 @@ XData OpenAPI [ MimeType = application/json ]
             }
           }
         ],
-        "description": "Train the Model named modelName and gives the name runName to the training run",
+        "description": "Train the Model named modelName and gives the name trainingName to the training run",
         "summary": "Train a Model",
         "operationId": "trainModel",
         "x-ISC_ServiceMethod": "trainModel",
@@ -396,6 +396,124 @@ XData OpenAPI [ MimeType = application/json ]
           },
           "400": {
             "description": "(Bad Request)"
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      }
+    },
+    "/ml/validations": {
+      "get": {
+        "description": "Get all validation runs",
+        "summary": "Get all validation runs",
+        "operationId": "getValidationRuns",
+        "x-ISC_ServiceMethod": "getValidationRuns",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "trainingRuns": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/mlValidationRun"
+                  }
+                },
+                "query": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      },
+      "post": {
+        "parameters": [
+          {
+            "in": "body",
+            "name": "validationInfo",
+            "required": true,
+            "description": "Validation informations",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "modelName": {
+                  "type": "string"
+                },
+                "validationName": {
+                  "type": "string"
+                },
+                "trainedModelName": {
+                  "type": "string"
+                },
+                "fromTable": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "description": "Validate the Model named modelName using trainedModelName trained model on the fromTable table and gives the name validationName to the validation run",
+        "summary": "Validate a Model",
+        "operationId": "validateModel",
+        "x-ISC_ServiceMethod": "validateModel",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "(Bad Request)"
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      }
+    },
+    "/ml/validations/metrics": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "validationName",
+            "type": "string",
+            "description": "The validation run we want to retreive the metrics from"
+          }
+        ],
+        "description": "Get all metrics for given validation run",
+        "summary": "Get metrics from validation run",
+        "operationId": "getMetrics",
+        "x-ISC_ServiceMethod": "getMetrics",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "metrics": {
+                  "$ref": "#/definitions/mlValidationMetrics"
+                },
+                "query": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "(Not Found)"
           },
           "default": {
             "description": "(Unexpected Error)"
@@ -666,6 +784,50 @@ XData OpenAPI [ MimeType = application/json ]
         "modelInfo": {
           "type": "string"
         }
+      }
+    },
+    "mlValidationRun": {
+      "type": "object",
+      "properties": {
+        "modelName": {
+          "type": "string"
+        },
+        "trainedModelName": {
+          "type": "string"
+        },
+        "validationRunName": {
+          "type": "string"
+        },
+        "startTimestamp": {
+          "type": "string"
+        },
+        "completedTimestamp": {
+          "type": "string"
+        },
+        "validationDuration": {
+          "type": "string"
+        },
+        "runStatus": {
+          "type": "string"
+        },
+        "statusCode": {
+          "type": "string"
+        },
+        "log": {
+          "type": "string"
+        },
+        "settings": {
+          "type": "string"
+        },
+        "validationRunQuery": {
+          "type": "string"
+        }
+      }
+    },
+    "mlValidationMetrics": {
+      "type": "array",
+      "items": {
+        "type": "string"
       }
     }
   }
