@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
 import { mlTrainedModel } from '../mlTrainedModel';
 import { ModelService } from '../model.service'
-import { MessageService } from '../message.service';
+import { mlModel } from '../mlModel';
+
+import { MatDialog } from '@angular/material/dialog';
+import { ModelPredictionDetailComponent } from '../model-prediction-detail/model-prediction-detail.component';
 
 @Component({
   selector: 'app-model-prediction',
@@ -19,7 +21,9 @@ export class ModelPredictionComponent implements OnInit {
   predictedValues: string[] = [];
   newPrediction: string = "";
   
-  constructor(private fb: FormBuilder, private modelService: ModelService, private messageService: MessageService) { }
+  models: mlModel[] = [];
+
+  constructor(private modelService: ModelService, public dialog: MatDialog) { }
   
   ngOnInit(): void {
     this.getAll();
@@ -27,22 +31,45 @@ export class ModelPredictionComponent implements OnInit {
   
   getAll() {
     this.modelService.getTrainedModels().subscribe(response => this.trainedModels = response.models)
+    this.modelService.getAllModels().subscribe(response => this.models = response.models);
   }
     
   predict(): void {
+    const data = {
+      model: "",
+      trainedModel: "",
+      predicting: "",
+      withVariables: "",
+      passenger: "",
+      predictedValue: "",
+    }
     if (this.chosenModel && this.chosenPassenger) {
+
+      data.model = this.chosenModel.modelName;
+      data.trainedModel = this.chosenModel.trainedModelName;
+      const currModel = this.models.find(model => model.modelName === data.model);
+      if (currModel) {
+        data.predicting = currModel.predictingColumnName
+        data.withVariables = currModel.withColumns;
+      }
+
+      data.passenger = this.chosenPassenger;
       this.modelService.predict(this.chosenModel.modelName, this.chosenModel.trainedModelName, this.chosenPassenger).subscribe(
         predicted => {
           this.newPrediction = String(predicted.predictedValue);
           if (this.newPrediction.length === 0)
-            this.newPrediction = "Error :( try another model ?";
+            data.predictedValue = "Error :( try another model ?";
           if (this.chosenModel && this.chosenPassenger)
-            this.predictedValues.push(this.chosenModel.modelName + "_" + this.chosenModel.trainedModelName + " for n°" 
-              + this.chosenPassenger + ": " + this.newPrediction);
-          this.toggleWaiting();}
+            data.predictedValue = this.newPrediction;
+          this.toggleWaiting();
+          this.dialog.open(ModelPredictionDetailComponent, {
+            data: data
+          });
+        }
       )
       
       this.toggleWaiting();
+
     }
   }
 

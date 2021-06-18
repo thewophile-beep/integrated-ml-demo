@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { mlModel } from '../mlModel';
 import { ModelService } from '../model.service';
-import { FormBuilder, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { variableType } from './variableType';
 
 @Component({
@@ -34,7 +34,7 @@ export class ModelsComponent implements OnInit {
   modelForm = this.fb.group({
     modelName: ['', [Validators.required, Validators.pattern(/^\S*$/)]],
     predicting: [null, Validators.required],
-    fromTable: ['', Validators.required],
+    fromTable: [false, Validators.required],
     survived: false,
     class: false,
     name: false,
@@ -47,10 +47,6 @@ export class ModelsComponent implements OnInit {
     cabin: false,
     embarked: false,
   })
-
-  createChoices() {
-    return this.modelForm.get('name');
-  }
   
   constructor(private modelService: ModelService, private fb: FormBuilder) { }
   

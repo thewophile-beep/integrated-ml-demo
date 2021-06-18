@@ -1,0 +1,20 @@
+<mat-dialog-content>
+    <mat-card class="dialog-card">
+        <mat-card-header>
+            <mat-card-title class="principal-header">Prediction</mat-card-title>
+            <mat-card-subtitle>Using <strong>{{data.model}}</strong> model with <strong>{{data.trainedModel}}</strong> run.</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+            <div *ngIf="passenger">
+                <span>Predicting <strong>{{data.predicting}}</strong> with the following variables of passenger <strong>{{passenger.name}}</strong>:</span>
+                <ul>
+                    <li *ngFor="let variable of variableList">
+                        <strong>{{variable}}</strong>: {{passenger[variable]}}
+                    </li>
+                </ul>
+                <span><strong>{{data.predicting | uppercase}}?</strong> {{data.predictedValue}}</span>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</mat-dialog-content>

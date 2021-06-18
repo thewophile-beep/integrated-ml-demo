@@ -43,7 +43,9 @@ import { OverviewModelManagerComponent } from './overview-model-manager/overview
 import { OverviewDatasetPresentationComponent } from './overview-dataset-presentation/overview-dataset-presentation.component';
 import { OverviewMakePredictionsComponent } from './overview-make-predictions/overview-make-predictions.component'; 
 import {MatCheckboxModule} from '@angular/material/checkbox'; 
-import {MatSlideToggleModule} from '@angular/material/slide-toggle'; 
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { ModelPredictionDetailComponent } from './model-prediction-detail/model-prediction-detail.component';
+import { ModelValidationComponent } from './model-validation/model-validation.component'; 
 @NgModule({
   declarations: [
     AppComponent,
@@ -62,6 +64,8 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     OverviewModelManagerComponent,
     OverviewDatasetPresentationComponent,
     OverviewMakePredictionsComponent,
+    ModelPredictionDetailComponent,
+    ModelValidationComponent,
   ],
   imports: [
     BrowserModule,
