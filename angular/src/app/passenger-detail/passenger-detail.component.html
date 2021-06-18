@@ -1,6 +1,6 @@
 <mat-dialog-content>
     <form [formGroup]="passengerForm" novalidate>
-        <div *ngIf="passenger; else notFound">
+        <div *ngIf="passenger">
             <mat-card class="dialog-card">
                 <mat-card-header>
                     <mat-card-title class="principal-header">Passenger n°{{passenger.passengerId}} : {{passenger.name | uppercase}} </mat-card-title>
@@ -166,8 +166,5 @@
                 </mat-card-actions>
             </mat-card>
         </div>
-        <ng-template #notFound>
-            Passenger Not Found
-        </ng-template>
     </form>
 </mat-dialog-content>

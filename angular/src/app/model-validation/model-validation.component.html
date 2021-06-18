@@ -1,39 +1,118 @@
-<mat-card class="validation-list-card">
-    <!-- List of trained models -->
-    <mat-card class="prediction-list-card">
-        <mat-card-header>
-            <mat-card-title class="principal-header">
-                Chose a trained model
-            </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            <div *ngIf="trainedModels.length > 0; else isEmpty">
-                <div class="overflow">
-                    <table mat-table [dataSource]="trainedModels" class="mat-table">
-                        
-                        
-                        <ng-container matColumnDef="modelName" sticky>
-                            <th mat-header-cell *matHeaderCellDef>modelName</th> 
-                            <td mat-cell *matCellDef="let model"> {{model["modelName"]}} </td>
-                        </ng-container> 
-                        
-                        <ng-container [matColumnDef]="column" *ngFor="let column of loopColumns">
-                            <th mat-header-cell *matHeaderCellDef>{{column}}</th>
-                            <td mat-cell *matCellDef="let model"> {{model[column]}} </td>
-                        </ng-container> 
-                        
-                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                        <tr mat-row *matRowDef="let run; columns: displayedColumns;"
-                            [class.active-row]="chosenModel === run"
-                            (click)="chosenModel = chosenModel === run ? undefined : run">
-                        </tr>
-                    </table>
-                </div>
-            </div> 
-            <ng-template #isEmpty>
-                <div class="align-middle">No trained models to show yet.</div>
-            </ng-template>       
-        </mat-card-content>
-    </mat-card>
-
+<!-- List of validation runs -->
+<mat-card class="validation-card">
+    <mat-card-header>
+        <mat-card-title class="principal-header">
+            Validation runs list
+        </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <div *ngIf="validationRuns.length > 0; else isEmpty">
+            <div class="overflow">
+                <table mat-table [dataSource]="validationRuns" class="mat-table">
+                    
+                    <ng-container matColumnDef="modelName" sticky>
+                        <th mat-header-cell *matHeaderCellDef>modelName</th> 
+                        <td mat-cell *matCellDef="let run"> {{run["modelName"]}} </td>
+                    </ng-container> 
+                    
+                    <ng-container [matColumnDef]="column" *ngFor="let column of loopColumnsRuns">
+                        <th mat-header-cell *matHeaderCellDef>{{column}}</th>
+                        <td mat-cell *matCellDef="let run"> {{run[column]}} </td>
+                    </ng-container> 
+                    
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsRuns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsRuns;"
+                        (click)="openValidationMetrics(row)"
+                    ></tr>
+                </table>
+            </div>
+        </div> 
+        <ng-template #isEmpty>
+            <div class="align-middle">No validation runs to show yet.</div>
+        </ng-template>       
+    </mat-card-content>
 </mat-card>
+
+<!-- Validate -->
+<mat-card class="validation-card">
+
+    <mat-card-header>
+        <mat-card-title class="principal-header">
+            Validate a model
+        </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+
+        <!-- List of trained models -->
+        <mat-card class="validation-card">
+            <mat-card-header>
+                <mat-card-title>
+                    Choose a trained model
+                </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div *ngIf="trainedModels.length > 0; else isEmpty">
+                    <div class="overflow">
+                        <table mat-table [dataSource]="trainedModels" class="mat-table">
+                            
+                            
+                            <ng-container matColumnDef="modelName" sticky>
+                                <th mat-header-cell *matHeaderCellDef>modelName</th> 
+                                <td mat-cell *matCellDef="let model"> {{model["modelName"]}} </td>
+                            </ng-container> 
+                            
+                            <ng-container [matColumnDef]="column" *ngFor="let column of loopColumnsTrained">
+                                <th mat-header-cell *matHeaderCellDef>{{column}}</th>
+                                <td mat-cell *matCellDef="let model"> {{model[column]}} </td>
+                            </ng-container> 
+                            
+                            <tr mat-header-row *matHeaderRowDef="displayedColumnsTrained"></tr>
+                            <tr mat-row *matRowDef="let run; columns: displayedColumnsTrained;"
+                                [class.active-row]="chosenModel === run"
+                                (click)="chosenModel = chosenModel === run ? undefined : run">
+                            </tr>
+                        </table>
+                    </div>
+                </div> 
+                <ng-template #isEmpty>
+                    <div class="align-middle">No trained models to show yet.</div>
+                </ng-template>       
+            </mat-card-content>
+        </mat-card>
+        
+        <!-- Form : name and fromTable -->
+        <mat-card class="validation-card">
+            <mat-card-header>
+                <mat-card-title>
+                    Validation parameters
+                </mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <form [formGroup]="validationForm" novalidate>
+                    <div class="row" style="padding-bottom: 10px;">
+                        <mat-slide-toggle formControlName="fromTable">Use created passengers?</mat-slide-toggle>
+                    </div>
+                    <div class="row">
+                        <mat-form-field class="full-width">
+                            <mat-label>Validation Run Name</mat-label>
+                            <input matInput placeholder="Ex. SurvivalValidation" formControlName="validationName">
+                            <mat-error *ngIf="validationForm.controls['validationName'].hasError('required')">
+                                Model Name is <strong>required</strong>
+                            </mat-error>
+                            <mat-error *ngIf="validationForm.controls['validationName'].hasError('pattern')">
+                                No white spaces please
+                            </mat-error>
+                        </mat-form-field>    
+                    </div>
+                </form>
+            </mat-card-content>
+        </mat-card>
+
+    </mat-card-content>
+
+    <mat-card-actions>
+        <button mat-raised-button color="primary" [disabled]="validationForm.invalid || chosenModel === undefined" (click)="validate()">Submit</button>
+    </mat-card-actions>
+</mat-card>
+        

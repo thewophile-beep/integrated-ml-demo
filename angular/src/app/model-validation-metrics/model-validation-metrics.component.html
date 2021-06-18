@@ -1,0 +1,17 @@
+<mat-dialog-content>
+    <mat-card class="metrics-card">
+        <mat-card-header>
+            <mat-card-title class="principal-header">
+                Metrics for <strong>{{data.validationRunName}}</strong>
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+
+            <mat-list role="list" *ngIf="validationMetrics.length > 0">
+                <mat-list-item role="listitem" *ngFor="let metric of validationMetrics">{{metric}}</mat-list-item>
+
+            </mat-list>
+
+        </mat-card-content>
+    </mat-card>
+</mat-dialog-content>

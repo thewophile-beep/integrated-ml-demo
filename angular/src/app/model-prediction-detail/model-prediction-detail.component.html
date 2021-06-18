@@ -1,4 +1,3 @@
-<mat-dialog-content>
     <mat-card class="dialog-card">
         <mat-card-header>
             <mat-card-title class="principal-header">Prediction</mat-card-title>
@@ -6,15 +5,21 @@
         </mat-card-header>
 
         <mat-card-content>
+            
             <div *ngIf="passenger">
-                <span>Predicting <strong>{{data.predicting}}</strong> with the following variables of passenger <strong>{{passenger.name}}</strong>:</span>
-                <ul>
-                    <li *ngFor="let variable of variableList">
+                <span matLine>Prediction: </span>
+                <div class="answer">
+                    <span matLine><strong>{{data.predicting | uppercase}}? {{data.predictedValue}}</strong></span>
+                </div>
+                <span matLine>Using the following variables of passenger <strong>{{passenger.name}}</strong>:</span>
+                <mat-list role="list">
+                    <mat-list-item role="listitem" *ngFor="let variable of variableList; let isLast = last;"  class="list-var">
                         <strong>{{variable}}</strong>: {{passenger[variable]}}
-                    </li>
-                </ul>
-                <span><strong>{{data.predicting | uppercase}}?</strong> {{data.predictedValue}}</span>
-            </div>
+                        <div *ngIf="!isLast">
+                            <mat-divider></mat-divider>
+                        </div>
+                    </mat-list-item>
+                </mat-list>
+        </div>
         </mat-card-content>
     </mat-card>
-</mat-dialog-content>

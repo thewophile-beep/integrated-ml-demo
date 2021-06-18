@@ -2,7 +2,6 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { PassengerService } from "../passenger.service"
 
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Passenger } from '../passenger';
 
 @Component({
   selector: 'app-model-prediction-detail',

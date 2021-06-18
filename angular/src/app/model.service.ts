@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 
-import { mlModel } from './mlModel';
-import { mlTrainingModel } from './mlTrainingModel';
-import { mlTrainedModel } from './mlTrainedModel';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -136,5 +133,35 @@ export class ModelService {
       tap(response => this.log(response.query)),
       catchError(this.handleError<any>('predict'))
     )
+  }
+
+  getValidationRuns(): Observable<any> {
+    const url = this.ModelsUrl + "/validations";
+    return this.http.get<any>(url).pipe(
+      // tap(response => this.log(response.query)),
+      catchError(this.handleError<any>('getValidationRuns', []))
+    );
+  }
+
+  validateModel(modelName: string, validationName: string, trainedModelName: string, fromTable: string): Observable<any> {
+    const url = this.ModelsUrl + "/validations";
+    const payloadBody = {
+      modelName: modelName,
+      validationName: validationName,
+      trainedModelName: trainedModelName,
+      fromTable: fromTable
+    }
+    return this.http.post<any>(url, payloadBody, this.httpOptions).pipe(
+      tap(response => this.log(response.query)),
+      catchError(this.handleError<any>('validateModel'))
+    );
+  }
+
+  getMetrics(validationName: string): Observable<any> {
+    const url = this.ModelsUrl + "/validations/metrics?validationName=" + validationName;
+    return this.http.get<any>(url).pipe(
+      // tap(response => this.log(response.query)),
+      catchError(this.handleError<any>('getMetrics', []))
+    );
   }
 }
