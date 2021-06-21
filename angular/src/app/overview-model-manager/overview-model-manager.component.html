@@ -3,6 +3,39 @@
         <mat-card-title class="principal-header">The Model Manager</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-
+        <p>
+            IntegratedML enables us to create, train and validate our model in 3 simple SQL queries. You will be able to see those queries in the <strong>Messages</strong> section of the side navigation bar. 
+        </p>
+        <mat-card class="text-card">
+            <p>
+                In the <strong>Model List</strong> tab, you will be able to consult the details of all already created models, as well as create new ones for the Titanic Passenger Dataset. <br>
+                You will be able to select the value you want to predict. A selection of the variables of the dataset is disponible. The most interesting one is obviously the "survived" value. You will be asked to give a name, and you will have a few options:
+            </p>
+                <ul>
+                    <li>You can chose wether you want to have this model train on the newly created passenger or not. Say you don't want to overfit the predicted value for a new passenger, you can decide to use only the 891 first passengers of the dataset (even if you delete som passengers, the newly created will have IDs above 892).</li>
+                    <li>You can chose the variables with which the model will predict the value you asked for. Not choosing any will by default take all the variables except the one we want to predict.</li>
+                </ul>
+            <p>
+                Other than predicting if the passenger survived or not, it can be a fun experience training models to, for example, predict the sex of the passenger or the fare of the ticket (spoiler: it depends a lot on the class and the port of embarkment). 
+            </p>
+        </mat-card>
+        <mat-card class="text-card">
+            <p>
+                In the <strong>Train Model</strong> tab, you will be able to train those models, as well as see the details of the training runs already done. There you will have the choice of the provider you want to use:
+            </p>
+                <ul>
+                    <li>AutoML: developed by InterSystems and housed within InterSystems IRIS;</li>
+                    <li>H2O: an open-source AutoML interface.</li>
+                </ul>
+            <p>
+                An additionnal SQL query is done before training, to make sure that the ML Configuration is set to the good provider. <br>
+                The dataset being quite small, training a model can take up to a minute.
+            </p>
+        </mat-card>
+        <mat-card  class="text-card">
+            <p>
+                Finally, in the <strong>Validate Model</strong> tab, you will be able to validate your trained models. That is, you will have access to metrics calculated with the dataset (and the newly created passenger or not) representing the performances of the model. 
+            </p>
+        </mat-card>
     </mat-card-content>
 </mat-card>

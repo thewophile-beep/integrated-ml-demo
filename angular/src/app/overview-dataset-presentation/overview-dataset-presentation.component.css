@@ -7,4 +7,29 @@
 
 .principal-header {
     font-size: 35px;
-  }
+}
+
+.mat-card-content {
+    font-size: 15px;
+    padding-left: 20px;
+    padding-right: 20px;
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+li {
+    margin-bottom: 7px;
+}
+
+li:last-child {
+    margin-bottom: 0px;
+}
+
+ul {
+    padding: 1px;  
+    padding-left: 40px;
+}
+
+.list-card {
+    margin: 20px auto;
+}

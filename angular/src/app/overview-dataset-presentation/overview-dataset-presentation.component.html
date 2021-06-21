@@ -2,25 +2,27 @@
     <mat-card-header>
         <mat-card-title class="principal-header">The Titanic Dataset</mat-card-title>
     </mat-card-header>
-    <mat-card-content>
+    <mat-card-content class="text">
         <p>
-            The Titanic Dataset is a dataset composed the data of 891 passengers that were on the Titanic when it sank. For each passenger, we have part or all of the following informations :    
+            The Titanic Dataset is a dataset composed the data of 891 passengers that were on the Titanic when it sank. For each passenger, we have part or all of the following informations:    
         </p>
-        <ul>
-            <li>name: the name of the passenger;</li>
-            <li>sex: the sex of the passenger;</li>
-            <li>age: the age of the passenger;</li>
-            <li>survived: the passenger survived or not;</li>
-            <li>class: the class the passenger traveled in;</li>
-            <li>sibSp: the number of siblings and spouses / husbands the passenger has aboard;</li>
-            <li>parCh: the number of parents and children the passengers has aboard;</li>
-            <li>ticket: the ticket number of the passenger;</li>
-            <li>fare: the price the passenger paid for their ticket;</li>
-            <li>cabin: the cabin reference of the passenger;</li>
-            <li>embarked: the port from which the passenger embarked (Cherbourg, Queenstown or Southampton).</li>
-        </ul>
+        <mat-card class="list-card">
+            <ul>
+                <li><strong>name</strong>: the name of the passenger;</li>
+                <li><strong>sex</strong>: the sex of the passenger;</li>
+                <li><strong>age</strong>: the age of the passenger;</li>
+                <li><strong>survived</strong>: the passenger survived or not;</li>
+                <li><strong>class</strong>: the class the passenger traveled in;</li>
+                <li><strong>sibSp</strong>: the number of siblings and spouses / husbands the passenger has aboard;</li>
+                <li><strong>parCh</strong>: the number of parents and children the passengers has aboard;</li>
+                <li><strong>ticket</strong>: the ticket number of the passenger;</li>
+                <li><strong>fare</strong>: the price the passenger paid for their ticket;</li>
+                <li><strong>cabin</strong>: the cabin reference of the passenger;</li>
+                <li><strong>embarked</strong>: the port from which the passenger embarked (Cherbourg, Queenstown or Southampton).</li>
+            </ul>
+        </mat-card>
         <p>
-            The importation from the csv file to the IRIS instance in the docker container is done through the "csvgen" package, thanks to the `iris/iris.script` file. The first step of this project was to create a CRUD to manage these passengers. In the two other tabs of this section, you will be able to Create, Read, Update or Delete instances of Passenger objects. 
+            The importation from the csv file to the IRIS instance in the docker container is done through the "csvgen" package, thanks to the `iris/iris.script` file. In the two other tabs of this section, you will be able to Create, Read, Update or Delete instances of Passenger objects. 
         </p>
         
     </mat-card-content>
