@@ -1,6 +1,6 @@
 /// Rest API for the Integrated ML Demo on the Titanic database<br/>
 /// Business logic class defined by OpenAPI in Titanic.REST.spec<br/>
-/// Updated Jun 18, 2021 10:20:54
+/// Updated Jun 21, 2021 07:58:12
 Class Titanic.REST.impl Extends %REST.Impl [ ProcedureBlock ]
 {
 
@@ -335,14 +335,39 @@ ClassMethod getMetrics(validationName As %String) As %Stream.Object
 {
     set tDyna = {}
     set tMetrics = []
+    set tLine = ""
     set myquery = "SELECT * FROM INFORMATION_SCHEMA.ML_VALIDATION_METRICS WHERE (VALIDATION_RUN_NAME='"_validationName_"')"
     set tStatement = ##class(%SQL.Statement).%New()
     $$$ThrowOnError(tStatement.%Prepare(myquery))
     set tRs = tStatement.%Execute()	 	 
     while (tRs.%Next()) {
-        do tMetrics.%Push(tRs."METRIC_NAME"_" : "_tRs."METRIC_VALUE")
+        set tLine = tRs."METRIC_NAME"_" : "_tRs."METRIC_VALUE"
+        if (tRs."TARGET_VALUE") {
+            set tLine = tLine_"  - for target value: "_tRs."TARGET_VALUE"
+        }
+        do tMetrics.%Push(tLine)
     }
     set tDyna."metrics" = tMetrics
+    set tDyna."query" = myquery
+    quit tDyna
+}
+
+/// Gives the probability of being predicted the labelValue with a certain model, a certain trained model and a certain passenger<br/>
+/// The method arguments hold values for:<br/>
+///     model, Model to predict with<br/>
+///     trainedModel, Trained Model to predict with<br/>
+///     labelValue, Label of the value for probability<br/>
+///     passenger, ID of the passenger<br/>
+/// WARNING: This method's signature has changed.
+ClassMethod probability(model As %String, trainedModel As %String, labelValue As %String, passenger As %String) As %Stream.Object
+{
+    set myquery = "SELECT PROBABILITY("_model_" USE "_trainedModel_" FOR '"_labelValue_"') FROM Titanic_Table.Passenger WHERE ID="_passenger
+    set tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    set tRs = tStatement.%Execute()
+    do tRs.%Next()
+    set tDyna = {}
+    set tDyna."probability" = tRs.%Get("Expression_1") 
     set tDyna."query" = myquery
     quit tDyna
 }

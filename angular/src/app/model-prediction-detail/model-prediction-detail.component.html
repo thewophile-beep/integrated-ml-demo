@@ -1,6 +1,6 @@
     <mat-card class="dialog-card">
         <mat-card-header>
-            <mat-card-title class="principal-header">Prediction</mat-card-title>
+            <mat-card-title class="principal-header">Prediction for {{passenger.name | uppercase}}</mat-card-title>
             <mat-card-subtitle>Using <strong>{{data.model}}</strong> model with <strong>{{data.trainedModel}}</strong> run.</mat-card-subtitle>
         </mat-card-header>
 
@@ -10,6 +10,9 @@
                 <span matLine>Prediction: </span>
                 <div class="answer">
                     <span matLine><strong>{{data.predicting | uppercase}}? {{data.predictedValue}}</strong></span>
+                    <div *ngIf="data.probability.length > 0">
+                        <span matLine>with probability: {{data.probability}}</span>
+                    </div>
                 </div>
                 <span matLine>Using the following variables of passenger <strong>{{passenger.name}}</strong>:</span>
                 <mat-list role="list">

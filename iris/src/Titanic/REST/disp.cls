@@ -54,6 +54,8 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
   <Route Url="/ml/predictions/models" Method="get" Call="getTrainedModels" />
   <!-- Predict with a model and an id -->
   <Route Url="/ml/predictions" Method="get" Call="predict" />
+  <!-- Probabilities of having labelValue value predicted -->
+  <Route Url="/ml/predictions/probabilities" Method="get" Call="probability" />
 </Routes>
 }
 
@@ -301,6 +303,38 @@ ClassMethod predict() As %Status
         }
         Set ppassenger=%request.Data("passenger",1)
         Set response=##class(Titanic.REST.impl).predict(pmodel,ptrainedModel,ppassenger)
+        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
+/// Probabilities of having labelValue value predicted
+ClassMethod probability() As %Status
+{
+    Try {
+        If '$data(%request.Data("model",1)) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"model")) Quit
+        If $data(%request.Data("model",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"model")) Quit
+        }
+        Set pmodel=%request.Data("model",1)
+        If '$data(%request.Data("trainedModel",1)) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"trainedModel")) Quit
+        If $data(%request.Data("trainedModel",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"trainedModel")) Quit
+        }
+        Set ptrainedModel=%request.Data("trainedModel",1)
+        If '$data(%request.Data("labelValue",1)) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"labelValue")) Quit
+        If $data(%request.Data("labelValue",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"labelValue")) Quit
+        }
+        Set plabelValue=%request.Data("labelValue",1)
+        If '$data(%request.Data("passenger",1)) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"passenger")) Quit
+        If $data(%request.Data("passenger",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"passenger")) Quit
+        }
+        Set ppassenger=%request.Data("passenger",1)
+        Set response=##class(Titanic.REST.impl).probability(pmodel,ptrainedModel,plabelValue,ppassenger)
         Do ##class(Titanic.REST.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))

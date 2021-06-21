@@ -164,4 +164,12 @@ export class ModelService {
       catchError(this.handleError<any>('getMetrics', []))
     );
   }
+
+  probability(model: string, trainedModelName: string, labelValue: string, passenger: string): Observable<any> {
+    const url = `${this.ModelsUrl}/predictions/probabilities?model=${model}&trainedModel=${trainedModelName}&labelValue=${labelValue}&passenger=${passenger}`;
+    return this.http.get<any>(url, this.httpOptions).pipe(
+      tap(probability => this.log(probability.query)),
+      catchError(this.handleError<any>('probability'))
+    )
+  }
 }

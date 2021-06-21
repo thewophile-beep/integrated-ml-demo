@@ -646,6 +646,66 @@ XData OpenAPI [ MimeType = application/json ]
           }
         }
       }
+    },
+    "/ml/predictions/probabilities": {
+      "get": {
+        "parameters": [
+          {
+            "name": "model",
+            "in": "query",
+            "description": "Model to predict with",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "trainedModel",
+            "in": "query",
+            "description": "Trained Model to predict with",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "labelValue",
+            "in": "query",
+            "description": "Label of the value for probability",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "passenger",
+            "in": "query",
+            "description": "ID of the passenger",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "description": "Gives the probability of being predicted the labelValue with a certain model, a certain trained model and a certain passenger",
+        "summary": "Probabilities of having labelValue value predicted",
+        "operationId": "probability",
+        "x-ISC_ServiceMethod": "probability",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "probability": {
+                  "type": "string"
+                },
+                "query": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "(Bad Request)"
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      }
     }
   },
   "definitions": {

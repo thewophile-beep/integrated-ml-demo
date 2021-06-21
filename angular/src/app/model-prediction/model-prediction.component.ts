@@ -42,9 +42,12 @@ export class ModelPredictionComponent implements OnInit {
       withVariables: "",
       passenger: "",
       predictedValue: "",
+      probability: ""
     }
+
     if (this.chosenModel && this.chosenPassenger) {
 
+      // Preparing data to send to dialog
       data.model = this.chosenModel.modelName;
       data.trainedModel = this.chosenModel.trainedModelName;
       const currModel = this.models.find(model => model.modelName === data.model);
@@ -52,19 +55,39 @@ export class ModelPredictionComponent implements OnInit {
         data.predicting = currModel.predictingColumnName
         data.withVariables = currModel.withColumns;
       }
-
       data.passenger = this.chosenPassenger;
+
+      // Predicting
       this.modelService.predict(this.chosenModel.modelName, this.chosenModel.trainedModelName, this.chosenPassenger).subscribe(
         predicted => {
-          this.newPrediction = String(predicted.predictedValue);
-          if (this.newPrediction.length === 0)
-            data.predictedValue = "Error :( try another model ?";
-          if (this.chosenModel && this.chosenPassenger)
-            data.predictedValue = this.newPrediction;
-          this.toggleWaiting();
-          this.dialog.open(ModelPredictionDetailComponent, {
-            data: data
-          });
+          data.predictedValue = String(predicted.predictedValue);
+          // if of type classification + prediction retreived, retreive probability too
+          if (this.chosenModel && this.chosenPassenger && (this.chosenModel.modelType === "classification")) {
+              this.modelService.probability(this.chosenModel.modelName, this.chosenModel.trainedModelName, data.predictedValue, this.chosenPassenger).subscribe(
+                response => {
+
+                  // Quick and ugly fix to pb with survived field:
+                  if (response.probability < 0.5) {
+                    data.probability = String(1 - response.probability)
+                  } else {
+                    data.probability = String(response.probability)
+                  }
+                  // End waiting
+                  this.toggleWaiting();
+                  // Launch dialog
+                  this.dialog.open(ModelPredictionDetailComponent, {
+                    data: data
+                  });
+                }
+              )
+          } else {
+            // End waiting
+            this.toggleWaiting();
+            // Launch dialog
+            this.dialog.open(ModelPredictionDetailComponent, {
+              data: data
+            });
+          }
         }
       )
       
