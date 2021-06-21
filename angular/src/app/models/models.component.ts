@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { mlModel } from '../mlModel';
 import { ModelService } from '../model.service';
 import { FormBuilder, Validators } from '@angular/forms';
-import { variableType } from './variableType';
 
 @Component({
   selector: 'app-models',
@@ -17,7 +16,7 @@ export class ModelsComponent implements OnInit {
   withVariables: string[] = [];
   fromTable: string = "";
 
-  possibleVariables: variableType[] = [
+  possibleVariables = [
     {name:'survived', value: 'survived integer'},
     {name:'class', value: 'class integer'},
     {name:'name', value: 'name string'},

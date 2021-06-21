@@ -342,7 +342,7 @@ ClassMethod getMetrics(validationName As %String) As %Stream.Object
     set tRs = tStatement.%Execute()	 	 
     while (tRs.%Next()) {
         set tLine = tRs."METRIC_NAME"_" : "_tRs."METRIC_VALUE"
-        if (tRs."TARGET_VALUE") {
+        if ($length(tRs."TARGET_VALUE")) {
             set tLine = tLine_"  - for target value: "_tRs."TARGET_VALUE"
         }
         do tMetrics.%Push(tLine)

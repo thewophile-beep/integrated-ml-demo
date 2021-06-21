@@ -58,13 +58,7 @@
                     <mat-form-field class="full-width">
                         <mat-label>Value to predict</mat-label>
                         <mat-select formControlName="predicting">
-                            <mat-option value="survived">Survived</mat-option>
-                            <mat-option value="class">Class</mat-option>
-                            <mat-option value="sex">Sex</mat-option>
-                            <mat-option value="age">Age</mat-option>
-                            <mat-option value="SibSp">Siblings / Spouse</mat-option>
-                            <mat-option value="Parch">Parents / Children</mat-option>
-                            <mat-option value="fare">Fare</mat-option>
+                            <mat-option *ngFor="let field of possibleVariables" [value]="field.name">{{field.name}}</mat-option>
                         </mat-select>
                     </mat-form-field>
                 </div>
@@ -87,19 +81,19 @@
             </div>
 
             <h2>Variables to use:</h2>
-            <p class="subtitle">If none selected, it will chose all the variables except the one to predict.</p>
+            <p class="subtitle">If none selected, it will choose all the variables except the one to predict (it will select the IDs too).</p>
             <div class="row">
-                <mat-checkbox class="check-var" formControlName="survived">survived</mat-checkbox>
-                <mat-checkbox class="check-var" formControlName="class">class</mat-checkbox>
-                <mat-checkbox class="check-var" formControlName="name">name</mat-checkbox>
-                <mat-checkbox class="check-var" formControlName="sex">sex</mat-checkbox>
-                <mat-checkbox class="check-var" formControlName="age">age</mat-checkbox>
-                <mat-checkbox class="check-var" formControlName="sibSp">sibSp</mat-checkbox>
-                <mat-checkbox class="check-var" formControlName="parCh">parCh</mat-checkbox>
-                <mat-checkbox class="check-var" formControlName="ticket">ticket</mat-checkbox>
-                <mat-checkbox class="check-var" formControlName="fare">fare</mat-checkbox>
-                <mat-checkbox class="check-var" formControlName="cabin">cabin</mat-checkbox>
-                <mat-checkbox class="check-var" formControlName="embarked">embarked</mat-checkbox>
+                <mat-checkbox class="check-var" [disabled]="modelForm.value.predicting === 'survived'" formControlName="survived">survived</mat-checkbox>
+                <mat-checkbox class="check-var" [disabled]="modelForm.value.predicting === 'class'" formControlName="class">class</mat-checkbox>
+                <mat-checkbox class="check-var" [disabled]="modelForm.value.predicting === 'name'" formControlName="name">name</mat-checkbox>
+                <mat-checkbox class="check-var" [disabled]="modelForm.value.predicting === 'sex'" formControlName="sex">sex</mat-checkbox>
+                <mat-checkbox class="check-var" [disabled]="modelForm.value.predicting === 'age'" formControlName="age">age</mat-checkbox>
+                <mat-checkbox class="check-var" [disabled]="modelForm.value.predicting === 'sibSp'" formControlName="sibSp">sibSp</mat-checkbox>
+                <mat-checkbox class="check-var" [disabled]="modelForm.value.predicting === 'parCh'" formControlName="parCh">parCh</mat-checkbox>
+                <mat-checkbox class="check-var" [disabled]="modelForm.value.predicting === 'ticket'" formControlName="ticket">ticket</mat-checkbox>
+                <mat-checkbox class="check-var" [disabled]="modelForm.value.predicting === 'fare'" formControlName="fare">fare</mat-checkbox>
+                <mat-checkbox class="check-var" [disabled]="modelForm.value.predicting === 'cabin'" formControlName="cabin">cabin</mat-checkbox>
+                <mat-checkbox class="check-var" [disabled]="modelForm.value.predicting === 'embarked'" formControlName="embarked">embarked</mat-checkbox>
             </div>
         </form>
     </mat-card-content>

@@ -1,12 +1,3 @@
-.row {
-    display: flex;
-    flex-direction: row;
-}
-
-.col {
-    flex: 1;
-    margin-right: 20px;
-}
 .validation-card {
     min-width: 120px;
     margin: 20px;
@@ -14,12 +5,12 @@
     margin-right: 20px;
 }
 
-.overflow {
-    overflow-x: scroll;
-}
-
 .principal-header {
     font-size: 35px;
+}
+
+.overflow {
+    overflow-x: scroll;
 }
 
 .example-form {
