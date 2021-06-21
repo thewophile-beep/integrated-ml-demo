@@ -19,6 +19,6 @@ export class ModelValidationMetricsComponent implements OnInit {
   }
 
   getAll() {
-    this.modelService.getMetrics(this.data.validationRunName).subscribe(response => this.validationMetrics = response.metrics)
+    this.modelService.getMetrics(this.data.modelName, this.data.validationRunName).subscribe(response => this.validationMetrics = response.metrics)
   }
 }

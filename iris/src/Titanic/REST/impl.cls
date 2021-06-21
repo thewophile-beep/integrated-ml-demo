@@ -1,6 +1,6 @@
 /// Rest API for the Integrated ML Demo on the Titanic database<br/>
 /// Business logic class defined by OpenAPI in Titanic.REST.spec<br/>
-/// Updated Jun 21, 2021 07:58:12
+/// Updated Jun 21, 2021 13:12:30
 Class Titanic.REST.impl Extends %REST.Impl [ ProcedureBlock ]
 {
 
@@ -330,13 +330,15 @@ ClassMethod validateModel(validationInfo As %Stream.Object) As %Stream.Object
 
 /// Get all metrics for given validation run<br/>
 /// The method arguments hold values for:<br/>
+///     modelName, The model from which we want to select a validation run<br/>
 ///     validationName, The validation run we want to retreive the metrics from<br/>
-ClassMethod getMetrics(validationName As %String) As %Stream.Object
+/// WARNING: This method's signature has changed.
+ClassMethod getMetrics(modelName As %String, validationName As %String) As %Stream.Object
 {
     set tDyna = {}
     set tMetrics = []
     set tLine = ""
-    set myquery = "SELECT * FROM INFORMATION_SCHEMA.ML_VALIDATION_METRICS WHERE (VALIDATION_RUN_NAME='"_validationName_"')"
+    set myquery = "SELECT * FROM INFORMATION_SCHEMA.ML_VALIDATION_METRICS WHERE (VALIDATION_RUN_NAME='"_validationName_"' AND MODEL_NAME='"_modelName_"')"
     set tStatement = ##class(%SQL.Statement).%New()
     $$$ThrowOnError(tStatement.%Prepare(myquery))
     set tRs = tStatement.%Execute()	 	 
@@ -358,7 +360,6 @@ ClassMethod getMetrics(validationName As %String) As %Stream.Object
 ///     trainedModel, Trained Model to predict with<br/>
 ///     labelValue, Label of the value for probability<br/>
 ///     passenger, ID of the passenger<br/>
-/// WARNING: This method's signature has changed.
 ClassMethod probability(model As %String, trainedModel As %String, labelValue As %String, passenger As %String) As %Stream.Object
 {
     set myquery = "SELECT PROBABILITY("_model_" USE "_trainedModel_" FOR '"_labelValue_"') FROM Titanic_Table.Passenger WHERE ID="_passenger

@@ -526,6 +526,12 @@
         "parameters": [
           {
             "in": "query",
+            "name": "modelName",
+            "type": "string",
+            "description": "The model from which we want to select a validation run"
+          },
+          {
+            "in": "query",
             "name": "validationName",
             "type": "string",
             "description": "The validation run we want to retreive the metrics from"

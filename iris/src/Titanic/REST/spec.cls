@@ -403,6 +403,49 @@ XData OpenAPI [ MimeType = application/json ]
         }
       }
     },
+    "/ml/trainings/configurations": {
+      "put": {
+        "description": "Update ml configuration (H20 or AutoML, for now)",
+        "summary": "Update configuration",
+        "operationId": "changeConfiguration",
+        "x-ISC_ServiceMethod": "changeConfiguration",
+        "parameters": [
+          {
+            "name": "configName",
+            "in": "body",
+            "description": "Configuration name to use",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "configName": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "(Bad Request)"
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      }
+    },
     "/ml/validations": {
       "get": {
         "description": "Get all validation runs",
@@ -488,6 +531,12 @@ XData OpenAPI [ MimeType = application/json ]
         "parameters": [
           {
             "in": "query",
+            "name": "modelName",
+            "type": "string",
+            "description": "The model from which we want to select a validation run"
+          },
+          {
+            "in": "query",
             "name": "validationName",
             "type": "string",
             "description": "The validation run we want to retreive the metrics from"
@@ -514,49 +563,6 @@ XData OpenAPI [ MimeType = application/json ]
           },
           "204": {
             "description": "(Not Found)"
-          },
-          "default": {
-            "description": "(Unexpected Error)"
-          }
-        }
-      }
-    },
-    "/ml/trainings/configurations": {
-      "put": {
-        "description": "Update ml configuration (H20 or AutoML, for now)",
-        "summary": "Update configuration",
-        "operationId": "changeConfiguration",
-        "x-ISC_ServiceMethod": "changeConfiguration",
-        "parameters": [
-          {
-            "name": "configName",
-            "in": "body",
-            "description": "Configuration name to use",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "configName": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "(Expected Result)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "query": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "(Bad Request)"
           },
           "default": {
             "description": "(Unexpected Error)"

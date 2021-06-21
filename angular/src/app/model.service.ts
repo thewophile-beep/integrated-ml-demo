@@ -157,8 +157,8 @@ export class ModelService {
     );
   }
 
-  getMetrics(validationName: string): Observable<any> {
-    const url = this.ModelsUrl + "/validations/metrics?validationName=" + validationName;
+  getMetrics(modelName: string, validationName: string): Observable<any> {
+    const url = this.ModelsUrl + "/validations/metrics?modelName=" + modelName + "&validationName=" + validationName;
     return this.http.get<any>(url).pipe(
       // tap(response => this.log(response.query)),
       catchError(this.handleError<any>('getMetrics', []))
