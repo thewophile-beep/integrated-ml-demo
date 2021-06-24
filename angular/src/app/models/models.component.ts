@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { mlModel } from '../mlModel';
 import { ModelService } from '../model.service';
 import { FormBuilder, Validators } from '@angular/forms';
-
+import { MatChip } from '@angular/material/chips';
 @Component({
   selector: 'app-models',
   templateUrl: './models.component.html',
@@ -17,34 +17,23 @@ export class ModelsComponent implements OnInit {
   fromTable: string = "";
 
   possibleVariables = [
-    {name:'survived', value: 'survived integer'},
-    {name:'class', value: 'class integer'},
-    {name:'name', value: 'name string'},
-    {name:'sex', value: 'sex string'},
-    {name:'age', value: 'age integer'},
-    {name:'sibSp', value: 'sibSp integer'},
-    {name:'parCh', value: 'parCh integer'},
-    {name:'ticket', value: 'ticket string'},
-    {name:'fare', value: 'fare numeric'},
-    {name:'cabin', value: 'cabin string'},
-    {name:'embarked', value: 'embarked string'},
+    {name:'survived', value: 'survived integer', selected: false},
+    {name:'class', value: 'class integer', selected: false},
+    {name:'name', value: 'name string', selected: false},
+    {name:'sex', value: 'sex string', selected: false},
+    {name:'age', value: 'age integer', selected: false},
+    {name:'sibSp', value: 'sibSp integer', selected: false},
+    {name:'parCh', value: 'parCh integer', selected: false},
+    {name:'ticket', value: 'ticket string', selected: false},
+    {name:'fare', value: 'fare numeric', selected: false},
+    {name:'cabin', value: 'cabin string', selected: false},
+    {name:'embarked', value: 'embarked string', selected: false},
   ]
 
   modelForm = this.fb.group({
     modelName: ['', [Validators.required, Validators.pattern(/^\S*$/)]],
     predicting: [null, Validators.required],
     fromTable: [false, Validators.required],
-    survived: false,
-    class: false,
-    name: false,
-    sex: false,
-    age: false,
-    sibSp: false,
-    parCh: false,
-    ticket: false,
-    fare: false,
-    cabin: false,
-    embarked: false,
   })
   
   constructor(private modelService: ModelService, private fb: FormBuilder) { }
@@ -73,7 +62,7 @@ export class ModelsComponent implements OnInit {
     })
     if (isValid) {
       for (let i = 0; i < this.possibleVariables.length; i++) {
-        if (this.modelForm.controls[this.possibleVariables[i].name].value === true) {
+        if (this.possibleVariables[i].selected === true) {
           this.withVariables.push(this.possibleVariables[i].value)
         }
       }
@@ -90,5 +79,22 @@ export class ModelsComponent implements OnInit {
     }
   }
 
+  toggleSelection(chip: MatChip) {
+    if (!chip.disabled) {
+      chip.toggleSelected();
+      const index = this.possibleVariables.findIndex(i => i.name === chip.value)
+      this.possibleVariables[index].selected = !this.possibleVariables[index].selected;
+    }
+  }
+
+  checkingPredicting(chip: MatChip): boolean {
+    if (this.modelForm.value.predicting === chip.value) {
+      if (chip.selected) {
+        this.toggleSelection(chip);
+      }
+      return true;
+    }
+    return false;
+  }
 }
     

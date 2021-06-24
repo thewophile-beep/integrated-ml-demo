@@ -16,16 +16,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'angular-tour-of-passengers'`, () => {
+  it(`should have as title 'integrated-ml-demo'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('angular-tour-of-passengers');
+    expect(app.title).toEqual('integrated-ml-demo');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('angular-tour-of-passengers app is running!');
+    expect(compiled.querySelector('.content span').textContent).toContain('integrated-ml-demo app is running!');
   });
 });

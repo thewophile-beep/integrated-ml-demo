@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "angular-tour-of-passengers": {
+    "integrated-ml-demo": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:application": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/angular-tour-of-passengers",
+            "outputPath": "dist/integrated-ml-demo",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -69,10 +69,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "angular-tour-of-passengers:build:production"
+              "browserTarget": "integrated-ml-demo:build:production"
             },
             "development": {
-              "browserTarget": "angular-tour-of-passengers:build:development"
+              "browserTarget": "integrated-ml-demo:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -80,7 +80,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "angular-tour-of-passengers:build"
+            "browserTarget": "integrated-ml-demo:build"
           }
         },
         "test": {
@@ -104,5 +104,5 @@
       }
     }
   },
-  "defaultProject": "angular-tour-of-passengers"
+  "defaultProject": "integrated-ml-demo"
 }

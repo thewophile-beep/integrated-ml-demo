@@ -47,6 +47,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ModelPredictionDetailComponent } from './model-prediction-detail/model-prediction-detail.component';
 import { ModelValidationComponent } from './model-validation/model-validation.component';
 import { ModelValidationMetricsComponent } from './model-validation-metrics/model-validation-metrics.component'; 
+import {MatChipsModule} from '@angular/material/chips'; 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -96,6 +98,7 @@ import { ModelValidationMetricsComponent } from './model-validation-metrics/mode
     MatDialogModule,
     MatCheckboxModule,
     MatSlideToggleModule,
+    MatChipsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
