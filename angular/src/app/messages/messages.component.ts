@@ -7,6 +7,8 @@ import { MessageService } from '../message.service';
 })
 export class MessagesComponent implements OnInit {
 
+  isChecked: boolean = false;
+
   constructor(public messageService: MessageService) { }
 
   ngOnInit(): void {

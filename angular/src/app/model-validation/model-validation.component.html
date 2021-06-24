@@ -112,9 +112,11 @@
     </mat-card-content>
 
     <mat-card-actions>
-        <button mat-raised-button color="primary" [disabled]="validationForm.invalid || !chosenModel || waiting" (click)="validate()">Submit</button>
-        <div *ngIf="waiting" class="spinner">
-            <mat-progress-spinner diameter="20" mode="indeterminate"></mat-progress-spinner>
+        <div class="row">
+            <button mat-raised-button color="primary" [disabled]="validationForm.invalid || !chosenModel || waiting" (click)="validate()">Submit</button>
+            <div *ngIf="waiting" class="spinner">
+                <mat-progress-spinner diameter="20" mode="indeterminate"></mat-progress-spinner>
+            </div>
         </div>
     </mat-card-actions>
 </mat-card>

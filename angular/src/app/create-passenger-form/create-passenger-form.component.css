@@ -34,4 +34,5 @@
 
 .passenger-creation-card {
   margin-bottom: 15px;
+  overflow: scroll auto;
 }

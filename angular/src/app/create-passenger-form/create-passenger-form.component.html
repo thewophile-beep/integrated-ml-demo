@@ -11,7 +11,7 @@
                 </mat-card-header>
                 <mat-card-content>
                     <div class="row">
-                        <!-- Left : Name and Age -->
+                        <!-- Name and Age -->
                         <div class="col">
                             <!-- Name Field -->
                             <div class="row">
@@ -43,7 +43,7 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Right : Sex -->
+                        <!-- Sex -->
                         <div class="col">
                             <mat-label>Passenger Sex</mat-label>
                             <mat-radio-group formControlName="sex">
@@ -51,6 +51,40 @@
                                 <mat-radio-button value="female">Female</mat-radio-button>
                                 <mat-radio-button [value]="">Other</mat-radio-button>
                             </mat-radio-group>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- survived -->
+                        <div class="col">
+                            <mat-label>Did the passenger survive?</mat-label>
+                            <mat-radio-group formControlName="survived">
+                                <mat-radio-button [value]="1">Yes!</mat-radio-button>
+                                <mat-radio-button [value]="0">No...</mat-radio-button>
+                                <mat-radio-button [value]="">Unknown</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                        <!-- parCh / sibSp -->
+                        <div class="col">
+                            <!-- sibSp -->
+                            <div class="row">
+                                <mat-form-field class="full-width">
+                                    <input type="number" matInput placeholder="Siblings / Spouses aboard" formControlName="sibSp" min="0">
+                                    <mat-error *ngIf="passengerForm.controls['sibSp'].hasError('required')">
+                                        Number of siblings / spouses aboard is <strong>required</strong>
+                                    </mat-error>
+                                    <mat-error *ngIf="passengerForm.controls['sibSp'].hasError('min')">No negative values</mat-error>
+                                </mat-form-field>
+                            </div>
+                            <!-- parCh -->
+                            <div class="row">
+                                <mat-form-field class="full-width">
+                                    <input type="number" matInput placeholder="Parents / Children aboard" formControlName="parCh" min="0">
+                                    <mat-error *ngIf="passengerForm.controls['parCh'].hasError('required')">
+                                        Number of parents / children aboard is <strong>required</strong>
+                                    </mat-error>
+                                    <mat-error *ngIf="passengerForm.controls['parCh'].hasError('min')">No negative values</mat-error>
+                                </mat-form-field>
+                            </div>
                         </div>
                     </div>
                 </mat-card-content>
@@ -111,53 +145,6 @@
                 </mat-card-content>
             </mat-card>
             
-            <!-- Card : Family Information -->
-            <mat-card class="passenger-creation-card">
-                <mat-card-header>
-                    <mat-card-title>Family Information</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <!-- parC / parCh -->
-                    <div class="row">
-                        <!-- sibSp -->
-                        <div class="col">
-                            <mat-form-field class="full-width">
-                                <input type="number" matInput placeholder="Siblings / Spouses aboard" formControlName="sibSp" min="0">
-                                <mat-error *ngIf="passengerForm.controls['sibSp'].hasError('required')">
-                                    Number of siblings / spouses aboard is <strong>required</strong>
-                                </mat-error>
-                                <mat-error *ngIf="passengerForm.controls['sibSp'].hasError('min')">No negative values</mat-error>
-                            </mat-form-field>
-                        </div>
-                        <!-- parCh -->
-                        <div class="col">
-                            <mat-form-field class="full-width">
-                                <input type="number" matInput placeholder="Parents / Children aboard" formControlName="parCh" min="0">
-                                <mat-error *ngIf="passengerForm.controls['parCh'].hasError('required')">
-                                    Number of parents / children aboard is <strong>required</strong>
-                                </mat-error>
-                                <mat-error *ngIf="passengerForm.controls['parCh'].hasError('min')">No negative values</mat-error>
-                            </mat-form-field>
-                        </div>
-                    </div>
-                </mat-card-content>
-            </mat-card>
-
-            <!-- Card : Survived -->
-            <mat-card class="passenger-creation-card">
-                <mat-card-header>
-                    <mat-card-title>Did the passenger Survive ?</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <div class="row">
-                        <mat-radio-group formControlName="survived">
-                            <mat-radio-button [value]="1">Yes!</mat-radio-button>
-                            <mat-radio-button [value]="0">No...</mat-radio-button>
-                            <mat-radio-button [value]="">Unknown</mat-radio-button>
-                        </mat-radio-group>
-                    </div>
-                </mat-card-content>
-            </mat-card>
 
         </mat-card-content>
         <mat-card-actions>

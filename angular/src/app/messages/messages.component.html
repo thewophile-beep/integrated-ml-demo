@@ -1,9 +1,15 @@
-<div *ngIf="messageService.messages.length">
-    <div class = "wrapper">
-        <button mat-raised-button class="clear"
-                (click)="messageService.clear()">Clear messages</button>
-        <div *ngFor="let message of messageService.messages.slice().reverse()"  class="message-item">
-            <span>{{message}}</span>
+<div class="wrapper">
+    <mat-slide-toggle [(ngModel)]="isChecked">See SQL queries?</mat-slide-toggle>
+    <div *ngIf="messageService.messages.length && isChecked">
+        <button mat-raised-button (click)="messageService.clear()" class="clear-button">Clear messages</button>
+        
+        <mat-divider></mat-divider>
+        <div class="overflow-box">
+            <div *ngFor="let message of messageService.messages.slice().reverse()"  class="message-item">
+                <span>{{message}}</span>
+            </div>
         </div>
+        <mat-divider></mat-divider>
     </div>
 </div>
+
