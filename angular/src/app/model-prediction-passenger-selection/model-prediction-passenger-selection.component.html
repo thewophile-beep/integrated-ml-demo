@@ -1,0 +1,34 @@
+<form>
+    <mat-form-field class="full-width">
+        <mat-label>Search for a passenger</mat-label>
+        <input matInput
+        placeholder="Enter a name"
+        #searchBox id="search-box" 
+        (input)="search(searchBox.value)">
+    </mat-form-field>
+    <div *ngIf="passengers$ | async as passengers">
+        <ng-container *ngIf="passengers.length; else noItems">
+            <mat-selection-list #passengersSearch [multiple]="false">
+                <mat-list-option *ngFor="let passenger of passengers; let isLast = last;" (click)="choosePassenger(passenger)">
+                    <div class="row">
+                        <button mat-icon-button title="edit passenger" (click)="openDialog(passenger)" class="edit-button">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <span matLine>{{passenger.name}}</span>
+                    </div>
+                    <div *ngIf="!isLast">
+                        <mat-divider></mat-divider>
+                    </div>
+                </mat-list-option>
+            </mat-selection-list>
+        </ng-container>
+        <ng-template #noItems>
+            <div *ngIf="searchBox.value.length > 2; else notEnoughLetters">
+                No match.
+            </div>
+            <ng-template #notEnoughLetters>
+                Please, enter at least 3 characters.
+            </ng-template>
+        </ng-template>
+    </div>
+</form>

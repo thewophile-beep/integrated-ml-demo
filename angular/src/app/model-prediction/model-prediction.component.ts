@@ -5,6 +5,7 @@ import { mlModel } from '../mlModel';
 
 import { MatDialog } from '@angular/material/dialog';
 import { ModelPredictionDetailComponent } from '../model-prediction-detail/model-prediction-detail.component';
+import { Passenger } from '../passenger';
 
 @Component({
   selector: 'app-model-prediction',
@@ -102,6 +103,10 @@ export class ModelPredictionComponent implements OnInit {
 
   choosingModel(choice: mlTrainedModel) {
     this.chosenModel = choice;
+  }
+
+  retreiveId(passenger: Passenger) {
+    this.chosenPassenger = String(passenger.passengerId);
   }
 }
 

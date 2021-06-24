@@ -1,0 +1,33 @@
+/* PassengerSearch private styles */
+.full-width {
+    width: 100%;
+}
+  
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+  
+.passenger-text-autocomplete {
+    color: #000;
+    text-decoration: none;
+}
+  
+.modify-button {
+    float: right;
+    display: flex;
+}
+  
+.drop-down-box {
+    padding: 1px;
+    margin-bottom: 20px;
+    border-style: solid;
+    border-color: #eee;
+    border-width: 1px;
+}
+
+.edit-button {
+    margin-right: 10px;
+}
+
