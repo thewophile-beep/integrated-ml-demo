@@ -15,11 +15,6 @@
     text-align: center;
 }
 
-.overflow-box {
-    height: 600px;
-    overflow-y: scroll;
-}
-
 .clear-button {
     margin: 10px auto;
 }

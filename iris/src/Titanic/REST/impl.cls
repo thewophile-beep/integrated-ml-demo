@@ -1,6 +1,6 @@
 /// Rest API for the Integrated ML Demo on the Titanic database<br/>
 /// Business logic class defined by OpenAPI in Titanic.REST.spec<br/>
-/// Updated Jun 21, 2021 13:12:30
+/// Updated Jun 25, 2021 07:48:12
 Class Titanic.REST.impl Extends %REST.Impl [ ProcedureBlock ]
 {
 
@@ -162,12 +162,6 @@ ClassMethod createModel(createInfo As %Stream.Object) As %Stream.Object
     quit tDyna
 }
 
-/// Description
-Method variablesToQuery(var As %Stream.Object) As %String
-{
-    return "yes"
-}
-
 /// Delete a model (along with all of its trained runs)<br/>
 /// The method arguments hold values for:<br/>
 ///     modelName, Name of the model to be deleted<br/>
@@ -219,12 +213,19 @@ ClassMethod trainModel(trainingInfo As %Stream.Object) As %Stream.Object
 {
     set tInfo = {}.%FromJSON(trainingInfo)
     set myquery = "TRAIN MODEL "_tInfo.modelName_" AS "_tInfo.trainingName
-    set tStatement = ##class(%SQL.Statement).%New()
-    $$$ThrowOnError(tStatement.%Prepare(myquery))
-    set tRs = tStatement.%Execute()
+    job ..executeQuery(myquery)
     set tDyna = {}
     set tDyna."query" = myquery
     quit tDyna
+}
+
+ClassMethod executeQuery(pQuery As %String) As %Status
+{
+    set sc = $$$OK
+    set tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(pQuery))
+    set tRs = tStatement.%Execute()
+    return sc
 }
 
 /// Update ml configuration (H20 or AutoML, for now)<br/>
@@ -332,7 +333,6 @@ ClassMethod validateModel(validationInfo As %Stream.Object) As %Stream.Object
 /// The method arguments hold values for:<br/>
 ///     modelName, The model from which we want to select a validation run<br/>
 ///     validationName, The validation run we want to retreive the metrics from<br/>
-/// WARNING: This method's signature has changed.
 ClassMethod getMetrics(modelName As %String, validationName As %String) As %Stream.Object
 {
     set tDyna = {}
@@ -369,6 +369,26 @@ ClassMethod probability(model As %String, trainedModel As %String, labelValue As
     do tRs.%Next()
     set tDyna = {}
     set tDyna."probability" = tRs.%Get("Expression_1") 
+    set tDyna."query" = myquery
+    quit tDyna
+}
+
+/// Get the state of a specific training run<br/>
+/// The method arguments hold values for:<br/>
+///     modelName, Name of the model<br/>
+///     trainingName, Name of the training run<br/>
+ClassMethod getStateTrainingRun(modelName As %String, trainingName As %String) As %Stream.Object
+{
+    set myquery = "SELECT RUN_STATUS "
+        _"FROM INFORMATION_SCHEMA.ML_TRAINING_RUNS "
+        _"WHERE TRAINING_RUN_NAME=? "
+        _"AND MODEL_NAME=?"
+    set tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    set tRs = tStatement.%Execute(trainingName, modelName)
+    do tRs.%Next()
+    set tDyna = {}
+    set tDyna."state" = tRs.%Get("RUN_STATUS") 
     set tDyna."query" = myquery
     quit tDyna
 }

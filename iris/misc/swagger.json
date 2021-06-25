@@ -398,6 +398,50 @@
         }
       }
     },
+    "/ml/trainings/states": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "modelName",
+            "type": "string",
+            "description": "Name of the model"
+          },
+          {
+            "in": "query",
+            "name": "trainingName",
+            "type": "string",
+            "description": "Name of the training run"
+          }
+        ],
+        "description": "Get the state of a specific training run",
+        "summary": "Get state of training run",
+        "operationId": "getStateTrainingRun",
+        "x-ISC_ServiceMethod": "getStateTrainingRun",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "state": {
+                  "type": "string"
+                },
+                "query": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "(Not Found)"
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      }
+    },
     "/ml/trainings/configurations": {
       "put": {
         "description": "Update ml configuration (H20 or AutoML, for now)",

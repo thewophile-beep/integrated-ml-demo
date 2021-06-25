@@ -47,9 +47,10 @@ export class PassengersComponent implements OnInit {
     }
 
     openDialog(passenger: Passenger) {
-        this.dialog.open(PassengerDetailComponent, {
-          data: passenger.passengerId
+        const passengerDialog = this.dialog.open(PassengerDetailComponent, {
+            data: passenger.passengerId
         });
-      }
+        passengerDialog.afterClosed().subscribe(() => this.getAll());
+    }
 
 }

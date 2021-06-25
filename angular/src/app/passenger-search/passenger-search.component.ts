@@ -18,11 +18,13 @@ import { PassengerDetailComponent } from '../passenger-detail/passenger-detail.c
 export class PassengerSearchComponent implements OnInit {
   passengers$!: Observable<Passenger[]>;
   private searchTerms = new Subject<string>();
+  lastTerm: string = "";
 
   constructor(private passengerService: PassengerService, public dialog: MatDialog) {}
 
   // Push a search term into the observable stream.
   search(term: string): void {
+    this.lastTerm = term;
     this.searchTerms.next(term);
   }
 
@@ -32,7 +34,7 @@ export class PassengerSearchComponent implements OnInit {
       debounceTime(300),
 
       // ignore new term if same as previous term
-      distinctUntilChanged(),
+      // distinctUntilChanged(),
 
       // switch to new search observable each time the term changes
       switchMap((term: string) => this.passengerService.searchPassengers(term))
@@ -40,8 +42,11 @@ export class PassengerSearchComponent implements OnInit {
   }
 
   openDialog(passenger: Passenger) {
-    this.dialog.open(PassengerDetailComponent, {
-      data: passenger.passengerId
-    });
+    const passengerDialog = this.dialog.open(PassengerDetailComponent, {data: passenger.passengerId})
+    passengerDialog
+      .afterClosed()
+      .subscribe(() => 
+        this.search(this.lastTerm)
+      )
   }
 }

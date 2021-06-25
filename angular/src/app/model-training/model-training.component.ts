@@ -3,6 +3,7 @@ import { mlTrainingModel } from '../mlTrainingModel';
 import { mlModel } from '../mlModel';
 import { ModelService } from '../model.service';
 import { FormBuilder, Validators } from '@angular/forms';
+import { interval, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-model-training',
@@ -37,15 +38,33 @@ export class ModelTrainingComponent implements OnInit {
     this.modelService.getAllModels().subscribe(response => this.models = response.models);
   }
   
+
   onSubmit(): void {
+    const modelName = this.runForm.value.modelName
+    const trainingName = this.runForm.value.runName
     this.modelService.changeConfiguration(this.runForm.value.MLconfig).subscribe(
       _=> {
-        this.modelService.trainModel(this.runForm.value.modelName, this.runForm.value.runName).subscribe(
-          _ => {this.toggleWaiting(); this.getAll(); this.runForm.reset()}
-        );
+        this.modelService.trainModel(modelName, trainingName).subscribe(
+          _ => {
+            const intervalObservable = interval(3000).subscribe(
+              _ => {
+                this.modelService.getStateTrainingRun(modelName, trainingName).subscribe(
+                  response => {
+                    if (response.state === "completed") {
+                      this.toggleWaiting()
+                      this.getAll()
+                      this.runForm.reset()
+                      intervalObservable.unsubscribe()
+                    }
+                  }
+                )
+              }
+            )
+          }
+        )
       }
-    );
-    this.toggleWaiting();
+    )
+    this.toggleWaiting()
   }
 
   toggleWaiting(): void {

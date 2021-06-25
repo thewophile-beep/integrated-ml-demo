@@ -42,6 +42,8 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
   <Route Url="/ml/trainings" Method="get" Call="getTrainingRuns" />
   <!-- Train a Model -->
   <Route Url="/ml/trainings" Method="post" Call="trainModel" />
+  <!-- Get state of training run -->
+  <Route Url="/ml/trainings/states" Method="get" Call="getStateTrainingRun" />
   <!-- Update configuration -->
   <Route Url="/ml/trainings/configurations" Method="put" Call="changeConfiguration" />
   <!-- Get all validation runs -->
@@ -206,6 +208,30 @@ ClassMethod trainModel() As %Status
         If '$isobject(%request.Content) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"trainingInfo")) Quit
         Set ptrainingInfo=%request.Content
         Set response=##class(Titanic.REST.impl).trainModel(ptrainingInfo)
+        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
+/// Get state of training run
+ClassMethod getStateTrainingRun() As %Status
+{
+    Try {
+        If $data(%request.Data("modelName",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"modelName")) Quit
+        }
+        If $data(%request.Data("modelName",1)) {
+            Set pmodelName=%request.Data("modelName",1)
+        }
+        If $data(%request.Data("trainingName",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"trainingName")) Quit
+        }
+        If $data(%request.Data("trainingName",1)) {
+            Set ptrainingName=%request.Data("trainingName",1)
+        }
+        Set response=##class(Titanic.REST.impl).getStateTrainingRun(.pmodelName,.ptrainingName)
         Do ##class(Titanic.REST.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))

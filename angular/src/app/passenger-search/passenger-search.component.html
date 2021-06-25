@@ -4,7 +4,8 @@
         <input matInput
         placeholder="Enter a name"
         #searchBox id="search-box" 
-        (input)="search(searchBox.value)">
+        (input)="search(searchBox.value)"
+        autocomplete="off">
     </mat-form-field>
     <div *ngIf="passengers$ | async as passengers">
         <ng-container *ngIf="passengers.length; else noItems">
