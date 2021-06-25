@@ -47,7 +47,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ModelPredictionDetailComponent } from './model-prediction-detail/model-prediction-detail.component';
 import { ModelValidationComponent } from './model-validation/model-validation.component';
 import { ModelValidationMetricsComponent } from './model-validation-metrics/model-validation-metrics.component'; 
-import {MatChipsModule} from '@angular/material/chips';
+import { MatChipsModule } from '@angular/material/chips';
 import { ModelPredictionPassengerSelectionComponent } from './model-prediction-passenger-selection/model-prediction-passenger-selection.component';
 import { ModelTrainingAlertNameTakenComponent } from './model-training-alert-name-taken/model-training-alert-name-taken.component'; 
 

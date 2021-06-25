@@ -14,15 +14,20 @@ import { Passenger } from '../passenger';
 })
 export class ModelPredictionComponent implements OnInit {
   trainedModels: mlTrainedModel[] = [];
+  models: mlModel[] = [];
+  
+  // Displayed columns for showing trained models data
   displayedColumns: string[] = ["modelName",	"trainedModelName",	"provider",	"trainedTimestamp",	"modelType",	"modelInfo"]
+  // Will loop over the following array (we separated the modelName to make it sticky):
   loopColumns: string[] = ["trainedModelName",	"provider",	"trainedTimestamp",	"modelType",	"modelInfo"]
+
   chosenModel: mlTrainedModel | undefined;
   chosenPassenger: string | undefined;
-  waiting: boolean = false;
   predictedValues: string[] = [];
   newPrediction: string = "";
+
+  waiting: boolean = false;
   
-  models: mlModel[] = [];
 
   constructor(private modelService: ModelService, public dialog: MatDialog) { }
   
@@ -36,6 +41,7 @@ export class ModelPredictionComponent implements OnInit {
   }
     
   predict(): void {
+    // Preparing data const to send to dialog
     const data = {
       model: "",
       trainedModel: "",
@@ -47,8 +53,7 @@ export class ModelPredictionComponent implements OnInit {
     }
 
     if (this.chosenModel && this.chosenPassenger) {
-
-      // Preparing data to send to dialog
+      // Filling in data to send to dialog
       data.model = this.chosenModel.modelName;
       data.trainedModel = this.chosenModel.trainedModelName;
       const currModel = this.models.find(model => model.modelName === data.model);
@@ -67,15 +72,16 @@ export class ModelPredictionComponent implements OnInit {
               this.modelService.probability(this.chosenModel.modelName, this.chosenModel.trainedModelName, data.predictedValue, this.chosenPassenger).subscribe(
                 response => {
 
-                  // Quick and ugly fix to pb with survived field:
+                  // Quick and ugly fix to bug with query to get probability of survived field:
                   if (response.probability < 0.5) {
                     data.probability = String(1 - response.probability)
                   } else {
                     data.probability = String(response.probability)
                   }
+
                   // End waiting
                   this.toggleWaiting();
-                  // Launch dialog
+                  // Launch dialog with the data to show (w/ probability)
                   this.dialog.open(ModelPredictionDetailComponent, {
                     data: data
                   });
@@ -84,16 +90,15 @@ export class ModelPredictionComponent implements OnInit {
           } else {
             // End waiting
             this.toggleWaiting();
-            // Launch dialog
+            // Launch dialog with the data to show (w/o probability)
             this.dialog.open(ModelPredictionDetailComponent, {
               data: data
             });
           }
         }
       )
-      
+      // Begin waiting
       this.toggleWaiting();
-
     }
   }
 

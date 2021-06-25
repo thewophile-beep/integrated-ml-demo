@@ -1,17 +1,23 @@
 <form [formGroup]="passengerForm" novalidate (ngSubmit)="onSubmit()">
     <mat-card class="passenger-card">
+
         <mat-card-header>
             <mat-card-title class="principal-header">New Passenger</mat-card-title>
         </mat-card-header>
+
         <mat-card-content>
-            
+
+            <!-- Card: Personal Informations -->
             <mat-card class="passenger-creation-card">
+
                 <mat-card-header>
                     <mat-card-title>Personal Information</mat-card-title>
                 </mat-card-header>
+
                 <mat-card-content>
+                    <!-- Name / Age / Sex / Survived -->
                     <div class="row">
-                        <!-- Left : Name and Age -->
+                        <!-- Name and Age -->
                         <div class="col">
                             <!-- Name Field -->
                             <div class="row">
@@ -43,10 +49,11 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Sex and Survived -->
                         <div class="col">
                             <div class="row">
+                                <!-- sex -->
                                 <div class="col">
-                                    <!-- sex -->
                                     <mat-label>Passenger Sex</mat-label>
                                     <mat-radio-group formControlName="sex">
                                         <mat-radio-button value="male">Male</mat-radio-button>
@@ -54,8 +61,8 @@
                                         <mat-radio-button value="">Other</mat-radio-button>
                                     </mat-radio-group>
                                 </div>
+                                <!-- survived -->
                                 <div class="col">
-                                    <!-- survived -->
                                     <mat-label>Did the passenger survive?</mat-label>
                                     <mat-radio-group formControlName="survived">
                                         <mat-radio-button [value]="1">Yes!</mat-radio-button>
@@ -90,65 +97,72 @@
                 </mat-card-content>
             </mat-card>
             
-            <!-- Card : Embarkment Information -->
+            <!-- Card : Embarkment Informations -->
             <mat-card class="passenger-creation-card">
+
                 <mat-card-header>
                     <mat-card-title>Embarkment Information</mat-card-title>
                 </mat-card-header>
+
                 <mat-card-content>
-                    <!-- Ticket / Fare / Cabin -->
-                    <div class="col">
-                        <!-- Ticket -->
-                        <div class="row">
-                            <mat-form-field class="full-width">
-                                <mat-label>Ticket Number</mat-label>
-                                <input matInput placeholder="Enter a ticket number" formControlName="ticket">
-                            </mat-form-field>
+                    <div class="row">
+                        <!-- Ticket / Fare -->
+                        <div class="col">
+                            <!-- Ticket -->
+                            <div class="row">
+                                <mat-form-field class="full-width">
+                                    <mat-label>Ticket Number</mat-label>
+                                    <input matInput placeholder="Enter a ticket number" formControlName="ticket">
+                                </mat-form-field>
+                            </div>
+                            <!-- Fare -->
+                            <div class="row">
+                                <mat-form-field class="full-width">
+                                    <mat-label>Fare</mat-label>
+                                    <input type="number" min="0" matInput placeholder="Enter a price" formControlName="fare">
+                                </mat-form-field>
+                                <mat-error *ngIf="passengerForm.controls['fare'].hasError('min')">No negative values</mat-error>
+                            </div>
                         </div>
-                        <!-- Fare -->
-                        <div class="row">
-                            <mat-form-field class="full-width">
-                                <mat-label>Fare</mat-label>
-                                <input type="number" min="0" matInput placeholder="Enter a price" formControlName="fare">
-                            </mat-form-field>
-                            <mat-error *ngIf="passengerForm.controls['fare'].hasError('min')">No negative values</mat-error>
-                        </div>
-                        <!-- Cabin -->
-                        <div class="row">
-                            <mat-form-field class="full-width">
-                                <mat-label>Cabin Number</mat-label>
-                                <input type="string" matInput placeholder="Enter a cabin number" formControlName="cabin">
-                            </mat-form-field>
+                        <!-- Class / Port -->
+                        <div class="col">
+                            <div class="row">
+                                <!-- Class -->
+                                <div class="col">
+                                    <mat-label>Passenger Class</mat-label>
+                                    <mat-radio-group formControlName="class">
+                                        <mat-radio-button [value]=1>First Class</mat-radio-button>
+                                        <mat-radio-button [value]=2>Second Class</mat-radio-button>
+                                        <mat-radio-button [value]=3>Third Class</mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                                <!-- Port -->
+                                <div class="col">
+                                    <mat-label>Port of Embarkation</mat-label>
+                                    <mat-radio-group formControlName="embarked">
+                                        <mat-radio-button value="C">Cherbourg</mat-radio-button>
+                                        <mat-radio-button value="Q">Queenstown</mat-radio-button>
+                                        <mat-radio-button value="S">Southampton</mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <!-- Class / Port -->
+                    <!-- Cabin -->
                     <div class="row">
-                        <!-- Class -->
-                        <div class="col">
-                            <mat-label>Passenger Class</mat-label>
-                            <mat-radio-group formControlName="class">
-                                <mat-radio-button [value]=1>First Class</mat-radio-button>
-                                <mat-radio-button [value]=2>Second Class</mat-radio-button>
-                                <mat-radio-button [value]=3>Third Class</mat-radio-button>
-                            </mat-radio-group>
-                        </div>
-                        <!-- Port -->
-                        <div class="col">
-                            <mat-label>Port of Embarkation</mat-label>
-                            <mat-radio-group formControlName="embarked">
-                                <mat-radio-button value="C">Cherbourg</mat-radio-button>
-                                <mat-radio-button value="Q">Queenstown</mat-radio-button>
-                                <mat-radio-button value="S">Southampton</mat-radio-button>
-                            </mat-radio-group>
-                        </div>
+                        <mat-form-field class="full-width">
+                            <mat-label>Cabin Number</mat-label>
+                            <input type="string" matInput placeholder="Enter a cabin number" formControlName="cabin">
+                        </mat-form-field>
                     </div>
                 </mat-card-content>
             </mat-card>
-            
 
         </mat-card-content>
+
         <mat-card-actions>
             <button mat-raised-button color="primary" type="submit" [disabled]="passengerForm.invalid">Submit</button>
         </mat-card-actions>
+        
     </mat-card>
 </form>

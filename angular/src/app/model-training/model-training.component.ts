@@ -42,17 +42,21 @@ export class ModelTrainingComponent implements OnInit {
 
   onSubmit(): void {
     var isValid = true;
+    // Name already taken ?
     this.runs.forEach(run => {
       if (this.runForm.value.runName === run.trainingRunName) {
         isValid = false;
       }
     })
+    // If already taken
     if (!isValid) { 
+      // Asks if want to replace 
       this.dialog.open(ModelTrainingAlertNameTakenComponent).afterClosed().subscribe(response => {
         if (response)
           this.postTraining()
       })
     } else {
+      // If not taken, directly post the training
       this.postTraining()
     }
   }
@@ -64,6 +68,7 @@ export class ModelTrainingComponent implements OnInit {
       _=> {
         this.modelService.trainModel(modelName, trainingName).subscribe(
           _ => {
+            // Checks every 3 seconds if the training is completed or failed
             const intervalObservable = interval(3000).subscribe(
               _ => {
                 this.modelService.getStateTrainingRun(modelName, trainingName).subscribe(
@@ -72,6 +77,7 @@ export class ModelTrainingComponent implements OnInit {
                       this.toggleWaiting()
                       this.getAll()
                       this.runForm.reset()
+                      // Need to unsubscribe to stop checking 
                       intervalObservable.unsubscribe()
                     }
                   }

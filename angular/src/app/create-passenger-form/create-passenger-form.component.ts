@@ -4,7 +4,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Passenger } from '../passenger'
 import { PassengerService } from "../passenger.service"
 
-
+// Component to create a passenger
 @Component({
   selector: 'app-create-passenger-form',
   templateUrl: './create-passenger-form.component.html',
@@ -30,6 +30,7 @@ export class CreatePassengerFormComponent {
   ngOnInit() {
   }
 
+  // Post new passenger
   onSubmit(): void {
     this.passengerService.createPassenger(this.passengerForm.value).subscribe(
       (newPassenger: Passenger) => {

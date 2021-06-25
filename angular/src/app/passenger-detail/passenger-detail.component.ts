@@ -7,7 +7,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-
+// See model-prediction-detail (similar)
 
 @Component({
   selector: 'app-passenger-detail',

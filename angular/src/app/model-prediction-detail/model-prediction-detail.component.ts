@@ -34,6 +34,7 @@ export class ModelPredictionDetailComponent implements OnInit {
     this.prepareVariableList();
   }
 
+  // Filling in this.passenger object with injected data
   getPassenger(): void {
     this.passengerService.getPassenger(this.data.passenger).subscribe(passenger => {
       this.passenger.passengerId = String(passenger.passengerId);
@@ -51,6 +52,7 @@ export class ModelPredictionDetailComponent implements OnInit {
     });
   }
 
+  // Formatting variable list
   prepareVariableList(): void {
     const str = this.data.withVariables.split(',');
     for (let i = 0; i < str.length; i++) {

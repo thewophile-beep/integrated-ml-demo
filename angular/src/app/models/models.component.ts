@@ -55,30 +55,37 @@ export class ModelsComponent implements OnInit {
     
   onSubmit(): void {
     var isValid = true;
+    // Name already taken ?
     this.models.forEach(model => {
       if (this.modelForm.value.modelName === model.modelName) {
         isValid = false;
       }
     })
     if (isValid) {
+      // If not taken
+      // Preparing variables -> needs to be like "varName varType"
       for (let i = 0; i < this.possibleVariables.length; i++) {
         if (this.possibleVariables[i].selected === true) {
           this.withVariables.push(this.possibleVariables[i].value)
         }
       }
+      // Taking created passengers or no ?
       if (this.modelForm.value.fromTable === true) {
         this.fromTable = "Titanic_Table.Passenger"
       } else {
         this.fromTable = "Titanic_Table.Passenger WHERE ID<892"
       }
+      // Creating model
       this.modelService.createModel(this.modelForm.value.modelName, this.modelForm.value.predicting, this.fromTable, this.withVariables).subscribe(
         _ => this.getAll()
       );
     } else {
+      // If name taken
       alert("Name already taken!");
     }
   }
 
+  // To toggle selection of chips when clicked
   toggleSelection(chip: MatChip) {
     if (!chip.disabled) {
       chip.toggleSelected();
@@ -87,6 +94,7 @@ export class ModelsComponent implements OnInit {
     }
   }
 
+  // Check to disable chips or not
   checkingPredicting(chip: MatChip): boolean {
     if (this.modelForm.value.predicting === chip.value) {
       if (chip.selected) {

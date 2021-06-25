@@ -1,38 +1,45 @@
 <mat-card class="prediction-list-card">
     <!-- Searching -->
     <mat-card class="prediction-list-card">
+
         <mat-card-header>
             <mat-card-title class="principal-header">
                 Search for a passenger
             </mat-card-title>
         </mat-card-header>
+
         <mat-card-content>
+            <!-- Component for searching and selecting a passenger -->
             <app-model-prediction-passenger-selection (chosenPassenger)="retreiveId($event)"></app-model-prediction-passenger-selection>
+            <!-- Other way to choose passenger, through ID. Will show the chosen passenger ID if selected -->
             <mat-form-field class="selected-id">
                 <mat-label>Chosen passenger id:</mat-label>
                 <input matInput min="0" type="number" placeholder="Enter id" [(ngModel)]="chosenPassenger"/>
             </mat-form-field>
         </mat-card-content>
-    </mat-card>
 
+    </mat-card>
     <!-- List of trained models -->
     <mat-card class="prediction-list-card">
+
         <mat-card-header>
             <mat-card-title class="principal-header">
                 Chose a trained model
             </mat-card-title>
         </mat-card-header>
+
         <mat-card-content>
             <div *ngIf="trainedModels.length > 0; else isEmpty">
                 <div class="overflow">
                     <table mat-table [dataSource]="trainedModels" class="mat-table">
                         
-                        
+                        <!-- Sticky column to have the name of the model -->
                         <ng-container matColumnDef="modelName" sticky>
                             <th mat-header-cell *matHeaderCellDef>modelName</th> 
                             <td mat-cell *matCellDef="let model"> {{model["modelName"]}} </td>
                         </ng-container> 
                         
+                        <!-- All other data columns -->
                         <ng-container [matColumnDef]="column" *ngFor="let column of loopColumns">
                             <th mat-header-cell *matHeaderCellDef>{{column}}</th>
                             <td mat-cell *matCellDef="let model"> {{model[column]}} </td>
@@ -46,16 +53,20 @@
                     </table>
                 </div>
             </div> 
+            <!-- If no models to show -->
             <ng-template #isEmpty>
                 <div class="align-middle">No trained models to show yet.</div>
             </ng-template>       
         </mat-card-content>
+
     </mat-card>
         
     <!-- Predict Button -->
     <mat-card-actions>
         <div class="row">
+            <!-- 3 conditions to enable the button: not waiting (during prediction), having chosen a model, having chosen a passenger. -->
             <button mat-raised-button color="primary" [disabled]="waiting || !chosenModel || !chosenPassenger" (click)="predict()">Predict!</button>
+            <!-- Spinner in case of waiting -->
             <div *ngIf="waiting" class="spinner">
                 <mat-progress-spinner diameter="20" mode="indeterminate"></mat-progress-spinner>
             </div>
@@ -63,12 +74,4 @@
     </mat-card-actions>
     
 </mat-card>
-
-<div *ngIf="predictedValues.length">
-    <mat-card class="prediction-list-card">
-        <div *ngFor="let prediction of predictedValues.slice().reverse()">
-            <span>{{prediction}}</span>
-        </div>
-    </mat-card>
-</div>
 
