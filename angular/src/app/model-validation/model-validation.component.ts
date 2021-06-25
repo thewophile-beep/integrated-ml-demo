@@ -50,7 +50,13 @@ export class ModelValidationComponent implements OnInit {
   }
 
   validate() {
-    if (this.chosenModel) {
+    var isValid = true;
+    this.validationRuns.forEach(run => {
+      if (this.validationForm.value.validationName === run.validationRunName) {
+        isValid = false;
+      }
+    })
+    if (this.chosenModel && isValid) {
       if (this.validationForm.value.fromTable === true) {
         this.fromTable = "Titanic_Table.Passenger"
       } else {
@@ -60,6 +66,8 @@ export class ModelValidationComponent implements OnInit {
         _=> {this.getAll(); this.toggleWaiting()}
       );
       this.toggleWaiting();
+    } else {
+      alert("Validation run name already taken!")
     }
   }
 

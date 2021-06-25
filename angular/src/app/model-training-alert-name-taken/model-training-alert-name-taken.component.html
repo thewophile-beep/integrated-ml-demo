@@ -1,0 +1,7 @@
+<mat-dialog-content>
+    Training run names are unique no matter the model!<br> This new trained model will replace the old one of the same name.
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Continue</button>
+</mat-dialog-actions>
