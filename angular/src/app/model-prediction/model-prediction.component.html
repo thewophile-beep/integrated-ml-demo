@@ -10,12 +10,7 @@
 
         <mat-card-content>
             <!-- Component for searching and selecting a passenger -->
-            <app-model-prediction-passenger-selection (chosenPassenger)="retreiveId($event)"></app-model-prediction-passenger-selection>
-            <!-- Other way to choose passenger, through ID. Will show the chosen passenger ID if selected -->
-            <mat-form-field class="selected-id">
-                <mat-label>Chosen passenger id:</mat-label>
-                <input matInput min="0" type="number" placeholder="Enter id" [(ngModel)]="chosenPassenger"/>
-            </mat-form-field>
+            <app-model-prediction-passenger-selection (chosenPassenger)="retreivePassenger($event)"></app-model-prediction-passenger-selection>
         </mat-card-content>
 
     </mat-card>

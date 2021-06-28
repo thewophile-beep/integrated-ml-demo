@@ -15,6 +15,11 @@
                     <div *ngIf="data.probability.length > 0">
                         <span matLine>with probability: {{data.probability}}</span>
                     </div>
+                    <div class="real-value">
+                        <span matLine>
+                            Should have predicted: {{passenger[data.predicting]}}
+                        </span>
+                    </div>
                 </div>
                 <span matLine>Using the following variables of passenger <strong>{{passenger.name}}</strong>:</span>
                 <mat-list role="list">

@@ -31,3 +31,6 @@
     margin-right: 10px;
 }
 
+mat-list-option[aria-selected="true"] {
+    background: white;
+  }

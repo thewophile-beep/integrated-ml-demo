@@ -1,42 +1,3 @@
-<!-- List of runs -->
-<mat-card class="runs-list-card">
-
-    <mat-card-header>
-        <mat-card-title class="principal-header">
-            Run List
-        </mat-card-title>
-    </mat-card-header>
-
-    <mat-card-content>
-        <div *ngIf="runs.length > 0; else isEmpty">
-            <div class="overflow">
-                <table mat-table [dataSource]="runs" class="mat-table">
-                    
-                    <!-- Name column is sticky -->
-                    <ng-container matColumnDef="modelName" sticky>
-                        <th mat-header-cell *matHeaderCellDef>modelName</th> 
-                        <td mat-cell *matCellDef="let run"> {{run["modelName"]}} </td>
-                    </ng-container> 
-                    
-                    <!-- Loop over the rest of the columns -->
-                    <ng-container [matColumnDef]="column" *ngFor="let column of loopColumns">
-                        <th mat-header-cell *matHeaderCellDef>{{column}}</th>
-                        <td mat-cell *matCellDef="let run"> {{run[column]}} </td>
-                    </ng-container> 
-                    
-                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                </table>
-            </div>
-        </div> 
-        <!-- In case of no runs to show -->
-        <ng-template #isEmpty>
-            <div class="align-middle">No runs to show yet.</div>
-        </ng-template>       
-    </mat-card-content>
-
-</mat-card>
-
 <!-- Train a model -->
 <mat-card class="runs-list-card">
     <mat-card-header>
@@ -72,7 +33,7 @@
                 <!-- Training run name -->
                 <div class="col">
                     <mat-form-field class="full-width">
-                        <mat-label>Run Name</mat-label>
+                        <mat-label>Run Name (must be unique)</mat-label>
                         <input matInput placeholder="Ex. RunSurvival" formControlName="runName">
                         <mat-error *ngIf="runForm.controls['runName'].hasError('required')">
                             Run Name is <strong>required</strong>
@@ -96,4 +57,43 @@
         </div>
     </mat-card-actions>
     
+</mat-card>
+
+<!-- List of runs -->
+<mat-card class="runs-list-card">
+
+    <mat-card-header>
+        <mat-card-title class="principal-header">
+            Run List
+        </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+        <div *ngIf="runs.length > 0; else isEmpty">
+            <div class="overflow">
+                <table mat-table [dataSource]="runs.slice().reverse()" class="mat-table">
+                    
+                    <!-- Name column is sticky -->
+                    <ng-container matColumnDef="modelName" sticky>
+                        <th mat-header-cell *matHeaderCellDef>modelName</th> 
+                        <td mat-cell *matCellDef="let run"> {{run["modelName"]}} </td>
+                    </ng-container> 
+                    
+                    <!-- Loop over the rest of the columns -->
+                    <ng-container [matColumnDef]="column" *ngFor="let column of loopColumns">
+                        <th mat-header-cell *matHeaderCellDef>{{column}}</th>
+                        <td mat-cell *matCellDef="let run"> {{run[column]}} </td>
+                    </ng-container> 
+                    
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+            </div>
+        </div> 
+        <!-- In case of no runs to show -->
+        <ng-template #isEmpty>
+            <div class="align-middle">No runs to show yet.</div>
+        </ng-template>       
+    </mat-card-content>
+
 </mat-card>

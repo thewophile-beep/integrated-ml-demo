@@ -21,6 +21,7 @@ export class ModelPredictionPassengerSelectionComponent implements OnInit {
   passengers$!: Observable<Passenger[]>;
   private searchTerms = new Subject<string>();
   lastTerm: string = "";
+  chosenPassengerLocal: Passenger | undefined;
 
   @Output() chosenPassenger = new EventEmitter<Passenger>()
 
@@ -42,6 +43,7 @@ export class ModelPredictionPassengerSelectionComponent implements OnInit {
   }
 
   choosePassenger(passenger: Passenger) {
+    this.chosenPassengerLocal = passenger;
     this.chosenPassenger.emit(passenger);
   }
   

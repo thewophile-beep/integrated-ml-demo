@@ -1,38 +1,3 @@
-<!-- List of validation runs -->
-<mat-card class="validation-card">
-    <mat-card-header>
-        <mat-card-title class="principal-header">
-            Validation runs list
-        </mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-        <div *ngIf="validationRuns.length > 0; else isEmpty">
-            <div class="overflow">
-                <table mat-table [dataSource]="validationRuns" class="mat-table">
-                    
-                    <ng-container matColumnDef="modelName" sticky>
-                        <th mat-header-cell *matHeaderCellDef>modelName</th> 
-                        <td mat-cell *matCellDef="let run"> {{run["modelName"]}} </td>
-                    </ng-container> 
-                    
-                    <ng-container [matColumnDef]="column" *ngFor="let column of loopColumnsRuns">
-                        <th mat-header-cell *matHeaderCellDef>{{column}}</th>
-                        <td mat-cell *matCellDef="let run"> {{run[column]}} </td>
-                    </ng-container> 
-                    
-                    <tr mat-header-row *matHeaderRowDef="displayedColumnsRuns"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumnsRuns;"
-                        (click)="openValidationMetrics(row)"
-                    ></tr>
-                </table>
-            </div>
-        </div> 
-        <ng-template #isEmpty>
-            <div class="align-middle">No validation runs to show yet.</div>
-        </ng-template>       
-    </mat-card-content>
-</mat-card>
-
 <!-- Validate -->
 <mat-card class="validation-card">
 
@@ -50,6 +15,9 @@
                 <mat-card-title>
                     Choose a trained model
                 </mat-card-title>
+                <mat-card-subtitle>
+                    Click to select.
+                </mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
                 <div *ngIf="trainedModels.length > 0; else isEmpty">
@@ -120,4 +88,41 @@
         </div>
     </mat-card-actions>
 </mat-card>
-        
+
+<!-- List of validation runs -->
+<mat-card class="validation-card">
+    <mat-card-header>
+        <mat-card-title class="principal-header">
+            Validation runs list
+        </mat-card-title>
+        <mat-card-subtitle>
+            Click on a run to show metrics.
+        </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        <div *ngIf="validationRuns.length > 0; else isEmpty">
+            <div class="overflow">
+                <table mat-table [dataSource]="validationRuns.slice().reverse()" class="mat-table">
+                    
+                    <ng-container matColumnDef="modelName" sticky>
+                        <th mat-header-cell *matHeaderCellDef>modelName</th> 
+                        <td mat-cell *matCellDef="let run"> {{run["modelName"]}} </td>
+                    </ng-container> 
+                    
+                    <ng-container [matColumnDef]="column" *ngFor="let column of loopColumnsRuns">
+                        <th mat-header-cell *matHeaderCellDef>{{column}}</th>
+                        <td mat-cell *matCellDef="let run"> {{run[column]}} </td>
+                    </ng-container> 
+                    
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsRuns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsRuns;"
+                        (click)="openValidationMetrics(row)"
+                    ></tr>
+                </table>
+            </div>
+        </div> 
+        <ng-template #isEmpty>
+            <div class="align-middle">No validation runs to show yet.</div>
+        </ng-template>       
+    </mat-card-content>
+</mat-card>

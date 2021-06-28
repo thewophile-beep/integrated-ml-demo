@@ -9,6 +9,7 @@
     background-color: rgb(226, 226, 226);
     padding: 5px;
     border-radius: 5px;
+    overflow-wrap: break-word
 }
 
 .wrapper {

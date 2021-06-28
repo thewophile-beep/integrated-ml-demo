@@ -22,7 +22,7 @@ export class ModelPredictionComponent implements OnInit {
   loopColumns: string[] = ["trainedModelName",	"provider",	"trainedTimestamp",	"modelType",	"modelInfo"]
 
   chosenModel: mlTrainedModel | undefined;
-  chosenPassenger: string | undefined;
+  chosenPassenger: Passenger | undefined;
   predictedValues: string[] = [];
   newPrediction: string = "";
 
@@ -61,15 +61,15 @@ export class ModelPredictionComponent implements OnInit {
         data.predicting = currModel.predictingColumnName
         data.withVariables = currModel.withColumns;
       }
-      data.passenger = this.chosenPassenger;
+      data.passenger = String(this.chosenPassenger.passengerId);
 
       // Predicting
-      this.modelService.predict(this.chosenModel.modelName, this.chosenModel.trainedModelName, this.chosenPassenger).subscribe(
+      this.modelService.predict(data.model, data.trainedModel, data.passenger).subscribe(
         predicted => {
           data.predictedValue = String(predicted.predictedValue);
           // if of type classification + prediction retreived, retreive probability too
           if (this.chosenModel && this.chosenPassenger && (this.chosenModel.modelType === "classification")) {
-              this.modelService.probability(this.chosenModel.modelName, this.chosenModel.trainedModelName, data.predictedValue, this.chosenPassenger).subscribe(
+              this.modelService.probability(data.model, data.trainedModel, data.predictedValue, data.passenger).subscribe(
                 response => {
 
                   // Quick and ugly fix to bug with query to get probability of survived field:
@@ -110,8 +110,8 @@ export class ModelPredictionComponent implements OnInit {
     this.chosenModel = choice;
   }
 
-  retreiveId(passenger: Passenger) {
-    this.chosenPassenger = String(passenger.passengerId);
+  retreivePassenger(passenger: Passenger) {
+    this.chosenPassenger = passenger;
   }
 }
 

@@ -1,6 +1,6 @@
 <form>
     <mat-form-field class="full-width">
-        <mat-label>Search for a passenger</mat-label>
+        <mat-label>Search for a passenger and select one</mat-label>
         <input matInput
         placeholder="Enter a name"
         #searchBox id="search-box" 
@@ -31,5 +31,11 @@
                 Please, enter at least 3 characters.
             </ng-template>
         </ng-template>
+        <!-- Show selected passenger -->
+        <p *ngIf="chosenPassengerLocal">
+            <span matLine>
+                Selected passenger: {{chosenPassengerLocal.name}}, n°{{chosenPassengerLocal.passengerId}}
+            </span>
+        </p>
     </div>
 </form>
