@@ -44,6 +44,10 @@ export class ModelsComponent implements OnInit {
       _ => this.getAll()
     );
   }
+
+  purge(model: mlModel): void {
+    this.modelService.purgeModel(model.modelName).subscribe()
+  }
     
   onSubmit(): void {
     var isValid = true;

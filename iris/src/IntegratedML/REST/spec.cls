@@ -364,6 +364,33 @@ XData OpenAPI [ MimeType = application/json ]
         }
       }
     },
+    "/ml/models/purge": {
+      "delete": {
+        "description": "Purge runs from a model",
+        "summary": "Purge runs from model",
+        "parameters": [
+          {
+            "name": "modelName",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "operationId": "purgeModel",
+        "x-ISC_ServiceMethod": "purgeModel",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)"
+          },
+          "204": {
+            "description": "(Not Found)"
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      }
+    },
     "/ml/trainings": {
       "get": {
         "description": "Get all training runs",

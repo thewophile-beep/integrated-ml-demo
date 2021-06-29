@@ -90,6 +90,7 @@ export class ModelTrainingComponent implements OnInit {
                     if (response.state === "completed" || response.state === "failed") {
                       // Need to unsubscribe to stop checking 
                       intervalObservable.unsubscribe()
+                      this.runForm.patchValue({runName: '', modelName: ''})
                       this.getAll()
                       this.waiting = false;
                     };
@@ -112,9 +113,9 @@ export class ModelTrainingComponent implements OnInit {
     var newName = modelName + "_t" + i
     this.runs.forEach(run => {
       if (run.trainingRunName.match(regExp)) {
-        i = i + 1
+        i = Number(run.trainingRunName.split(`${modelName}_t`).pop()) + 1
+        newName = modelName + "_t" + i
       }
-      newName = modelName + "_t" + i
     })
     this.runForm.patchValue({runName: newName})
   }

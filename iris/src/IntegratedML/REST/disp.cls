@@ -40,6 +40,8 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
   <Route Url="/ml/models" Method="post" Call="createModel" />
   <!-- Delete a model -->
   <Route Url="/ml/models" Method="delete" Call="deleteModel" />
+  <!-- Purge runs from model -->
+  <Route Url="/ml/models/purge" Method="delete" Call="purgeModel" />
   <!-- Get all training runs -->
   <Route Url="/ml/trainings" Method="get" Call="getTrainingRuns" />
   <!-- Train a Model -->
@@ -202,6 +204,23 @@ ClassMethod deleteModel() As %Status
         }
         Set pmodelName=%request.Data("modelName",1)
         Set response=##class(IntegratedML.REST.impl).deleteModel(pmodelName)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
+/// Purge runs from model
+ClassMethod purgeModel() As %Status
+{
+    Try {
+        If '$data(%request.Data("modelName",1)) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"modelName")) Quit
+        If $data(%request.Data("modelName",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"modelName")) Quit
+        }
+        Set pmodelName=%request.Data("modelName",1)
+        Set response=##class(IntegratedML.REST.impl).purgeModel(pmodelName)
         Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))

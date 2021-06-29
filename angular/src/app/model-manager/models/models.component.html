@@ -85,6 +85,9 @@
                     <ng-container matColumnDef="actions" stickyEnd>
                         <th mat-header-cell  *matHeaderCellDef>Actions</th>
                         <td mat-cell *matCellDef="let model" >
+                            <button mat-icon-button title="purge model" (click)="purge(model)">
+                                <mat-icon>remove</mat-icon>
+                            </button>
                             <button mat-icon-button title="delete model" (click)="delete(model)">
                                 <mat-icon>delete</mat-icon>
                             </button>

@@ -209,4 +209,11 @@ export class ModelService {
       catchError(this.handleError<any>('getTableSize'))
     )
   }
+
+  purgeModel(modelName: string) {
+    const url = this.ModelsUrl + "/models/purge?modelName=" + modelName;
+    return this.http.delete<any>(url).pipe(
+      catchError(this.handleError<any>('purgeModel'))
+    )
+  }
 }

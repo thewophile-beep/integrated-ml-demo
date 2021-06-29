@@ -1,6 +1,6 @@
 /// Rest API for the Integrated ML Demo<br/>
 /// Business logic class defined by OpenAPI in IntegratedML.REST.spec<br/>
-/// Updated Jun 29, 2021 13:30:03
+/// Updated Jun 29, 2021 14:37:26
 Class IntegratedML.REST.impl Extends %REST.Impl [ ProcedureBlock ]
 {
 
@@ -411,6 +411,20 @@ ClassMethod getTableSize(table As %String) As %Stream.Object
     do tRs.%Next()
     set tDyna = {}
     set tDyna."total" = tRs.%Get("Aggregate_1") 
+    quit tDyna
+}
+
+/// Purge runs from a model<br/>
+/// The method arguments hold values for:<br/>
+///     modelName<br/>
+ClassMethod purgeModel(modelName As %String) As %Stream.Object
+{
+    set myquery = "ALTER MODEL "_modelName_" PURGE ALL"
+    set tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    set tRs = tStatement.%Execute()
+    set tDyna = {}
+    set tDyna."query" = myquery
     quit tDyna
 }
 
