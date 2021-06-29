@@ -107,8 +107,8 @@ export class ModelService {
     );
   }
   
-  getStateTrainingRun(modelName: string, trainingName: string): Observable<any> {
-    const url = this.ModelsUrl + "/trainings/states?modelName=" + modelName + "&trainingName=" + trainingName ;
+  getStateTrainingRun(modelName: string): Observable<any> {
+    const url = this.ModelsUrl + "/trainings/states?modelName=" + modelName;
     return this.http.get<any>(url, this.httpOptions).pipe(
       catchError(this.handleError<any>('getStateTrainingRun'))
     );

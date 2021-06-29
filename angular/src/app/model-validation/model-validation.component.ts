@@ -26,7 +26,7 @@ export class ModelValidationComponent implements OnInit {
   waiting: boolean = false;
 
   validationForm = this.fb.group({
-    validationName: ['', [Validators.required, Validators.pattern(/^\S*$/)]],
+    validationName: ['', [Validators.pattern(/^\S*$/)]],
     fromTable: [false, Validators.required],
   })
 
@@ -39,10 +39,6 @@ export class ModelValidationComponent implements OnInit {
   getAll() {
     this.modelService.getTrainedModels().subscribe(response => this.trainedModels = response.models)
     this.modelService.getValidationRuns().subscribe(response => this.validationRuns = response.trainingRuns)
-  }
-
-  toggleWaiting(): void {
-    this.waiting = !this.waiting;
   }
 
   choosingModel(choice: mlTrainedModel) {
@@ -63,9 +59,9 @@ export class ModelValidationComponent implements OnInit {
         this.fromTable = "Titanic_Table.Passenger WHERE ID<892"
       }
       this.modelService.validateModel(this.chosenModel.modelName, this.validationForm.value.validationName, this.chosenModel.trainedModelName, this.fromTable).subscribe(
-        _=> {this.getAll(); this.toggleWaiting()}
+        _=> {this.getAll(); this.waiting = false}
       );
-      this.toggleWaiting();
+      this.waiting = true;
     } else {
       alert("Validation run name already taken!")
     }

@@ -225,13 +225,7 @@ ClassMethod getStateTrainingRun() As %Status
         If $data(%request.Data("modelName",1)) {
             Set pmodelName=%request.Data("modelName",1)
         }
-        If $data(%request.Data("trainingName",2)) {
-            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"trainingName")) Quit
-        }
-        If $data(%request.Data("trainingName",1)) {
-            Set ptrainingName=%request.Data("trainingName",1)
-        }
-        Set response=##class(Titanic.REST.impl).getStateTrainingRun(.pmodelName,.ptrainingName)
+        Set response=##class(Titanic.REST.impl).getStateTrainingRun(.pmodelName)
         Do ##class(Titanic.REST.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))

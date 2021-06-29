@@ -411,15 +411,9 @@ XData OpenAPI [ MimeType = application/json ]
             "name": "modelName",
             "type": "string",
             "description": "Name of the model"
-          },
-          {
-            "in": "query",
-            "name": "trainingName",
-            "type": "string",
-            "description": "Name of the training run"
           }
         ],
-        "description": "Get the state of a specific training run",
+        "description": "Get the state of the latest training run in date of a specific model",
         "summary": "Get state of training run",
         "operationId": "getStateTrainingRun",
         "x-ISC_ServiceMethod": "getStateTrainingRun",
@@ -430,6 +424,9 @@ XData OpenAPI [ MimeType = application/json ]
               "type": "object",
               "properties": {
                 "state": {
+                  "type": "string"
+                },
+                "query": {
                   "type": "string"
                 }
               }

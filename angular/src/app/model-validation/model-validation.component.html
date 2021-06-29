@@ -63,7 +63,7 @@
                     </div>
                     <div class="row">
                         <mat-form-field class="full-width">
-                            <mat-label>Validation Run Name</mat-label>
+                            <mat-label>Validation Run Name (optional / must be unique)</mat-label>
                             <input matInput placeholder="Ex. SurvivalValidation" formControlName="validationName">
                             <mat-error *ngIf="validationForm.controls['validationName'].hasError('required')">
                                 Model Name is <strong>required</strong>

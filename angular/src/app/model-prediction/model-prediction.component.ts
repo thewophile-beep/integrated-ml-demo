@@ -80,7 +80,7 @@ export class ModelPredictionComponent implements OnInit {
                   }
 
                   // End waiting
-                  this.toggleWaiting();
+                  this.waiting = false;
                   // Launch dialog with the data to show (w/ probability)
                   this.dialog.open(ModelPredictionDetailComponent, {
                     data: data
@@ -89,7 +89,7 @@ export class ModelPredictionComponent implements OnInit {
               )
           } else {
             // End waiting
-            this.toggleWaiting();
+            this.waiting = false;
             // Launch dialog with the data to show (w/o probability)
             this.dialog.open(ModelPredictionDetailComponent, {
               data: data
@@ -98,12 +98,8 @@ export class ModelPredictionComponent implements OnInit {
         }
       )
       // Begin waiting
-      this.toggleWaiting();
+      this.waiting = true;
     }
-  }
-
-  toggleWaiting(): void {
-    this.waiting = !this.waiting;
   }
 
   choosingModel(choice: mlTrainedModel) {

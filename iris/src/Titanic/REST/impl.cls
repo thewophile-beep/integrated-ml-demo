@@ -1,6 +1,6 @@
 /// Rest API for the Integrated ML Demo on the Titanic database<br/>
 /// Business logic class defined by OpenAPI in Titanic.REST.spec<br/>
-/// Updated Jun 25, 2021 07:48:12
+/// Updated Jun 29, 2021 07:51:04
 Class Titanic.REST.impl Extends %REST.Impl [ ProcedureBlock ]
 {
 
@@ -211,10 +211,13 @@ ClassMethod getTrainingRuns() As %Stream.Object
 ///     trainingInfo, Training informations<br/>
 ClassMethod trainModel(trainingInfo As %Stream.Object) As %Stream.Object
 {
-    set tInfo = {}.%FromJSON(trainingInfo)
-    set myquery = "TRAIN MODEL "_tInfo.modelName_" AS "_tInfo.trainingName
-    job ..executeQuery(myquery)
     set tDyna = {}
+    set tInfo = {}.%FromJSON(trainingInfo)
+    set myquery = "TRAIN MODEL "_tInfo.modelName
+    if (tInfo.%IsDefined("withVariables")) {
+        set myquery = myquery_" AS "_tInfo.trainingName
+    } 
+    job ..executeQuery(myquery)
     set tDyna."query" = myquery
     quit tDyna
 }
@@ -320,7 +323,11 @@ ClassMethod getValidationRuns() As %Stream.Object
 ClassMethod validateModel(validationInfo As %Stream.Object) As %Stream.Object
 {
     set tInfo = {}.%FromJSON(validationInfo)
-    set myquery = "VALIDATE MODEL "_tInfo.modelName_" AS "_tInfo.validationName_" USE "_tInfo.trainedModelName_" FROM "_tInfo.fromTable
+    set myquery = "VALIDATE MODEL "_tInfo.modelName
+    if (tInfo.%IsDefined("withVariables")) {
+        set myquery = myquery_" AS "_tInfo.validationName
+    }
+    set myquery = myquery_" USE "_tInfo.trainedModelName_" FROM "_tInfo.fromTable
     set tStatement = ##class(%SQL.Statement).%New()
     $$$ThrowOnError(tStatement.%Prepare(myquery))
     set tRs = tStatement.%Execute()
@@ -373,19 +380,18 @@ ClassMethod probability(model As %String, trainedModel As %String, labelValue As
     quit tDyna
 }
 
-/// Get the state of a specific training run<br/>
+/// Get the state of the latest training run in date of a specific model<br/>
 /// The method arguments hold values for:<br/>
 ///     modelName, Name of the model<br/>
-///     trainingName, Name of the training run<br/>
-ClassMethod getStateTrainingRun(modelName As %String, trainingName As %String) As %Stream.Object
+ClassMethod getStateTrainingRun(modelName As %String) As %Stream.Object
 {
     set myquery = "SELECT RUN_STATUS "
-        _"FROM INFORMATION_SCHEMA.ML_TRAINING_RUNS "
-        _"WHERE TRAINING_RUN_NAME=? "
-        _"AND MODEL_NAME=?"
+        _"FROM INFORMATION_SCHEMA.ML_TRAINING_RUNS"
+        _" WHERE MODEL_NAME=?"
+        _" AND START_TIMESTAMP=(SELECT MAX(START_TIMESTAMP) FROM INFORMATION_SCHEMA.ML_TRAINING_RUNS)"
     set tStatement = ##class(%SQL.Statement).%New()
     $$$ThrowOnError(tStatement.%Prepare(myquery))
-    set tRs = tStatement.%Execute(trainingName, modelName)
+    set tRs = tStatement.%Execute(modelName)
     do tRs.%Next()
     set tDyna = {}
     set tDyna."state" = tRs.%Get("RUN_STATUS") 

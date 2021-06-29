@@ -24,7 +24,7 @@ export class ModelTrainingComponent implements OnInit {
   replaceRun: boolean = false;
   
   runForm = this.fb.group({
-    runName: ['', [Validators.required, Validators.pattern(/^\S*$/)]],
+    runName: ['', [Validators.pattern(/^\S*$/)]],
     modelName: ['', Validators.required],
     MLconfig: ["AutoML", Validators.required]
   })
@@ -68,31 +68,32 @@ export class ModelTrainingComponent implements OnInit {
       _=> {
         this.modelService.trainModel(modelName, trainingName).subscribe(
           _ => {
-            // Checks every 3 seconds if the training is completed or failed
-            const intervalObservable = interval(3000).subscribe(
+            const intervalObservable = interval(10000).subscribe(
               _ => {
-                this.modelService.getStateTrainingRun(modelName, trainingName).subscribe(
-                  response => {
-                    if (response.state === "completed" || response.state === "failed") {
-                      this.toggleWaiting()
-                      this.getAll()
-                      this.runForm.reset()
-                      // Need to unsubscribe to stop checking 
-                      intervalObservable.unsubscribe()
-                    }
+                // Checks every 3 seconds if the training is completed or failed
+                const shortIntervalObservable = interval(3000).subscribe(
+                  _ => {
+                    this.modelService.getStateTrainingRun(modelName).subscribe(
+                      response => {
+                        if (response.state === "completed" || response.state === "failed") {
+                          // Need to unsubscribe to stop checking 
+                          shortIntervalObservable.unsubscribe()
+                          intervalObservable.unsubscribe()
+                          this.getAll()
+                          this.runForm.reset()
+                          this.waiting = false;
+                        };
+                      }
+                    );
                   }
-                )
+                );
               }
-            )
+            );
+            this.waiting = true;
           }
-        )
+        );
       }
-    )
-    this.toggleWaiting()
-  }
-
-  toggleWaiting(): void {
-    this.waiting = !this.waiting;
+    );
   }
 
 }
