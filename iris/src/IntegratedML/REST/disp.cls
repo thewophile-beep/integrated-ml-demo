@@ -1,10 +1,10 @@
-/// Rest API for the Integrated ML Demo on the Titanic database
-/// Dispatch class defined by RESTSpec in Titanic.REST.spec
-Class Titanic.REST.disp Extends %CSP.REST [ GeneratedBy = Titanic.REST.spec.cls, ProcedureBlock ]
+/// Rest API for the Integrated ML Demo
+/// Dispatch class defined by RESTSpec in IntegratedML.REST.spec
+Class IntegratedML.REST.disp Extends %CSP.REST [ GeneratedBy = IntegratedML.REST.spec.cls, ProcedureBlock ]
 {
 
 /// The class containing the RESTSpec which generated this class
-Parameter SpecificationClass = "Titanic.REST.spec";
+Parameter SpecificationClass = "IntegratedML.REST.spec";
 
 /// Ignore any writes done directly by the REST method.
 Parameter IgnoreWrites = 1;
@@ -32,6 +32,8 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
   <Route Url="/passengers/:id" Method="put" Call="updatePassenger" />
   <!-- Delete passenger {id} -->
   <Route Url="/passengers/:id" Method="delete" Call="deletePassenger" />
+  <!-- Get nb of objects in table -->
+  <Route Url="/ml/tablesize" Method="get" Call="getTableSize" />
   <!-- Get all models -->
   <Route Url="/ml/models" Method="get" Call="getAllModels" />
   <!-- Create a Model -->
@@ -85,10 +87,10 @@ ClassMethod getAllPassengers() As %Status
         If $data(%request.Data("name",1)) {
             Set pname=%request.Data("name",1)
         }
-        Set response=##class(Titanic.REST.impl).getAllPassengers(.pcurrPage,.ppageSize,.pname)
-        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+        Set response=##class(IntegratedML.REST.impl).getAllPassengers(.pcurrPage,.ppageSize,.pname)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
     }
     Quit $$$OK
 }
@@ -98,10 +100,10 @@ ClassMethod createPassenger() As %Status
 {
     Try {
         If $isobject(%request.Content) Set ppayloadBody=%request.Content
-        Set response=##class(Titanic.REST.impl).createPassenger(.ppayloadBody)
-        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+        Set response=##class(IntegratedML.REST.impl).createPassenger(.ppayloadBody)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
     }
     Quit $$$OK
 }
@@ -111,10 +113,10 @@ ClassMethod getPassenger(pid As %String) As %Status
 {
     Try {
         If ($number(pid,"I")="") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"id",pid)) Quit
-        Set response=##class(Titanic.REST.impl).getPassenger(pid)
-        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+        Set response=##class(IntegratedML.REST.impl).getPassenger(pid)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
     }
     Quit $$$OK
 }
@@ -125,10 +127,10 @@ ClassMethod updatePassenger(pid As %String) As %Status
     Try {
         If ($number(pid,"I")="") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"id",pid)) Quit
         If $isobject(%request.Content) Set ppayloadBody=%request.Content
-        Set response=##class(Titanic.REST.impl).updatePassenger(pid,.ppayloadBody)
-        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+        Set response=##class(IntegratedML.REST.impl).updatePassenger(pid,.ppayloadBody)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
     }
     Quit $$$OK
 }
@@ -138,10 +140,28 @@ ClassMethod deletePassenger(pid As %String) As %Status
 {
     Try {
         If ($number(pid,"I")="") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"id",pid)) Quit
-        Set response=##class(Titanic.REST.impl).deletePassenger(pid)
-        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+        Set response=##class(IntegratedML.REST.impl).deletePassenger(pid)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
+/// Get nb of objects in table
+ClassMethod getTableSize() As %Status
+{
+    Try {
+        If $data(%request.Data("table",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"table")) Quit
+        }
+        If $data(%request.Data("table",1)) {
+            Set ptable=%request.Data("table",1)
+        }
+        Set response=##class(IntegratedML.REST.impl).getTableSize(.ptable)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
     }
     Quit $$$OK
 }
@@ -150,10 +170,10 @@ ClassMethod deletePassenger(pid As %String) As %Status
 ClassMethod getAllModels() As %Status
 {
     Try {
-        Set response=##class(Titanic.REST.impl).getAllModels()
-        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+        Set response=##class(IntegratedML.REST.impl).getAllModels()
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
     }
     Quit $$$OK
 }
@@ -164,10 +184,10 @@ ClassMethod createModel() As %Status
     Try {
         If '$isobject(%request.Content) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"createInfo")) Quit
         Set pcreateInfo=%request.Content
-        Set response=##class(Titanic.REST.impl).createModel(pcreateInfo)
-        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+        Set response=##class(IntegratedML.REST.impl).createModel(pcreateInfo)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
     }
     Quit $$$OK
 }
@@ -181,10 +201,10 @@ ClassMethod deleteModel() As %Status
             Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"modelName")) Quit
         }
         Set pmodelName=%request.Data("modelName",1)
-        Set response=##class(Titanic.REST.impl).deleteModel(pmodelName)
-        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+        Set response=##class(IntegratedML.REST.impl).deleteModel(pmodelName)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
     }
     Quit $$$OK
 }
@@ -193,10 +213,10 @@ ClassMethod deleteModel() As %Status
 ClassMethod getTrainingRuns() As %Status
 {
     Try {
-        Set response=##class(Titanic.REST.impl).getTrainingRuns()
-        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+        Set response=##class(IntegratedML.REST.impl).getTrainingRuns()
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
     }
     Quit $$$OK
 }
@@ -207,10 +227,10 @@ ClassMethod trainModel() As %Status
     Try {
         If '$isobject(%request.Content) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"trainingInfo")) Quit
         Set ptrainingInfo=%request.Content
-        Set response=##class(Titanic.REST.impl).trainModel(ptrainingInfo)
-        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+        Set response=##class(IntegratedML.REST.impl).trainModel(ptrainingInfo)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
     }
     Quit $$$OK
 }
@@ -225,10 +245,16 @@ ClassMethod getStateTrainingRun() As %Status
         If $data(%request.Data("modelName",1)) {
             Set pmodelName=%request.Data("modelName",1)
         }
-        Set response=##class(Titanic.REST.impl).getStateTrainingRun(.pmodelName)
-        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+        If $data(%request.Data("trainingName",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"trainingName")) Quit
+        }
+        If $data(%request.Data("trainingName",1)) {
+            Set ptrainingName=%request.Data("trainingName",1)
+        }
+        Set response=##class(IntegratedML.REST.impl).getStateTrainingRun(.pmodelName,.ptrainingName)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
     }
     Quit $$$OK
 }
@@ -239,10 +265,10 @@ ClassMethod changeConfiguration() As %Status
     Try {
         If '$isobject(%request.Content) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"configName")) Quit
         Set pconfigName=%request.Content
-        Set response=##class(Titanic.REST.impl).changeConfiguration(pconfigName)
-        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+        Set response=##class(IntegratedML.REST.impl).changeConfiguration(pconfigName)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
     }
     Quit $$$OK
 }
@@ -251,10 +277,10 @@ ClassMethod changeConfiguration() As %Status
 ClassMethod getValidationRuns() As %Status
 {
     Try {
-        Set response=##class(Titanic.REST.impl).getValidationRuns()
-        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+        Set response=##class(IntegratedML.REST.impl).getValidationRuns()
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
     }
     Quit $$$OK
 }
@@ -265,10 +291,10 @@ ClassMethod validateModel() As %Status
     Try {
         If '$isobject(%request.Content) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"validationInfo")) Quit
         Set pvalidationInfo=%request.Content
-        Set response=##class(Titanic.REST.impl).validateModel(pvalidationInfo)
-        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+        Set response=##class(IntegratedML.REST.impl).validateModel(pvalidationInfo)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
     }
     Quit $$$OK
 }
@@ -289,10 +315,10 @@ ClassMethod getMetrics() As %Status
         If $data(%request.Data("validationName",1)) {
             Set pvalidationName=%request.Data("validationName",1)
         }
-        Set response=##class(Titanic.REST.impl).getMetrics(.pmodelName,.pvalidationName)
-        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+        Set response=##class(IntegratedML.REST.impl).getMetrics(.pmodelName,.pvalidationName)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
     }
     Quit $$$OK
 }
@@ -301,10 +327,10 @@ ClassMethod getMetrics() As %Status
 ClassMethod getTrainedModels() As %Status
 {
     Try {
-        Set response=##class(Titanic.REST.impl).getTrainedModels()
-        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+        Set response=##class(IntegratedML.REST.impl).getTrainedModels()
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
     }
     Quit $$$OK
 }
@@ -323,15 +349,20 @@ ClassMethod predict() As %Status
             Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"trainedModel")) Quit
         }
         Set ptrainedModel=%request.Data("trainedModel",1)
-        If '$data(%request.Data("passenger",1)) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"passenger")) Quit
-        If $data(%request.Data("passenger",2)) {
-            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"passenger")) Quit
+        If '$data(%request.Data("id",1)) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"id")) Quit
+        If $data(%request.Data("id",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"id")) Quit
         }
-        Set ppassenger=%request.Data("passenger",1)
-        Set response=##class(Titanic.REST.impl).predict(pmodel,ptrainedModel,ppassenger)
-        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+        Set pid=%request.Data("id",1)
+        If '$data(%request.Data("fromTable",1)) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"fromTable")) Quit
+        If $data(%request.Data("fromTable",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"fromTable")) Quit
+        }
+        Set pfromTable=%request.Data("fromTable",1)
+        Set response=##class(IntegratedML.REST.impl).predict(pmodel,ptrainedModel,pid,pfromTable)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
     }
     Quit $$$OK
 }
@@ -355,15 +386,20 @@ ClassMethod probability() As %Status
             Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"labelValue")) Quit
         }
         Set plabelValue=%request.Data("labelValue",1)
-        If '$data(%request.Data("passenger",1)) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"passenger")) Quit
-        If $data(%request.Data("passenger",2)) {
-            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"passenger")) Quit
+        If '$data(%request.Data("id",1)) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"id")) Quit
+        If $data(%request.Data("id",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"id")) Quit
         }
-        Set ppassenger=%request.Data("passenger",1)
-        Set response=##class(Titanic.REST.impl).probability(pmodel,ptrainedModel,plabelValue,ppassenger)
-        Do ##class(Titanic.REST.impl).%WriteResponse(response)
+        Set pid=%request.Data("id",1)
+        If '$data(%request.Data("fromTable",1)) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"fromTable")) Quit
+        If $data(%request.Data("fromTable",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"fromTable")) Quit
+        }
+        Set pfromTable=%request.Data("fromTable",1)
+        Set response=##class(IntegratedML.REST.impl).probability(pmodel,ptrainedModel,plabelValue,pid,pfromTable)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions"))
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
     }
     Quit $$$OK
 }

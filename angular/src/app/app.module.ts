@@ -29,15 +29,15 @@ import { MatListModule } from '@angular/material/list';
 import { MatAutocompleteModule } from '@angular/material/autocomplete'; 
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTabsModule } from '@angular/material/tabs';
-import { ModelsComponent } from './models/models.component'; 
+import { ModelsComponent } from './model-manager/models/models.component'; 
 import { MatTableModule } from '@angular/material/table';
-import { ModelTrainingComponent } from './model-training/model-training.component'; 
+import { ModelTrainingComponent } from './model-manager/model-training/model-training.component'; 
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; 
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ModelPredictionComponent } from './model-prediction/model-prediction.component';
 import { NavigationDatasetPresentationComponent } from './navigation-dataset-presentation/navigation-dataset-presentation.component';
-import { NavigationModelManagerComponent } from './navigation-model-manager/navigation-model-manager.component';
-import { NavigationMakePredictionsComponent } from './navigation-make-predictions/navigation-make-predictions.component';
+import { NavigationTitanicModelManagerComponent } from './navigation-titanic-model-manager/navigation-titanic-model-manager.component';
+import { NavigationTitanicPredictionsComponent } from './navigation-titanic-predictions/navigation-titanic-predictions.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { OverviewModelManagerComponent } from './overview-model-manager/overview-model-manager.component';
 import { OverviewDatasetPresentationComponent } from './overview-dataset-presentation/overview-dataset-presentation.component';
@@ -45,11 +45,12 @@ import { OverviewMakePredictionsComponent } from './overview-make-predictions/ov
 import { MatCheckboxModule } from '@angular/material/checkbox'; 
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ModelPredictionDetailComponent } from './model-prediction-detail/model-prediction-detail.component';
-import { ModelValidationComponent } from './model-validation/model-validation.component';
-import { ModelValidationMetricsComponent } from './model-validation-metrics/model-validation-metrics.component'; 
+import { ModelValidationComponent } from './model-manager/model-validation/model-validation.component';
+import { ModelValidationMetricsComponent } from './model-manager/model-validation-metrics/model-validation-metrics.component'; 
 import { MatChipsModule } from '@angular/material/chips';
 import { ModelPredictionPassengerSelectionComponent } from './model-prediction-passenger-selection/model-prediction-passenger-selection.component';
-import { ModelTrainingAlertNameTakenComponent } from './model-training-alert-name-taken/model-training-alert-name-taken.component'; 
+import { ModelTrainingAlertNameTakenComponent } from './model-manager/model-training-alert-name-taken/model-training-alert-name-taken.component'; 
+import { MatSliderModule } from '@angular/material/slider';
 
 @NgModule({
   declarations: [
@@ -64,8 +65,8 @@ import { ModelTrainingAlertNameTakenComponent } from './model-training-alert-nam
     ModelTrainingComponent,
     ModelPredictionComponent,
     NavigationDatasetPresentationComponent,
-    NavigationModelManagerComponent,
-    NavigationMakePredictionsComponent,
+    NavigationTitanicModelManagerComponent,
+    NavigationTitanicPredictionsComponent,
     OverviewModelManagerComponent,
     OverviewDatasetPresentationComponent,
     OverviewMakePredictionsComponent,
@@ -74,6 +75,8 @@ import { ModelTrainingAlertNameTakenComponent } from './model-training-alert-nam
     ModelValidationMetricsComponent,
     ModelPredictionPassengerSelectionComponent,
     ModelTrainingAlertNameTakenComponent,
+    NavigationTitanicPredictionsComponent,
+    NavigationTitanicModelManagerComponent,
   ],
   imports: [
     BrowserModule,
@@ -103,6 +106,7 @@ import { ModelTrainingAlertNameTakenComponent } from './model-training-alert-nam
     MatCheckboxModule,
     MatSlideToggleModule,
     MatChipsModule,
+    MatSliderModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

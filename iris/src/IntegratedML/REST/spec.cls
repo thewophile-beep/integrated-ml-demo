@@ -1,4 +1,4 @@
-Class Titanic.REST.spec Extends %REST.Spec [ ProcedureBlock ]
+Class IntegratedML.REST.spec Extends %REST.Spec [ ProcedureBlock ]
 {
 
 XData OpenAPI [ MimeType = application/json ]
@@ -7,7 +7,7 @@ XData OpenAPI [ MimeType = application/json ]
   "swagger": "2.0",
   "info": {
     "title": "InterSystems IRIS REST CRUD for Integrated ML Demo",
-    "description": "Rest API for the Integrated ML Demo on the Titanic database",
+    "description": "Rest API for the Integrated ML Demo",
     "version": "0.2",
     "contact": {
       "email": "theophile.thierry@intersystems.com"
@@ -18,7 +18,7 @@ XData OpenAPI [ MimeType = application/json ]
     }
   },
   "host": "localhost:52775",
-  "basePath": "/api/titanic",
+  "basePath": "/api/integratedML",
   "schemes": [
     "http",
     "https"
@@ -212,6 +212,41 @@ XData OpenAPI [ MimeType = application/json ]
         }
       }
     },
+    "/ml/tablesize": {
+      "get": {
+        "description": "Retreive the total number of objects in a table",
+        "summary": "Get nb of objects in table",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "table",
+            "type": "string",
+            "description": "The table we need the max size from"
+          }
+        ],
+        "operationId": "getTableSize",
+        "x-ISC_ServiceMethod": "getTableSize",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "total": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "(Not Found)"
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      }
+    },
     "/ml/models": {
       "get": {
         "description": "Retreive all created models",
@@ -373,6 +408,9 @@ XData OpenAPI [ MimeType = application/json ]
                 },
                 "trainingName": {
                   "type": "string"
+                },
+                "fromTable": {
+                  "type": "string"
                 }
               }
             }
@@ -411,9 +449,15 @@ XData OpenAPI [ MimeType = application/json ]
             "name": "modelName",
             "type": "string",
             "description": "Name of the model"
+          },
+          {
+            "in": "query",
+            "name": "trainingName",
+            "type": "string",
+            "description": "Name of the training run"
           }
         ],
-        "description": "Get the state of the latest training run in date of a specific model",
+        "description": "Get the state of a speecific training run",
         "summary": "Get state of training run",
         "operationId": "getStateTrainingRun",
         "x-ISC_ServiceMethod": "getStateTrainingRun",
@@ -656,14 +700,21 @@ XData OpenAPI [ MimeType = application/json ]
             "type": "string"
           },
           {
-            "name": "passenger",
+            "name": "id",
             "in": "query",
-            "description": "Id of passenger to predict",
+            "description": "ID to predict with",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "fromTable",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "Table to predict from"
           }
         ],
-        "description": "Predict with a certain model, a certain trained model and a certain passenger",
+        "description": "Predict with a certain model, a certain trained model and a certain id from a certain table",
         "summary": "Predict with a model and an id",
         "operationId": "predict",
         "x-ISC_ServiceMethod": "predict",
@@ -716,14 +767,21 @@ XData OpenAPI [ MimeType = application/json ]
             "type": "string"
           },
           {
-            "name": "passenger",
+            "name": "id",
             "in": "query",
-            "description": "ID of the passenger",
+            "description": "ID to predict with",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "fromTable",
+            "in": "query",
+            "description": "Table to predict from",
             "required": true,
             "type": "string"
           }
         ],
-        "description": "Gives the probability of being predicted the labelValue with a certain model, a certain trained model and a certain passenger",
+        "description": "Gives the probability of being predicted the labelValue with a certain model, a certain trained model and a certain id from a certain table",
         "summary": "Probabilities of having labelValue value predicted",
         "operationId": "probability",
         "x-ISC_ServiceMethod": "probability",

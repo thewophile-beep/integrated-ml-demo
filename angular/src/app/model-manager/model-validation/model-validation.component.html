@@ -58,8 +58,19 @@
             </mat-card-header>
             <mat-card-content>
                 <form [formGroup]="validationForm" novalidate>
-                    <div class="row" style="padding-bottom: 10px;">
-                        <mat-slide-toggle formControlName="fromTable">Use created passengers?</mat-slide-toggle>
+                    <div class="row">
+                        <p style="text-align: center;">
+                            Percentage of the table used for validation: {{validationForm.value.tableSelection}}% (Lines {{((100 - validationForm.value.tableSelection) / 100 * nbOfIds) + 1| number: '1.0-0' }} to {{nbOfIds}})
+                        </p>
+                        <mat-slider
+                            thumbLabel
+                            formControlName="tableSelection"
+                            [invert]="true"
+                            step="1"
+                            min="0"
+                            [max]="100"
+                            aria-label="units">
+                        </mat-slider>
                     </div>
                     <div class="row">
                         <mat-form-field class="full-width">

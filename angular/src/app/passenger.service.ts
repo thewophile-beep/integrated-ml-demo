@@ -12,7 +12,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 export class PassengerService {
 
-  private PassengersUrl = 'http://localhost:52775/api/titanic/passengers';  // URL to web api
+  private PassengersUrl = 'http://localhost:52775/api/integratedML/passengers';  // URL to web api
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })

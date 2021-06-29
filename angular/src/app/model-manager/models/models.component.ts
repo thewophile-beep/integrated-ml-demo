@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { mlModel } from '../mlModel';
-import { ModelService } from '../model.service';
+import { Component, Input, OnInit } from '@angular/core';
+import { mlModel } from '../../mlModel';
+import { ModelService } from '../../model.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatChip } from '@angular/material/chips';
 @Component({
@@ -14,21 +14,9 @@ export class ModelsComponent implements OnInit {
   loopColumns: string[] = ["description", "predictingColumnName", "predictingColumnType", "withColumns", "createTimestamp", "defaultTrainedModelName", "defaultSettings", "defaultTrainingQuery"]
 
   withVariables: string[] = [];
-  fromTable: string = "";
-
-  possibleVariables = [
-    {name:'survived', value: 'survived integer', selected: false},
-    {name:'class', value: 'class integer', selected: false},
-    {name:'name', value: 'name string', selected: false},
-    {name:'sex', value: 'sex string', selected: false},
-    {name:'age', value: 'age integer', selected: false},
-    {name:'sibSp', value: 'sibSp integer', selected: false},
-    {name:'parCh', value: 'parCh integer', selected: false},
-    {name:'ticket', value: 'ticket string', selected: false},
-    {name:'fare', value: 'fare numeric', selected: false},
-    {name:'cabin', value: 'cabin string', selected: false},
-    {name:'embarked', value: 'embarked string', selected: false},
-  ]
+  
+  @Input() public fromTable = "";
+  @Input() public possibleVariables: Array<{name: string, value: string, selected: boolean}> = [];
 
   modelForm = this.fb.group({
     modelName: ['', [Validators.required, Validators.pattern(/^\S*$/)]],
@@ -36,7 +24,11 @@ export class ModelsComponent implements OnInit {
     fromTable: [false, Validators.required],
   })
   
-  constructor(private modelService: ModelService, private fb: FormBuilder) { }
+
+  constructor(
+    private modelService: ModelService, 
+    private fb: FormBuilder,
+  ) { }
   
   ngOnInit(): void {
     this.getAll();
@@ -68,12 +60,6 @@ export class ModelsComponent implements OnInit {
         if (this.possibleVariables[i].selected === true) {
           this.withVariables.push(this.possibleVariables[i].value)
         }
-      }
-      // Taking created passengers or no ?
-      if (this.modelForm.value.fromTable === true) {
-        this.fromTable = "Titanic_Table.Passenger"
-      } else {
-        this.fromTable = "Titanic_Table.Passenger WHERE ID<892"
       }
       // Creating model
       this.modelService.createModel(this.modelForm.value.modelName, this.modelForm.value.predicting, this.fromTable, this.withVariables).subscribe(

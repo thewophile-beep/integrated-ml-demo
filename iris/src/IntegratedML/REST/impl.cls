@@ -1,7 +1,7 @@
-/// Rest API for the Integrated ML Demo on the Titanic database<br/>
-/// Business logic class defined by OpenAPI in Titanic.REST.spec<br/>
-/// Updated Jun 29, 2021 07:51:04
-Class Titanic.REST.impl Extends %REST.Impl [ ProcedureBlock ]
+/// Rest API for the Integrated ML Demo<br/>
+/// Business logic class defined by OpenAPI in IntegratedML.REST.spec<br/>
+/// Updated Jun 29, 2021 13:30:03
+Class IntegratedML.REST.impl Extends %REST.Impl [ ProcedureBlock ]
 {
 
 /// if ExposeServerExceptions is true, then details of internal errors will be exposed.
@@ -213,10 +213,7 @@ ClassMethod trainModel(trainingInfo As %Stream.Object) As %Stream.Object
 {
     set tDyna = {}
     set tInfo = {}.%FromJSON(trainingInfo)
-    set myquery = "TRAIN MODEL "_tInfo.modelName
-    if (tInfo.%IsDefined("withVariables")) {
-        set myquery = myquery_" AS "_tInfo.trainingName
-    } 
+    set myquery = "TRAIN MODEL "_tInfo.modelName_" AS "_tInfo.trainingName_" FROM "_tInfo.fromTable
     job ..executeQuery(myquery)
     set tDyna."query" = myquery
     quit tDyna
@@ -270,14 +267,15 @@ ClassMethod getTrainedModels() As %Stream.Object
     quit tDyna
 }
 
-/// Predict with a certain model, a certain trained model and a certain passenger<br/>
+/// Predict with a certain model, a certain trained model and a certain id from a certain table<br/>
 /// The method arguments hold values for:<br/>
 ///     model, Model to predict with<br/>
 ///     trainedModel, Trained Model to predict with<br/>
-///     passenger, Id of passenger to predict<br/>
-ClassMethod predict(model As %String, trainedModel As %String, passenger As %String) As %Stream.Object
+///     id, ID to predict with<br/>
+///     fromTable, Table to predict from<br/>
+ClassMethod predict(model As %String, trainedModel As %String, id As %String, fromTable As %String) As %Stream.Object
 {
-    set myquery = "SELECT PREDICT("_model_" USE "_trainedModel_") FROM Titanic_Table.Passenger WHERE ID="_passenger
+    set myquery = "SELECT PREDICT("_model_" USE "_trainedModel_") FROM "_fromTable_" WHERE ID="_id
     set tStatement = ##class(%SQL.Statement).%New()
     $$$ThrowOnError(tStatement.%Prepare(myquery))
     set tRs = tStatement.%Execute()
@@ -324,7 +322,7 @@ ClassMethod validateModel(validationInfo As %Stream.Object) As %Stream.Object
 {
     set tInfo = {}.%FromJSON(validationInfo)
     set myquery = "VALIDATE MODEL "_tInfo.modelName
-    if (tInfo.%IsDefined("withVariables")) {
+    if (tInfo.%IsDefined("validationName")) {
         set myquery = myquery_" AS "_tInfo.validationName
     }
     set myquery = myquery_" USE "_tInfo.trainedModelName_" FROM "_tInfo.fromTable
@@ -361,15 +359,16 @@ ClassMethod getMetrics(modelName As %String, validationName As %String) As %Stre
     quit tDyna
 }
 
-/// Gives the probability of being predicted the labelValue with a certain model, a certain trained model and a certain passenger<br/>
+/// Gives the probability of being predicted the labelValue with a certain model, a certain trained model and a certain id from a certain table<br/>
 /// The method arguments hold values for:<br/>
 ///     model, Model to predict with<br/>
 ///     trainedModel, Trained Model to predict with<br/>
 ///     labelValue, Label of the value for probability<br/>
-///     passenger, ID of the passenger<br/>
-ClassMethod probability(model As %String, trainedModel As %String, labelValue As %String, passenger As %String) As %Stream.Object
+///     id, ID to predict with<br/>
+///     fromTable, Table to predict from<br/>
+ClassMethod probability(model As %String, trainedModel As %String, labelValue As %String, id As %String, fromTable As %String) As %Stream.Object
 {
-    set myquery = "SELECT PROBABILITY("_model_" USE "_trainedModel_" FOR '"_labelValue_"') FROM Titanic_Table.Passenger WHERE ID="_passenger
+    set myquery = "SELECT PROBABILITY("_model_" USE "_trainedModel_" FOR '"_labelValue_"') FROM "_fromTable_" WHERE ID="_id
     set tStatement = ##class(%SQL.Statement).%New()
     $$$ThrowOnError(tStatement.%Prepare(myquery))
     set tRs = tStatement.%Execute()
@@ -380,22 +379,38 @@ ClassMethod probability(model As %String, trainedModel As %String, labelValue As
     quit tDyna
 }
 
-/// Get the state of the latest training run in date of a specific model<br/>
+/// Get the state of a speecific training run<br/>
 /// The method arguments hold values for:<br/>
 ///     modelName, Name of the model<br/>
-ClassMethod getStateTrainingRun(modelName As %String) As %Stream.Object
+///     trainingName, Name of the training run<br/>
+ClassMethod getStateTrainingRun(modelName As %String, trainingName As %String) As %Stream.Object
 {
     set myquery = "SELECT RUN_STATUS "
-        _"FROM INFORMATION_SCHEMA.ML_TRAINING_RUNS"
-        _" WHERE MODEL_NAME=?"
-        _" AND START_TIMESTAMP=(SELECT MAX(START_TIMESTAMP) FROM INFORMATION_SCHEMA.ML_TRAINING_RUNS)"
+        _"FROM INFORMATION_SCHEMA.ML_TRAINING_RUNS "
+        _"WHERE TRAINING_RUN_NAME=? "
+        _"AND MODEL_NAME=?"
     set tStatement = ##class(%SQL.Statement).%New()
     $$$ThrowOnError(tStatement.%Prepare(myquery))
-    set tRs = tStatement.%Execute(modelName)
+    set tRs = tStatement.%Execute(trainingName, modelName)
     do tRs.%Next()
     set tDyna = {}
     set tDyna."state" = tRs.%Get("RUN_STATUS") 
     set tDyna."query" = myquery
+    quit tDyna
+}
+
+/// Retreive the total number of objects in a table<br/>
+/// The method arguments hold values for:<br/>
+///     table, The table we need the max size from<br/>
+ClassMethod getTableSize(table As %String) As %Stream.Object
+{
+    set myquery = "SELECT COUNT(*) FROM "_table
+    set tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    set tRs = tStatement.%Execute()
+    do tRs.%Next()
+    set tDyna = {}
+    set tDyna."total" = tRs.%Get("Aggregate_1") 
     quit tDyna
 }
 

@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { mlTrainingModel } from '../mlTrainingModel';
-import { mlModel } from '../mlModel';
-import { ModelService } from '../model.service';
+import { Component, OnInit, Input } from '@angular/core';
+import { mlTrainingModel } from '../../mlTrainingModel';
+import { mlModel } from '../../mlModel';
+import { ModelService } from '../../model.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { interval, Observable } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { ModelTrainingAlertNameTakenComponent } from '../model-training-alert-name-taken/model-training-alert-name-taken.component';
+import { PassengerService } from '../../passenger.service';
 
 @Component({
   selector: 'app-model-training',
@@ -14,22 +15,32 @@ import { ModelTrainingAlertNameTakenComponent } from '../model-training-alert-na
 })
 export class ModelTrainingComponent implements OnInit {
 
+  @Input() public fromTable = "";
+
   runs: mlTrainingModel[] = [];
   displayedColumns: string[] = ["modelName",	"trainingRunName", 	"provider",	"startTimestamp",	"completedTimestamp",	"trainingDuration",	"runStatus",	"statusCode",	"log",	"settings",	"mlConfigurationName",	"trainingRunQuery"]
   loopColumns: string[] = ["trainingRunName", 	"provider",	"startTimestamp",	"completedTimestamp",	"trainingDuration",	"runStatus",	"statusCode",	"log",	"settings",	"mlConfigurationName",	"trainingRunQuery"]
 
   models: mlModel[] = [];
 
+  nbOfIds = 0;
+  percentageTable = 80;
+
   waiting: boolean = false;
   replaceRun: boolean = false;
   
   runForm = this.fb.group({
-    runName: ['', [Validators.pattern(/^\S*$/)]],
+    runName: ['', [Validators.required, Validators.pattern(/^\S*$/)]],
     modelName: ['', Validators.required],
-    MLconfig: ["AutoML", Validators.required]
+    MLconfig: ["AutoML", Validators.required],
+    tableSelection: [this.percentageTable, Validators.required]
   })
   
-  constructor(private modelService: ModelService, private fb: FormBuilder, public dialog: MatDialog) { }
+  constructor(
+    private modelService: ModelService,
+    private fb: FormBuilder, 
+    public dialog: MatDialog, 
+  ) { }
   
   ngOnInit(): void {
     this.getAll();
@@ -38,6 +49,7 @@ export class ModelTrainingComponent implements OnInit {
   getAll(): void {
     this.modelService.getTrainingRuns().subscribe(response => this.runs = response.trainingRuns);
     this.modelService.getAllModels().subscribe(response => this.models = response.models);
+    this.modelService.getTableSize(this.fromTable).subscribe(response => this.nbOfIds = response.total)
   }
 
   onSubmit(): void {
@@ -61,30 +73,26 @@ export class ModelTrainingComponent implements OnInit {
     }
   }
 
+  
   postTraining() {
+    const fromTable = this.fromTable + " WHERE ID <= " + Math.round((this.runForm.value.tableSelection / 100) * this.nbOfIds);
     const modelName = this.runForm.value.modelName
     const trainingName = this.runForm.value.runName
     this.modelService.changeConfiguration(this.runForm.value.MLconfig).subscribe(
       _=> {
-        this.modelService.trainModel(modelName, trainingName).subscribe(
+        this.modelService.trainModel(modelName, trainingName, fromTable).subscribe(
           _ => {
-            const intervalObservable = interval(10000).subscribe(
+            // Checks every 3 seconds if the training is completed or failed
+            const intervalObservable = interval(3000).subscribe(
               _ => {
-                // Checks every 3 seconds if the training is completed or failed
-                const shortIntervalObservable = interval(3000).subscribe(
-                  _ => {
-                    this.modelService.getStateTrainingRun(modelName).subscribe(
-                      response => {
-                        if (response.state === "completed" || response.state === "failed") {
-                          // Need to unsubscribe to stop checking 
-                          shortIntervalObservable.unsubscribe()
-                          intervalObservable.unsubscribe()
-                          this.getAll()
-                          this.runForm.reset()
-                          this.waiting = false;
-                        };
-                      }
-                    );
+                this.modelService.getStateTrainingRun(modelName, trainingName).subscribe(
+                  response => {
+                    if (response.state === "completed" || response.state === "failed") {
+                      // Need to unsubscribe to stop checking 
+                      intervalObservable.unsubscribe()
+                      this.getAll()
+                      this.waiting = false;
+                    };
                   }
                 );
               }
@@ -96,4 +104,18 @@ export class ModelTrainingComponent implements OnInit {
     );
   }
 
+  // Automatically give a name to the run
+  defaultTrainingName() {
+    const modelName = this.runForm.value.modelName
+    const regExp = modelName + "_t[0-9]+"
+    var i = 1
+    var newName = modelName + "_t" + i
+    this.runs.forEach(run => {
+      if (run.trainingRunName.match(regExp)) {
+        i = i + 1
+      }
+      newName = modelName + "_t" + i
+    })
+    this.runForm.patchValue({runName: newName})
+  }
 }

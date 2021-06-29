@@ -22,7 +22,7 @@
                 <div class="col">
                     <mat-form-field class="full-width">
                         <mat-label>Model Name</mat-label>
-                        <input matInput placeholder="Ex. Survival" formControlName="modelName">
+                        <input matInput placeholder="Enter a name" formControlName="modelName">
                         <mat-error *ngIf="modelForm.controls['modelName'].hasError('required')">
                             Model Name is <strong>required</strong>
                         </mat-error>
@@ -31,9 +31,6 @@
                         </mat-error>
                     </mat-form-field>        
                 </div>
-            </div>
-            <div class="row">
-                <mat-slide-toggle formControlName="fromTable">Use created passengers?</mat-slide-toggle>
             </div>
             <h2>Variables to use:</h2>
             <p class="subtitle">If none selected, it will choose all the variables except the one to predict (it will select the IDs too).</p>

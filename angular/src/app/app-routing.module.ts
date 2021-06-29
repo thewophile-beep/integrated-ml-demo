@@ -1,16 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PassengerDetailComponent } from './passenger-detail/passenger-detail.component';
 import { NavigationDatasetPresentationComponent } from './navigation-dataset-presentation/navigation-dataset-presentation.component'
-import { NavigationModelManagerComponent } from './navigation-model-manager/navigation-model-manager.component';
-import { NavigationMakePredictionsComponent } from './navigation-make-predictions/navigation-make-predictions.component';
+import { NavigationTitanicModelManagerComponent } from './navigation-titanic-model-manager/navigation-titanic-model-manager.component';
+import { NavigationTitanicPredictionsComponent } from './navigation-titanic-predictions/navigation-titanic-predictions.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/info', pathMatch: 'full'},
-  { path: 'detail/:id', component: PassengerDetailComponent },
-  { path: 'info', component: NavigationDatasetPresentationComponent },
-  { path: 'ml', component: NavigationModelManagerComponent },
-  { path: 'ml/predictions', component: NavigationMakePredictionsComponent}
+  { path: '', redirectTo: '/titanic/dataset', pathMatch: 'full'},
+  { path: 'titanic/dataset', component: NavigationDatasetPresentationComponent },
+  { path: 'titanic/ml/management', component: NavigationTitanicModelManagerComponent },
+  { path: 'titanic/ml/predictions', component: NavigationTitanicPredictionsComponent}
 ]
 
 @NgModule({

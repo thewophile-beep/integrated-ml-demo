@@ -25,7 +25,7 @@
                 <div class="col">
                     <mat-form-field class="full-width">
                         <mat-label>Model to train</mat-label>
-                        <mat-select formControlName="modelName">
+                        <mat-select formControlName="modelName" (selectionChange)="defaultTrainingName()">
                             <mat-option *ngFor="let model of models" [value]="model.modelName">{{model.modelName}}</mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -33,8 +33,8 @@
                 <!-- Training run name -->
                 <div class="col">
                     <mat-form-field class="full-width">
-                        <mat-label>Run Name (optional / must be unique)</mat-label>
-                        <input matInput placeholder="Ex. RunSurvival" formControlName="runName">
+                        <mat-label>Run Name (must be unique)</mat-label>
+                        <input matInput placeholder="Enter a name" formControlName="runName">
                         <mat-error *ngIf="runForm.controls['runName'].hasError('required')">
                             Run Name is <strong>required</strong>
                         </mat-error>
@@ -42,8 +42,20 @@
                             No white spaces please
                         </mat-error>
                     </mat-form-field>        
-                </div>
-                
+                </div>    
+            </div>
+            <div class="row">
+                <p style="text-align: center;">
+                    Percentage of the table used for training: {{runForm.value.tableSelection}}% (Lines 1 to {{((runForm.value.tableSelection / 100) * nbOfIds) | number: '1.0-0' }})
+                </p>
+                <mat-slider
+                    thumbLabel
+                    formControlName="tableSelection"
+                    step="1"
+                    min="0"
+                    [max]="100"
+                    aria-label="units">
+                </mat-slider>
             </div>
         </form>
     </mat-card-content>
@@ -64,7 +76,7 @@
 
     <mat-card-header>
         <mat-card-title class="principal-header">
-            Trained Models
+            Training Runs
         </mat-card-title>
     </mat-card-header>
 

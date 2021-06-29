@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { mlTrainedModel } from '../mlTrainedModel';
-import { ModelService } from '../model.service';
+import { mlTrainedModel } from '../../mlTrainedModel';
+import { ModelService } from '../../model.service';
 import { FormBuilder, Validators } from '@angular/forms';
-import { mlValidationRun } from '../mlValidationRun';
+import { mlValidationRun } from '../../mlValidationRun';
 import { ModelValidationMetricsComponent } from '../model-validation-metrics/model-validation-metrics.component';
+import { PassengerService } from '../../passenger.service';
 
 
 @Component({
@@ -13,24 +14,39 @@ import { ModelValidationMetricsComponent } from '../model-validation-metrics/mod
   styleUrls: ['./model-validation.component.css']
 })
 export class ModelValidationComponent implements OnInit {
+
+  @Input() fromTable = "";
+
+  // Array for all the validation runs
   validationRuns: mlValidationRun[] = [];
+  // Columns to show in table
   displayedColumnsRuns: string[] = ["modelName", "trainedModelName",   "validationRunName",   "startTimestamp",   "completedTimestamp",   "validationDuration",   "runStatus",   "statusCode",   "log",   "settings",   "validationRunQuery"]
   loopColumnsRuns: string[] = ["trainedModelName",   "validationRunName",   "startTimestamp",   "completedTimestamp",   "validationDuration",   "runStatus",   "statusCode",   "log",   "settings",   "validationRunQuery"]
-  
+
+  // Array for all the trained models
   trainedModels: mlTrainedModel[] = [];
+  // Columns to show in table
   displayedColumnsTrained: string[] = ["modelName",	"trainedModelName",	"provider",	"trainedTimestamp",	"modelType",	"modelInfo"]
   loopColumnsTrained: string[] = ["trainedModelName",	"provider",	"trainedTimestamp",	"modelType",	"modelInfo"]
-  chosenModel: mlTrainedModel | undefined;
-  fromTable: string = "";
-
+  
+  // Slider parameters
+  nbOfIds = 0;
+  percentageTable = 20;
+  
   waiting: boolean = false;
-
+  
+  chosenModel: mlTrainedModel | undefined;
   validationForm = this.fb.group({
     validationName: ['', [Validators.pattern(/^\S*$/)]],
     fromTable: [false, Validators.required],
+    tableSelection: [this.percentageTable, Validators.required]
   })
 
-  constructor(private modelService: ModelService, public dialog: MatDialog, private fb: FormBuilder) { }
+  constructor(
+    private modelService: ModelService,
+    public dialog: MatDialog,
+    private fb: FormBuilder,
+  ) { }
 
   ngOnInit(): void {
     this.getAll();
@@ -39,6 +55,7 @@ export class ModelValidationComponent implements OnInit {
   getAll() {
     this.modelService.getTrainedModels().subscribe(response => this.trainedModels = response.models)
     this.modelService.getValidationRuns().subscribe(response => this.validationRuns = response.trainingRuns)
+    this.modelService.getTableSize(this.fromTable).subscribe(response => this.nbOfIds = response.total)
   }
 
   choosingModel(choice: mlTrainedModel) {
@@ -46,19 +63,18 @@ export class ModelValidationComponent implements OnInit {
   }
 
   validate() {
+    const fromTable = this.fromTable + " WHERE ID > " + Math.round((100 - this.validationForm.value.tableSelection) / 100 * this.nbOfIds);
+    const validationName = this.validationForm.value.validationName
     var isValid = true;
     this.validationRuns.forEach(run => {
-      if (this.validationForm.value.validationName === run.validationRunName) {
+      if (validationName === run.validationRunName) {
         isValid = false;
       }
     })
     if (this.chosenModel && isValid) {
-      if (this.validationForm.value.fromTable === true) {
-        this.fromTable = "Titanic_Table.Passenger"
-      } else {
-        this.fromTable = "Titanic_Table.Passenger WHERE ID<892"
-      }
-      this.modelService.validateModel(this.chosenModel.modelName, this.validationForm.value.validationName, this.chosenModel.trainedModelName, this.fromTable).subscribe(
+      const modelName = this.chosenModel.modelName
+      const trainedModelName = this.chosenModel.trainedModelName
+      this.modelService.validateModel(modelName, validationName, trainedModelName, fromTable).subscribe(
         _=> {this.getAll(); this.waiting = false}
       );
       this.waiting = true;

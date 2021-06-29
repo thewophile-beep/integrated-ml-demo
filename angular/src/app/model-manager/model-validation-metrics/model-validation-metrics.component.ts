@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { mlValidationRun } from '../mlValidationRun';
-import { ModelService } from '../model.service';
+import { mlValidationRun } from '../../mlValidationRun';
+import { ModelService } from '../../model.service';
 
 @Component({
   selector: 'app-model-validation-metrics',

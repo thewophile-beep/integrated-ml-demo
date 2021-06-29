@@ -16,15 +16,15 @@
 
     zn "%SYS"
     set props("NameSpace") = "IRISAPP"
-    set props("DispatchClass") = "Titanic.REST.disp"
-    set props("CookiePath") = "/api/titanic"
+    set props("DispatchClass") = "IntegratedML.REST.disp"
+    set props("CookiePath") = "/api/integratedML"
     set props("Description") = "IntegratedML Demo REST API"
     set props("MatchRoles") = ":%All"
     set props("AutheEnabled") = 64
-    set tSC = ##class(Security.Applications).Create("/api/titanic", .props)
+    set tSC = ##class(Security.Applications).Create("/api/integratedML", .props)
     zw tSC
 
     zn "IRISAPP"
-    zw $SYSTEM.OBJ.Load("/tmp/iris/src/Titanic/REST/disp.cls", "ck")
+    zw $SYSTEM.OBJ.Load("/tmp/iris/src/IntegratedML/REST/disp.cls", "ck")
 
     h

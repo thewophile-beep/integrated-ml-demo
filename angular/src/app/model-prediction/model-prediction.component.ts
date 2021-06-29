@@ -27,7 +27,7 @@ export class ModelPredictionComponent implements OnInit {
   newPrediction: string = "";
 
   waiting: boolean = false;
-  
+  fromTable = "Titanic_Table.Passenger";
 
   constructor(private modelService: ModelService, public dialog: MatDialog) { }
   
@@ -64,12 +64,12 @@ export class ModelPredictionComponent implements OnInit {
       data.passenger = String(this.chosenPassenger.passengerId);
 
       // Predicting
-      this.modelService.predict(data.model, data.trainedModel, data.passenger).subscribe(
+      this.modelService.predict(data.model, data.trainedModel, data.passenger, this.fromTable).subscribe(
         predicted => {
           data.predictedValue = String(predicted.predictedValue);
           // if of type classification + prediction retreived, retreive probability too
           if (this.chosenModel && this.chosenPassenger && (this.chosenModel.modelType === "classification")) {
-              this.modelService.probability(data.model, data.trainedModel, data.predictedValue, data.passenger).subscribe(
+              this.modelService.probability(data.model, data.trainedModel, data.predictedValue, data.passenger, this.fromTable).subscribe(
                 response => {
 
                   // Quick and ugly fix to bug with query to get probability of survived field:
