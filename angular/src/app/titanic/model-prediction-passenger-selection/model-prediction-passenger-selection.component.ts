@@ -9,9 +9,6 @@ import { debounceTime, switchMap } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { PassengerDetailComponent } from '../passenger-detail/passenger-detail.component';
 
-
-
-
 @Component({
   selector: 'app-model-prediction-passenger-selection',
   templateUrl: './model-prediction-passenger-selection.component.html',
@@ -23,7 +20,7 @@ export class ModelPredictionPassengerSelectionComponent implements OnInit {
   lastTerm: string = "";
   chosenPassengerLocal: Passenger | undefined;
 
-  @Output() chosenPassenger = new EventEmitter<Passenger>()
+  @Output() chosenPassenger = new EventEmitter<string>()
 
   constructor(private passengerService: PassengerService, public dialog: MatDialog) { }
 
@@ -44,7 +41,7 @@ export class ModelPredictionPassengerSelectionComponent implements OnInit {
 
   choosePassenger(passenger: Passenger) {
     this.chosenPassengerLocal = passenger;
-    this.chosenPassenger.emit(passenger);
+    this.chosenPassenger.emit(String(passenger.passengerId));
   }
   
   openDialog(passenger: Passenger) {

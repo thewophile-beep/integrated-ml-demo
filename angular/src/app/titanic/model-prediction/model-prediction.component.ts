@@ -22,7 +22,7 @@ export class ModelPredictionComponent implements OnInit {
   loopColumns: string[] = ["trainedModelName",	"provider",	"trainedTimestamp",	"modelType",	"modelInfo"]
 
   chosenModel: mlTrainedModel | undefined;
-  chosenPassenger: Passenger | undefined;
+  chosenPassenger: string | undefined;
   predictedValues: string[] = [];
   newPrediction: string = "";
 
@@ -61,7 +61,7 @@ export class ModelPredictionComponent implements OnInit {
         data.predicting = currModel.predictingColumnName
         data.withVariables = currModel.withColumns;
       }
-      data.passenger = String(this.chosenPassenger.passengerId);
+      data.passenger = this.chosenPassenger;
 
       // Predicting
       this.modelService.predict(data.model, data.trainedModel, data.passenger, this.fromTable).subscribe(
@@ -106,7 +106,7 @@ export class ModelPredictionComponent implements OnInit {
     this.chosenModel = choice;
   }
 
-  retreivePassenger(passenger: Passenger) {
+  retreivePassenger(passenger: string) {
     this.chosenPassenger = passenger;
   }
 }
