@@ -1,12 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { mlTrainingModel } from '../../mlTrainingModel';
-import { mlModel } from '../../mlModel';
-import { ModelService } from '../../model.service';
+import { mlTrainingModel } from '../../definitions/mlTrainingModel';
+import { mlModel } from '../../definitions/mlModel';
+import { ModelService } from '../../services/model.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { interval, Observable } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { ModelTrainingAlertNameTakenComponent } from '../model-training-alert-name-taken/model-training-alert-name-taken.component';
-import { PassengerService } from '../../passenger.service';
+import { PassengerService } from '../../services/passenger.service';
 
 @Component({
   selector: 'app-model-training',

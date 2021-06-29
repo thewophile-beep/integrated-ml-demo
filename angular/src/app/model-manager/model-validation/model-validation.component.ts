@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { mlTrainedModel } from '../../mlTrainedModel';
-import { ModelService } from '../../model.service';
+import { mlTrainedModel } from '../../definitions/mlTrainedModel';
+import { ModelService } from '../../services/model.service';
 import { FormBuilder, Validators } from '@angular/forms';
-import { mlValidationRun } from '../../mlValidationRun';
+import { mlValidationRun } from '../../definitions/mlValidationRun';
 import { ModelValidationMetricsComponent } from '../model-validation-metrics/model-validation-metrics.component';
-import { PassengerService } from '../../passenger.service';
+import { PassengerService } from '../../services/passenger.service';
 
 
 @Component({

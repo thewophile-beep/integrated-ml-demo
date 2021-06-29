@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { mlModel } from '../../mlModel';
-import { ModelService } from '../../model.service';
+import { mlModel } from '../../definitions/mlModel';
+import { ModelService } from '../../services/model.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatChip } from '@angular/material/chips';
 @Component({
