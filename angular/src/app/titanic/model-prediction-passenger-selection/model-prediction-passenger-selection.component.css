@@ -33,4 +33,15 @@
 
 mat-list-option[aria-selected="true"] {
     background: white;
-  }
+}
+
+.prediction-list-card {
+    min-width: 120px;
+    margin: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.principal-header {
+    font-size: 35px;
+}

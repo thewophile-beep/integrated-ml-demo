@@ -20,7 +20,7 @@ export class ModelPredictionPassengerSelectionComponent implements OnInit {
   lastTerm: string = "";
   chosenPassengerLocal: Passenger | undefined;
 
-  @Output() chosenPassenger = new EventEmitter<string>()
+  @Output() chosenId = new EventEmitter<string>()
 
   constructor(private passengerService: PassengerService, public dialog: MatDialog) { }
 
@@ -41,7 +41,7 @@ export class ModelPredictionPassengerSelectionComponent implements OnInit {
 
   choosePassenger(passenger: Passenger) {
     this.chosenPassengerLocal = passenger;
-    this.chosenPassenger.emit(String(passenger.passengerId));
+    this.chosenId.emit(String(passenger.passengerId));
   }
   
   openDialog(passenger: Passenger) {

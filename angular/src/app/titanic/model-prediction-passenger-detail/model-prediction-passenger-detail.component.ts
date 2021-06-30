@@ -4,11 +4,11 @@ import { PassengerService } from "../../services/passenger.service"
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-model-prediction-detail',
-  templateUrl: './model-prediction-detail.component.html',
-  styleUrls: ['./model-prediction-detail.component.css']
+  selector: 'app-model-prediction-passenger-detail',
+  templateUrl: './model-prediction-passenger-detail.component.html',
+  styleUrls: ['./model-prediction-passenger-detail.component.css']
 })
-export class ModelPredictionDetailComponent implements OnInit {
+export class ModelPredictionPassengerDetailComponent implements OnInit {
 
   passenger: {[key:string]: string} = {
     passengerId: "",
@@ -36,7 +36,7 @@ export class ModelPredictionDetailComponent implements OnInit {
 
   // Filling in this.passenger object with injected data
   getPassenger(): void {
-    this.passengerService.getPassenger(this.data.passenger).subscribe(passenger => {
+    this.passengerService.getPassenger(this.data.id).subscribe(passenger => {
       this.passenger.passengerId = String(passenger.passengerId);
       this.passenger.survived = String(passenger.survived);
       this.passenger.class = String(passenger.class);

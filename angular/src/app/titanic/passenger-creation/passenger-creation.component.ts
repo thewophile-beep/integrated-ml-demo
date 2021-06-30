@@ -1,16 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 
 import { Passenger } from '../../definitions/passenger'
 import { PassengerService } from "../../services/passenger.service"
 
-// Component to create a passenger
 @Component({
-  selector: 'app-create-passenger-form',
-  templateUrl: './create-passenger-form.component.html',
-  styleUrls: ['./create-passenger-form.component.css']
+  selector: 'app-passenger-creation',
+  templateUrl: './passenger-creation.component.html',
+  styleUrls: ['./passenger-creation.component.css']
 })
-export class CreatePassengerFormComponent {
+export class PassengerCreationComponent implements OnInit {
   passengerForm = this.fb.group({
     name: [null, Validators.required],
     sex: [null],

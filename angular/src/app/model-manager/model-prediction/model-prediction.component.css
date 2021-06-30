@@ -83,12 +83,3 @@
 .active-row {
     font-weight: bold;
 }
-
-.passenger-selection-row {
-    width: 100%;
-}
-
-.selected-id {
-    width: 100%;
-    margin-top: 10px;
-}

@@ -1,19 +1,9 @@
 <mat-card class="prediction-list-card">
-    <!-- Searching -->
-    <mat-card class="prediction-list-card">
+    <div *ngIf="fromTable === 'Titanic_Table.Passenger'">
+        <!-- Component for searching and selecting a passenger -->
+        <app-model-prediction-passenger-selection (chosenId)="retreivePassenger($event)"></app-model-prediction-passenger-selection>
+    </div>
 
-        <mat-card-header>
-            <mat-card-title class="principal-header">
-                Search for a passenger
-            </mat-card-title>
-        </mat-card-header>
-
-        <mat-card-content>
-            <!-- Component for searching and selecting a passenger -->
-            <app-model-prediction-passenger-selection (chosenPassenger)="retreivePassenger($event)"></app-model-prediction-passenger-selection>
-        </mat-card-content>
-
-    </mat-card>
     <!-- List of trained models -->
     <mat-card class="prediction-list-card">
 
@@ -60,7 +50,7 @@
     <mat-card-actions>
         <div class="row">
             <!-- 3 conditions to enable the button: not waiting (during prediction), having chosen a model, having chosen a passenger. -->
-            <button mat-raised-button color="primary" [disabled]="waiting || !chosenModel || !chosenPassenger" (click)="predict()">Predict!</button>
+            <button mat-raised-button color="primary" [disabled]="waiting || !chosenModel || !chosenId" (click)="predict()">Predict!</button>
             <!-- Spinner in case of waiting -->
             <div *ngIf="waiting" class="spinner">
                 <mat-progress-spinner diameter="20" mode="indeterminate"></mat-progress-spinner>

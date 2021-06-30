@@ -17,7 +17,6 @@ import { ModelValidationMetricsComponent } from './model-manager/model-validatio
 import { PassengersComponent } from './titanic/passengers/passengers.component';
 import { PassengerSearchComponent } from './titanic/passenger-search/passenger-search.component';
 import { PassengerDetailComponent } from './titanic/passenger-detail/passenger-detail.component';
-import { CreatePassengerFormComponent } from './titanic/create-passenger-form/create-passenger-form.component';
 import { MessagesComponent } from './messages/messages.component';
 import { NavigationTitanicPresentationComponent } from './titanic/navigation-titanic-presentation/navigation-titanic-presentation.component';
 import { NavigationTitanicModelManagerComponent } from './titanic/navigation-titanic-model-manager/navigation-titanic-model-manager.component';
@@ -25,9 +24,8 @@ import { NavigationTitanicPredictionsComponent } from './titanic/navigation-tita
 import { OverviewTitanicPresentationComponent } from './titanic/overview-titanic-presentation/overview-titanic-presentation.component';
 import { OverviewTitanicModelManagerComponent } from './titanic/overview-titanic-model-manager/overview-titanic-model-manager.component'
 import { OverviewTitanicPredictionsComponent } from './titanic/overview-titanic-predictions/overview-titanic-predictions.component';
-import { ModelPredictionComponent } from './titanic/model-prediction/model-prediction.component';
+import { ModelPredictionComponent } from './model-manager/model-prediction/model-prediction.component';
 import { ModelPredictionPassengerSelectionComponent } from './titanic/model-prediction-passenger-selection/model-prediction-passenger-selection.component';
-import { ModelPredictionDetailComponent } from './titanic/model-prediction-detail/model-prediction-detail.component';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -51,6 +49,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSliderModule } from '@angular/material/slider';
+import { PassengerCreationComponent } from './titanic/passenger-creation/passenger-creation.component';
+import { ModelPredictionPassengerDetailComponent } from './titanic/model-prediction-passenger-detail/model-prediction-passenger-detail.component';
 
 @NgModule({
   declarations: [
@@ -59,14 +59,12 @@ import { MatSliderModule } from '@angular/material/slider';
     PassengerDetailComponent,
     MessagesComponent,
     PassengerSearchComponent,
-    CreatePassengerFormComponent,
     NavigationComponent,
     ModelsComponent,
     ModelTrainingComponent,
     ModelPredictionComponent,
     NavigationTitanicModelManagerComponent,
     NavigationTitanicPredictionsComponent,
-    ModelPredictionDetailComponent,
     ModelValidationComponent,
     ModelValidationMetricsComponent,
     ModelPredictionPassengerSelectionComponent,
@@ -76,7 +74,9 @@ import { MatSliderModule } from '@angular/material/slider';
     NavigationTitanicPresentationComponent,
     OverviewTitanicModelManagerComponent,
     OverviewTitanicPresentationComponent,
-    OverviewTitanicPredictionsComponent
+    OverviewTitanicPredictionsComponent,
+    PassengerCreationComponent,
+    ModelPredictionPassengerDetailComponent
   ],
   imports: [
     BrowserModule,

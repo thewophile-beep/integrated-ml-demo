@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { mlTrainedModel } from '../../definitions/mlTrainedModel';
 import { ModelService } from '../../services/model.service'
 import { mlModel } from '../../definitions/mlModel';
 
 import { MatDialog } from '@angular/material/dialog';
-import { ModelPredictionDetailComponent } from '../model-prediction-detail/model-prediction-detail.component';
-import { Passenger } from '../../definitions/passenger';
+import { ModelPredictionPassengerDetailComponent } from '../../titanic/model-prediction-passenger-detail/model-prediction-passenger-detail.component';
 
 @Component({
   selector: 'app-model-prediction',
@@ -13,6 +12,8 @@ import { Passenger } from '../../definitions/passenger';
   styleUrls: ['./model-prediction.component.css']
 })
 export class ModelPredictionComponent implements OnInit {
+  @Input() fromTable = "";
+
   trainedModels: mlTrainedModel[] = [];
   models: mlModel[] = [];
   
@@ -22,13 +23,12 @@ export class ModelPredictionComponent implements OnInit {
   loopColumns: string[] = ["trainedModelName",	"provider",	"trainedTimestamp",	"modelType",	"modelInfo"]
 
   chosenModel: mlTrainedModel | undefined;
-  chosenPassenger: string | undefined;
+  chosenId: string | undefined;
   predictedValues: string[] = [];
   newPrediction: string = "";
 
   waiting: boolean = false;
-  fromTable = "Titanic_Table.Passenger";
-
+  
   constructor(private modelService: ModelService, public dialog: MatDialog) { }
   
   ngOnInit(): void {
@@ -47,12 +47,12 @@ export class ModelPredictionComponent implements OnInit {
       trainedModel: "",
       predicting: "",
       withVariables: "",
-      passenger: "",
+      id: "",
       predictedValue: "",
       probability: ""
     }
 
-    if (this.chosenModel && this.chosenPassenger) {
+    if (this.chosenModel && this.chosenId) {
       // Filling in data to send to dialog
       data.model = this.chosenModel.modelName;
       data.trainedModel = this.chosenModel.trainedModelName;
@@ -61,15 +61,15 @@ export class ModelPredictionComponent implements OnInit {
         data.predicting = currModel.predictingColumnName
         data.withVariables = currModel.withColumns;
       }
-      data.passenger = this.chosenPassenger;
+      data.id = this.chosenId;
 
       // Predicting
-      this.modelService.predict(data.model, data.trainedModel, data.passenger, this.fromTable).subscribe(
+      this.modelService.predict(data.model, data.trainedModel, data.id, this.fromTable).subscribe(
         predicted => {
           data.predictedValue = String(predicted.predictedValue);
           // if of type classification + prediction retreived, retreive probability too
-          if (this.chosenModel && this.chosenPassenger && (this.chosenModel.modelType === "classification")) {
-              this.modelService.probability(data.model, data.trainedModel, data.predictedValue, data.passenger, this.fromTable).subscribe(
+          if (this.chosenModel && this.chosenId && (this.chosenModel.modelType === "classification")) {
+              this.modelService.probability(data.model, data.trainedModel, data.predictedValue, data.id, this.fromTable).subscribe(
                 response => {
 
                   // Quick and ugly fix to bug with query to get probability of survived field:
@@ -82,7 +82,7 @@ export class ModelPredictionComponent implements OnInit {
                   // End waiting
                   this.waiting = false;
                   // Launch dialog with the data to show (w/ probability)
-                  this.dialog.open(ModelPredictionDetailComponent, {
+                  this.dialog.open(ModelPredictionPassengerDetailComponent, {
                     data: data
                   });
                 }
@@ -91,7 +91,7 @@ export class ModelPredictionComponent implements OnInit {
             // End waiting
             this.waiting = false;
             // Launch dialog with the data to show (w/o probability)
-            this.dialog.open(ModelPredictionDetailComponent, {
+            this.dialog.open(ModelPredictionPassengerDetailComponent, {
               data: data
             });
           }
@@ -106,8 +106,8 @@ export class ModelPredictionComponent implements OnInit {
     this.chosenModel = choice;
   }
 
-  retreivePassenger(passenger: string) {
-    this.chosenPassenger = passenger;
+  retreivePassenger(id: string) {
+    this.chosenId = id;
   }
 }
 

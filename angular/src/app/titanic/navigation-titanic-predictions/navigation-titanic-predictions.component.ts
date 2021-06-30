@@ -7,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavigationTitanicPredictionsComponent implements OnInit {
 
+  fromTable: string = "Titanic_Table.Passenger";
+
   constructor() { }
 
   ngOnInit(): void {
