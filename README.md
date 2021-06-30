@@ -7,6 +7,6 @@ Just run the command:
 docker compose up
 ````
 
-Once everything is set up, open a browser to the address: http://localhost:4200/index.html.
+Once everything is set up, open a browser to the address: http://localhost:4200.
 
 That's it! Enjoy!
