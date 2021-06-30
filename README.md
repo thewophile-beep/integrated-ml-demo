@@ -2,17 +2,11 @@
 
 ## How to run
 
-- In a first terminal, run: 
-```
-docker compose build && docker compose up
-```
-
-- In another terminal, run:
-
+Just run the command:
 ````
-cd angular && ng serve
+docker compose up
 ````
 
-- Once the server is launched, open browser to address: http://localhost:4200/index.html.
+Once everything is set up, open a browser to the address: http://localhost:4200/index.html.
 
-- Enjoy!
+That's it! Enjoy!
