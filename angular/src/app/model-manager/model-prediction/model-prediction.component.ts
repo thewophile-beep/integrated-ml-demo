@@ -14,9 +14,10 @@ import { ModelPredictionPassengerDetailComponent } from '../../titanic/model-pre
 export class ModelPredictionComponent implements OnInit {
   @Input() fromTable = "";
 
+  titanicTable = "Titanic_Table.Passenger"
+
   trainedModels: mlTrainedModel[] = [];
   models: mlModel[] = [];
-  
   // Displayed columns for showing trained models data
   displayedColumns: string[] = ["modelName",	"trainedModelName",	"provider",	"trainedTimestamp",	"modelType",	"modelInfo"]
   // Will loop over the following array (we separated the modelName to make it sticky):
@@ -82,9 +83,7 @@ export class ModelPredictionComponent implements OnInit {
                   // End waiting
                   this.waiting = false;
                   // Launch dialog with the data to show (w/ probability)
-                  this.dialog.open(ModelPredictionPassengerDetailComponent, {
-                    data: data
-                  });
+                  this.openDialog(data)
                 }
               )
           } else {
@@ -108,6 +107,13 @@ export class ModelPredictionComponent implements OnInit {
 
   retreivePassenger(id: string) {
     this.chosenId = id;
+  }
+
+  openDialog(data: any) {
+    if (this.fromTable === this.titanicTable)
+      this.dialog.open(ModelPredictionPassengerDetailComponent, {
+        data: data
+      });
   }
 }
 

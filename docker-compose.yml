@@ -8,3 +8,12 @@ services:
     ports:
     - 52775:52773
     - 51776:1972
+  angular:
+    build:
+      context: ./angular
+    volumes:
+      - ./angular:/usr/src/app
+    ports:
+      - 4200:4200
+    command: > 
+      bash -c "npm install && ng serve --host 0.0.0.0 --port 4200"
