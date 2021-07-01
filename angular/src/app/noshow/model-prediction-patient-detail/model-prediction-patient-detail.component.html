@@ -1,0 +1,36 @@
+<mat-dialog-content>
+    <mat-card class="dialog-card">
+        <mat-card-header>
+            <mat-card-title class="principal-header">Prediction for patient n°{{patient.ID}}</mat-card-title>
+            <mat-card-subtitle>Using <strong>{{data.model}}</strong> model with <strong>{{data.trainedModel}}</strong> run.</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+            
+            <div *ngIf="patient">
+                <span matLine>Prediction: </span>
+                <div class="answer">
+                    <span matLine><strong>{{data.predicting | uppercase}}? {{data.predictedValue}}</strong></span>
+                    <!-- Showing probability if there is actually a probability (only in case of classification) -->
+                    <div *ngIf="data.probability.length > 0">
+                        <span matLine>with probability: {{data.probability}}</span>
+                    </div>
+                    <div class="real-value">
+                        <span matLine>
+                            Should have predicted: {{patient[data.predicting]}}
+                        </span>
+                    </div>
+                </div>
+                <span matLine>Using the following variables of patient n° <strong>{{patient.patientId}}</strong>:</span>
+                <mat-list role="list">
+                    <mat-list-item role="listitem" *ngFor="let variable of variableList; let isLast = last;"  class="list-var">
+                        <strong>{{variable}}</strong>: {{patient[variable]}}
+                        <div *ngIf="!isLast">
+                            <mat-divider></mat-divider>
+                        </div>
+                    </mat-list-item>
+                </mat-list>
+        </div>
+        </mat-card-content>
+    </mat-card>
+</mat-dialog-content>

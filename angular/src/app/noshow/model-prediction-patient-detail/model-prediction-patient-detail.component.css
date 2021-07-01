@@ -1,0 +1,31 @@
+.dialog-card {
+    margin: 20px auto;
+}
+
+.principal-header {
+    font-size: 35px;
+}
+
+.answer {
+    font-size: 25px;
+    text-align: center;
+    color: #fff;
+    background-color: rgb(92, 45, 174);
+    border-radius: 5px;
+    margin: 20px;
+    padding: 5px;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.col {
+    flex: 1;
+    margin-right: 20px;
+}
+
+.real-value {
+    font-size: 18px;
+}

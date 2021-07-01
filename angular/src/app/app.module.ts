@@ -59,6 +59,7 @@ import { PatientSearchComponent } from './noshow/patient-search/patient-search.c
 import { NavigationNoshowModelManagerComponent } from './noshow/navigation-noshow-model-manager/navigation-noshow-model-manager.component';
 import { NavigationNoshowPredictionsComponent } from './noshow/navigation-noshow-predictions/navigation-noshow-predictions.component';
 import { ModelPredictionPatientSelectionComponent } from './noshow/model-prediction-patient-selection/model-prediction-patient-selection.component';
+import { ModelPredictionPatientDetailComponent } from './noshow/model-prediction-patient-detail/model-prediction-patient-detail.component';
 
 @NgModule({
   declarations: [
@@ -92,7 +93,8 @@ import { ModelPredictionPatientSelectionComponent } from './noshow/model-predict
     PatientSearchComponent,
     NavigationNoshowModelManagerComponent,
     NavigationNoshowPredictionsComponent,
-    ModelPredictionPatientSelectionComponent
+    ModelPredictionPatientSelectionComponent,
+    ModelPredictionPatientDetailComponent
   ],
   imports: [
     BrowserModule,

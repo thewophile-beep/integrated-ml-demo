@@ -5,6 +5,7 @@ import { mlModel } from '../../definitions/mlModel';
 
 import { MatDialog } from '@angular/material/dialog';
 import { ModelPredictionPassengerDetailComponent } from '../../titanic/model-prediction-passenger-detail/model-prediction-passenger-detail.component';
+import { ModelPredictionPatientDetailComponent } from '../../noshow/model-prediction-patient-detail/model-prediction-patient-detail.component';
 
 @Component({
   selector: 'app-model-prediction',
@@ -116,7 +117,9 @@ export class ModelPredictionComponent implements OnInit {
         data: data
       });
     else if (this.fromTable === this.noshowTable) {
-      // blabla
+      this.dialog.open(ModelPredictionPatientDetailComponent, {
+        data: data
+      });
     }   
   }
 }
