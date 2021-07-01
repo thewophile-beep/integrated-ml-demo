@@ -1,0 +1,28 @@
+<mat-card class="patients-list-card">
+    <mat-card-header>
+        <mat-card-title class="principal-header">
+            Patient List
+        </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <app-patient-search></app-patient-search>
+        <mat-paginator [length]="totalNum"
+              [pageSize]="pageSize"
+              [pageSizeOptions]="[100, 300, 500]"
+              (page)="updateEvent($event)">
+        </mat-paginator>
+        <div>
+            <mat-nav-list>
+                <mat-list-item *ngFor="let patient of patients; let isLast = last;" (click)="openDialog(patient)">
+                    <span matLine>Patient n°{{patient.patientId}}</span>
+                    <button mat-icon-button title="delete passepatientnger" (click)="delete(patient)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                    <div *ngIf="!isLast">
+                        <mat-divider></mat-divider>
+                    </div>
+                </mat-list-item>
+            </mat-nav-list>
+        </div>
+    </mat-card-content>
+</mat-card>

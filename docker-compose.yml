@@ -12,4 +12,4 @@ services:
     build:
       context: ./angular
     ports:
-      - 4040:80
+      - 8080:80

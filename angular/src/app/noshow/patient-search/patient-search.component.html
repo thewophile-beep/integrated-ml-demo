@@ -1,0 +1,25 @@
+<form class="full-width">
+    <mat-form-field class="full-width">
+        <mat-label>Search for a patient</mat-label>
+        <input matInput
+        placeholder="Enter a name"
+        #searchBox id="search-box" 
+        (input)="search(searchBox.value)"
+        autocomplete="off">
+    </mat-form-field>
+    <div *ngIf="patients$ | async as patients">
+        <ng-container *ngIf="patients.length; else noItems">
+            <mat-nav-list>
+                <mat-list-item *ngFor="let patient of patients; let isLast = last;" (click)="openDialog(patient)">
+                    <span matLine>Patient n°{{patient.patientId}} in {{patient.neighbourhood}}</span>
+                    <div *ngIf="!isLast">
+                        <mat-divider></mat-divider>
+                    </div>
+                </mat-list-item>
+            </mat-nav-list>
+        </ng-container>
+        <ng-template #noItems>
+            No match.
+        </ng-template>
+    </div>
+</form>

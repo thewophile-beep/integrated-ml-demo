@@ -1,0 +1,52 @@
+<mat-card class="prediction-list-card">
+
+    <mat-card-header>
+        <mat-card-title class="principal-header">
+            Search for a patient
+        </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+        <form>
+            <mat-form-field class="full-width">
+                <mat-label>Search for a patient and select one</mat-label>
+                <input matInput
+                placeholder="Enter a name"
+                #searchBox id="search-box" 
+                (input)="search(searchBox.value)"
+                autocomplete="off">
+            </mat-form-field>
+            <div *ngIf="patients$ | async as patients">
+                <ng-container *ngIf="patients.length; else noItems">
+                    <mat-selection-list #patientsSearch [multiple]="false">
+                        <mat-list-option *ngFor="let patient of patients; let isLast = last;" (click)="choosePatient(patient)">
+                            <div class="row">
+                                <button mat-icon-button title="edit patient" (click)="openDialog(patient)" class="edit-button">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                                <span matLine>Patient n°{{patient.patientId}}</span>
+                            </div>
+                            <div *ngIf="!isLast">
+                                <mat-divider></mat-divider>
+                            </div>
+                        </mat-list-option>
+                    </mat-selection-list>
+                </ng-container>
+                <ng-template #noItems>
+                    <div>
+                        No match.
+                    </div>
+                </ng-template>
+                <!-- Show selected patient -->
+                <p *ngIf="chosenPatientLocal">
+                    <span matLine>
+                        Selected patient: n°{{chosenPatientLocal.patientId}}
+                    </span>
+                </p>
+            </div>
+        </form>
+        
+    </mat-card-content>
+
+</mat-card>
+

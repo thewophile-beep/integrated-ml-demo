@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Passenger } from '../../definitions/passenger';
 import { PassengerService } from '../../services/passenger.service';
-import {PageEvent} from '@angular/material/paginator';
+import { PageEvent } from '@angular/material/paginator';
 
 import { MatDialog } from '@angular/material/dialog';
 import { PassengerDetailComponent } from '../passenger-detail/passenger-detail.component';

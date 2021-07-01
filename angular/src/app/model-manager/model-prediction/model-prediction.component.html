@@ -1,7 +1,10 @@
 <mat-card class="prediction-list-card">
     <div *ngIf="fromTable === titanicTable">
         <!-- Component for searching and selecting a passenger -->
-        <app-model-prediction-passenger-selection (chosenId)="retreivePassenger($event)"></app-model-prediction-passenger-selection>
+        <app-model-prediction-passenger-selection (chosenId)="retreiveValue($event)"></app-model-prediction-passenger-selection>
+    </div>
+    <div *ngIf="fromTable === noshowTable">
+        <app-model-prediction-patient-selection (chosenId)="retreiveValue($event)"></app-model-prediction-patient-selection>
     </div>
 
     <!-- List of trained models -->

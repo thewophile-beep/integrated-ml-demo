@@ -1,6 +1,6 @@
 /// Rest API for the Integrated ML Demo<br/>
 /// Business logic class defined by OpenAPI in IntegratedML.REST.spec<br/>
-/// Updated Jun 29, 2021 14:37:26
+/// Updated Jul 1, 2021 07:32:46
 Class IntegratedML.REST.impl Extends %REST.Impl [ ProcedureBlock ]
 {
 
@@ -59,7 +59,7 @@ ClassMethod createPassenger(payloadBody As %Stream.Object) As %Stream.Object
         do tPassenger.%Save()
         set tDyna.passengerId = tPassenger.%Id()
     } catch(ex) {
-        do ##class(%REST.Impl).%ReportRESTError(400,ex.AsStatus(),$parameter("Titanic.REST.impl","ExposeServerExceptions")) 
+        do ##class(%REST.Impl).%ReportRESTError(400,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions")) 
     }
     quit tDyna
 }
@@ -102,6 +102,114 @@ ClassMethod deletePassenger(id As %Integer) As %Stream.Object
 {
     if ##class(Titanic.Table.Passenger).%ExistsId(id) {
         do ##class(Titanic.Table.Passenger).%DeleteId(id)
+    } else {
+        do ..%SetStatusCode(204)
+    }
+    quit {}
+}
+
+/// Retreive the total number of Patients THEN the Patients from currPage\*(pageSize-1) to currPage\*pageSize. Search by name possible too.<br/>
+/// The method arguments hold values for:<br/>
+///     currPage, The current page at which the client is<br/>
+///     pageSize, The number of patients per page<br/>
+///     id, Search patient by id<br/>
+ClassMethod getAllPatients(currPage As %Float, pageSize As %Float, id As %String) As %Stream.Object
+{
+    set tDyna = {}
+    set tPatients = []
+    if ($Data(id)) {
+        set myquery = "SELECT Id FROM Noshow_Table.Patient WHERE ID = ?"
+        set tStatement = ##class(%SQL.Statement).%New()
+        $$$ThrowOnError(tStatement.%Prepare(myquery))
+        set tRs = tStatement.%Execute(id)
+        while tRs.%Next() {
+            do ##class(Noshow.Table.Patient).%OpenId(tRs.Id).%JSONExportToStream(.tStream)
+            set tNewPatient = {}.%FromJSON(tStream)
+            set tNewPatient.patientId = tRs.Id
+            do tPatients.%Push(tNewPatient)
+        }
+        set tDyna."total" = tRs.%ROWCOUNT
+    } 
+    else {
+        set tStartRow = pageSize * (currPage - 1)
+        set tEndRow = tStartRow + pageSize
+        set myquery = "SELECT Id FROM Noshow_Table.Patient WHERE ID > ? AND ID <= ?"
+        set tStatement = ##class(%SQL.Statement).%New()
+        $$$ThrowOnError(tStatement.%Prepare(myquery))
+        set tRs = tStatement.%Execute(tStartRow, tEndRow)
+        while tRs.%Next() {
+            do ##class(Noshow.Table.Patient).%OpenId(tRs.Id).%JSONExportToStream(.tStream)
+            set tNewPatient = {}.%FromJSON(tStream)
+            set tNewPatient.patientId = tRs.Id
+            do tPatients.%Push(tNewPatient)
+        }
+        set myquery = "SELECT COUNT(Id) FROM Noshow_Table.Patient"
+        set tStatement = ##class(%SQL.Statement).%New()
+        $$$ThrowOnError(tStatement.%Prepare(myquery))
+        set tRs = tStatement.%Execute()
+        do tRs.%Next()
+        set tDyna."total" = tRs.%Get("Aggregate_1") 
+    }
+    set tDyna."patients" = tPatients
+    quit tDyna
+}
+
+/// Create a new patient to put in the table<br/>
+/// The method arguments hold values for:<br/>
+///     payloadBody, Request body contents<br/>
+ClassMethod createPatient(payloadBody As %Stream.Object) As %Stream.Object
+{
+    set tPatient = ##class(Noshow.Table.Patient).%New()
+    set tDyna = {}
+    try {
+        $$$ThrowOnError(tPatient.%JSONImport(payloadBody)) 
+        do tPatient.%Save()
+        set tDyna.patientId = tPatient.%Id()
+    } catch(ex) {
+        do ##class(%REST.Impl).%ReportRESTError(400,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions")) 
+    }
+    quit tDyna
+}
+
+/// Return the saved informations of patient n°{id}<br/>
+/// The method arguments hold values for:<br/>
+///     id<br/>
+ClassMethod getPatient(id As %Integer) As %Stream.Object
+{
+    set tDyna = {}
+    if ##class(Noshow.Table.Patient).%ExistsId(id) {
+        do ##class(Noshow.Table.Patient).%OpenId(id).%JSONExportToStream(.tStream)
+        set tDyna = {}.%FromJSON(tStream)
+        set tDyna.patientId = id
+    } else {
+        Do ..%SetStatusCode(204)
+    }
+    quit tDyna
+}
+
+/// Update already existing patient {id} with information in the payload<br/>
+/// The method arguments hold values for:<br/>
+///     id<br/>
+///     payloadBody, Request body contents<br/>
+ClassMethod updatePatient(id As %Integer, payloadBody As %Stream.Object) As %Stream.Object
+{
+    if ##class(Noshow.Table.Patient).%ExistsId(id) {
+        set tPatient = ##class(Noshow.Table.Patient).%OpenId(id)
+        do tPatient.%JSONImport(payloadBody)
+        do tPatient.%Save()
+    } else {
+        do ..%SetStatusCode(204)
+    }
+    quit {}
+}
+
+/// Delete existing patient with {id}<br/>
+/// The method arguments hold values for:<br/>
+///     id<br/>
+ClassMethod deletePatient(id As %Integer) As %Stream.Object
+{
+    if ##class(Noshow.Table.Patient).%ExistsId(id) {
+        do ##class(Noshow.Table.Patient).%DeleteId(id)
     } else {
         do ..%SetStatusCode(204)
     }

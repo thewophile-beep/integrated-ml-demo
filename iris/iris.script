@@ -13,6 +13,7 @@
     zpm "install csvgen"
 
     do ##class(community.csvgen).Generate("/tmp/iris/misc/titanic.csv",,"Titanic.Table.Passenger")
+    do ##class(community.csvgen).Generate("/tmp/iris/misc/noshow.csv",,"Noshow.Table.Patient")
 
     zn "%SYS"
     set props("NameSpace") = "IRISAPP"

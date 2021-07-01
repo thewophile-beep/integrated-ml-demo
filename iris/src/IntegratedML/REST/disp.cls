@@ -32,6 +32,16 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
   <Route Url="/passengers/:id" Method="put" Call="updatePassenger" />
   <!-- Delete passenger {id} -->
   <Route Url="/passengers/:id" Method="delete" Call="deletePassenger" />
+  <!-- Get patients with pagination and search by name possible -->
+  <Route Url="/patients" Method="get" Call="getAllPatients" />
+  <!-- Create a patient -->
+  <Route Url="/patients" Method="post" Call="createPatient" />
+  <!-- Get patient n°{id} info -->
+  <Route Url="/patients/:id" Method="get" Call="getPatient" />
+  <!-- Update patient {id} info -->
+  <Route Url="/patients/:id" Method="put" Call="updatePatient" />
+  <!-- Delete patient {id} -->
+  <Route Url="/patients/:id" Method="delete" Call="deletePatient" />
   <!-- Get nb of objects in table -->
   <Route Url="/ml/tablesize" Method="get" Call="getTableSize" />
   <!-- Get all models -->
@@ -143,6 +153,91 @@ ClassMethod deletePassenger(pid As %String) As %Status
     Try {
         If ($number(pid,"I")="") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"id",pid)) Quit
         Set response=##class(IntegratedML.REST.impl).deletePassenger(pid)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
+/// Get patients with pagination and search by name possible
+ClassMethod getAllPatients() As %Status
+{
+    Try {
+        If $data(%request.Data("currPage",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"currPage")) Quit
+        }
+        If $data(%request.Data("currPage",1)) {
+            Set pcurrPage=%request.Data("currPage",1)
+            If '$isvalidnum(pcurrPage) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"currPage",pcurrPage)) Quit
+        }
+        If $data(%request.Data("pageSize",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"pageSize")) Quit
+        }
+        If $data(%request.Data("pageSize",1)) {
+            Set ppageSize=%request.Data("pageSize",1)
+            If '$isvalidnum(ppageSize) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"pageSize",ppageSize)) Quit
+        }
+        If $data(%request.Data("id",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"id")) Quit
+        }
+        If $data(%request.Data("id",1)) {
+            Set pid=%request.Data("id",1)
+        }
+        Set response=##class(IntegratedML.REST.impl).getAllPatients(.pcurrPage,.ppageSize,.pid)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
+/// Create a patient
+ClassMethod createPatient() As %Status
+{
+    Try {
+        If $isobject(%request.Content) Set ppayloadBody=%request.Content
+        Set response=##class(IntegratedML.REST.impl).createPatient(.ppayloadBody)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
+/// Get patient n°{id} info
+ClassMethod getPatient(pid As %String) As %Status
+{
+    Try {
+        If ($number(pid,"I")="") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"id",pid)) Quit
+        Set response=##class(IntegratedML.REST.impl).getPatient(pid)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
+/// Update patient {id} info
+ClassMethod updatePatient(pid As %String) As %Status
+{
+    Try {
+        If ($number(pid,"I")="") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"id",pid)) Quit
+        If $isobject(%request.Content) Set ppayloadBody=%request.Content
+        Set response=##class(IntegratedML.REST.impl).updatePatient(pid,.ppayloadBody)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
+/// Delete patient {id}
+ClassMethod deletePatient(pid As %String) As %Status
+{
+    Try {
+        If ($number(pid,"I")="") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"id",pid)) Quit
+        Set response=##class(IntegratedML.REST.impl).deletePatient(pid)
         Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))

@@ -51,6 +51,14 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatSliderModule } from '@angular/material/slider';
 import { PassengerCreationComponent } from './titanic/passenger-creation/passenger-creation.component';
 import { ModelPredictionPassengerDetailComponent } from './titanic/model-prediction-passenger-detail/model-prediction-passenger-detail.component';
+import { NavigationNoshowPresentationComponent } from './noshow/navigation-noshow-presentation/navigation-noshow-presentation.component';
+import { PatientsComponent } from './noshow/patients/patients.component';
+import { PatientCreationComponent } from './noshow/patient-creation/patient-creation.component';
+import { PatientDetailComponent } from './noshow/patient-detail/patient-detail.component';
+import { PatientSearchComponent } from './noshow/patient-search/patient-search.component';
+import { NavigationNoshowModelManagerComponent } from './noshow/navigation-noshow-model-manager/navigation-noshow-model-manager.component';
+import { NavigationNoshowPredictionsComponent } from './noshow/navigation-noshow-predictions/navigation-noshow-predictions.component';
+import { ModelPredictionPatientSelectionComponent } from './noshow/model-prediction-patient-selection/model-prediction-patient-selection.component';
 
 @NgModule({
   declarations: [
@@ -76,7 +84,15 @@ import { ModelPredictionPassengerDetailComponent } from './titanic/model-predict
     OverviewTitanicPresentationComponent,
     OverviewTitanicPredictionsComponent,
     PassengerCreationComponent,
-    ModelPredictionPassengerDetailComponent
+    ModelPredictionPassengerDetailComponent,
+    NavigationNoshowPresentationComponent,
+    PatientsComponent,
+    PatientCreationComponent,
+    PatientDetailComponent,
+    PatientSearchComponent,
+    NavigationNoshowModelManagerComponent,
+    NavigationNoshowPredictionsComponent,
+    ModelPredictionPatientSelectionComponent
   ],
   imports: [
     BrowserModule,

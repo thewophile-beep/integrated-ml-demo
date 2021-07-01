@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "InterSystems IRIS REST CRUD for Integrated ML Demo",
+    "title": "InterSystems IRIS REST API for Integrated ML Demo",
     "description": "Rest API for the Integrated ML Demo",
     "version": "0.2",
     "contact": {
@@ -186,6 +186,184 @@
         "summary": "Delete passenger {id}",
         "operationId": "deletePassenger",
         "x-ISC_ServiceMethod": "deletePassenger",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "(Expected Result)"
+          },
+          "204": {
+            "description": "(Not Found)"
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      }
+    },
+    "/patients": {
+      "get": {
+        "description": "Retreive the total number of Patients THEN the Patients from currPage\\*(pageSize-1) to currPage\\*pageSize. Search by name possible too.",
+        "summary": "Get patients with pagination and search by name possible",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "currPage",
+            "type": "number",
+            "description": "The current page at which the client is"
+          },
+          {
+            "in": "query",
+            "name": "pageSize",
+            "type": "number",
+            "description": "The number of patients per page"
+          },
+          {
+            "in": "query",
+            "name": "id",
+            "type": "string",
+            "description": "Search patient by id"
+          }
+        ],
+        "operationId": "getAllPatients",
+        "x-ISC_ServiceMethod": "getAllPatients",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "total": {
+                  "type": "number"
+                },
+                "patients": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/patient"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      },
+      "post": {
+        "description": "Create a new patient to put in the table",
+        "summary": "Create a patient",
+        "operationId": "createPatient",
+        "x-ISC_ServiceMethod": "createPatient",
+        "parameters": [
+          {
+            "name": "payloadBody",
+            "in": "body",
+            "description": "Request body contents",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/patient"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "patientId": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "(Bad Request)"
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      }
+    },
+    "/patients/{id}": {
+      "get": {
+        "description": "Return the saved informations of patient n°{id}",
+        "summary": "Get patient n°{id} info",
+        "operationId": "getPatient",
+        "x-ISC_ServiceMethod": "getPatient",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "$ref": "#/definitions/patient"
+            }
+          },
+          "204": {
+            "description": "(Not Found)"
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      },
+      "put": {
+        "description": "Update already existing patient {id} with information in the payload",
+        "summary": "Update patient {id} info",
+        "operationId": "updatePatient",
+        "x-ISC_ServiceMethod": "updatePatient",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "payloadBody",
+            "in": "body",
+            "description": "Request body contents",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/patient"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "(Expected Result)"
+          },
+          "204": {
+            "description": "(Not Found)"
+          },
+          "400": {
+            "description": "(Bad Request)"
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete existing patient with {id}",
+        "summary": "Delete patient {id}",
+        "operationId": "deletePatient",
+        "x-ISC_ServiceMethod": "deletePatient",
         "parameters": [
           {
             "name": "id",
@@ -878,6 +1056,53 @@
           "type": "string"
         },
         "embarked": {
+          "type": "string"
+        }
+      }
+    },
+    "patient": {
+      "type": "object",
+      "properties": {
+        "patientId": {
+          "type": "number"
+        },
+        "appointmentId": {
+          "type": "number"
+        },
+        "gender": {
+          "type": "string"
+        },
+        "scheduledDay": {
+          "type": "string"
+        },
+        "appointmentDay": {
+          "type": "string"
+        },
+        "age": {
+          "type": "number"
+        },
+        "neighbourhood": {
+          "type": "string"
+        },
+        "scholarship": {
+          "type": "number"
+        },
+        "hypertension": {
+          "type": "number"
+        },
+        "diabetes": {
+          "type": "number"
+        },
+        "alcoholism": {
+          "type": "number"
+        },
+        "handcap": {
+          "type": "number"
+        },
+        "smsReceived": {
+          "type": "number"
+        },
+        "noShow": {
           "type": "string"
         }
       }

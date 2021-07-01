@@ -1,0 +1,111 @@
+<mat-dialog-content>
+    <form [formGroup]="patientForm" novalidate>
+        <div *ngIf="patient">
+            <mat-card class="dialog-card">
+                <mat-card-header>
+                    <mat-card-title class="principal-header">Patient n°{{patient.patientId}} </mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    
+                    <mat-card class="patient-creation-card">
+                        <mat-card-header>
+                            <mat-card-title>Personal Information</mat-card-title>
+                        </mat-card-header>
+                        <mat-card-content>
+                            <div class="row">
+                                <!-- age / neighbourhood / sex -->
+                                <div class="col">
+
+                                    <mat-form-field class="full-width">
+                                        <mat-label>Patient Age</mat-label>
+                                        <input type="number"
+                                        matInput placeholder="Enter a number" 
+                                        formControlName="age"
+                                        min="0"
+                                        >
+                                        <mat-error *ngIf="patientForm.controls['age'].hasError('required')">
+                                            Age is <strong>required</strong>
+                                        </mat-error>
+                                        <mat-error *ngIf="patientForm.controls['age'].hasError('min')">No negative values</mat-error>
+                                    </mat-form-field>
+
+                                    <mat-form-field class="full-width">
+                                        <mat-label>Patient Neighbourhood</mat-label>
+                                        <input matInput placeholder="Enter a neighbourhood" formControlName="neighbourhood">
+                                        <mat-error *ngIf="patientForm.controls['neighbourhood'].hasError('required')">
+                                            Neighbourhood is <strong>required</strong>
+                                        </mat-error>
+                                    </mat-form-field>
+
+                                    <mat-label>Patient Gender</mat-label>
+                                    <mat-radio-group formControlName="gender">
+                                        <mat-radio-button value="M">Male</mat-radio-button>
+                                        <mat-radio-button value="F">Female</mat-radio-button>
+                                        <mat-radio-button value="">Other</mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                                <!-- scholarship / hypertension / diabetes / alcoholism / handicap -->
+                                <div class="col">
+                                    <p><mat-checkbox formControlName="scholarship">Scholarship</mat-checkbox></p>
+                                    <p><mat-checkbox formControlName="hypertension">Hypertension</mat-checkbox></p>
+                                    <p><mat-checkbox formControlName="diabetes">Diabetes</mat-checkbox></p>
+                                    <p><mat-checkbox formControlName="alcoholism">Alcoholism</mat-checkbox></p>
+                                    <p>
+                                        <mat-slider 
+                                        aria-label="unit(s)" 
+                                        thumbLabel
+                                        [tickInterval]="1"
+                                        formControlName="handicap"
+                                        [min]="0"
+                                        [max]="4"></mat-slider>
+                                        <span matLine>Handicap level: {{patientForm.value.handicap}}</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <mat-form-field class="full-width">
+                                    <mat-label>Appointment Day</mat-label>
+                                    <input matInput placeholder="Enter a date" formControlName="appointmentDay">
+                                    <mat-error *ngIf="patientForm.controls['appointmentDay'].hasError('required')">
+                                        Appointment Day is <strong>required</strong>
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+
+                    <mat-card class="patient-creation-card">
+                        <mat-card-header>
+                            <mat-card-title>Scheduled Appointment Information</mat-card-title>
+                        </mat-card-header>
+                        <mat-card-content>
+                            <!-- scheduledDay / sms / noshw -->
+                            <div class="row">
+                                <div class="col">
+                                    <mat-form-field class="full-width">
+                                        <mat-label>Scheduled Day</mat-label>
+                                        <input matInput placeholder="Enter a date" formControlName="scheduledDay">
+                                        <mat-error *ngIf="patientForm.controls['scheduledDay'].hasError('required')">
+                                            Scheduled Day is <strong>required</strong>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col">
+                                    <mat-checkbox formControlName="smsReceived">SMS received</mat-checkbox>
+                                </div>
+                                <div class="col">
+                                    <mat-checkbox [checked]="patientForm.value.noShow === 'Yes'" (change)="checkboxChange($event);">No Show</mat-checkbox>
+                                </div>
+                            </div>
+
+                        </mat-card-content>
+                    </mat-card>
+
+                </mat-card-content>
+                <mat-card-actions>
+                    <button mat-raised-button color="primary" [disabled]="patientForm.invalid" (click)="update()" [mat-dialog-close]="true">Submit</button>
+                </mat-card-actions>
+                </mat-card>
+            </div>
+        </form>
+</mat-dialog-content>

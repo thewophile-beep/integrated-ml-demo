@@ -1,0 +1,47 @@
+/* PatientSearch private styles */
+.full-width {
+    width: 100%;
+}
+  
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+  
+.patient-text-autocomplete {
+    color: #000;
+    text-decoration: none;
+}
+  
+.modify-button {
+    float: right;
+    display: flex;
+}
+  
+.drop-down-box {
+    padding: 1px;
+    margin-bottom: 20px;
+    border-style: solid;
+    border-color: #eee;
+    border-width: 1px;
+}
+
+.edit-button {
+    margin-right: 10px;
+}
+
+mat-list-option[aria-selected="true"] {
+    background: white;
+}
+
+.prediction-list-card {
+    min-width: 120px;
+    margin: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.principal-header {
+    font-size: 35px;
+}

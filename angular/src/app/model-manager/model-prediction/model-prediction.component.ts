@@ -15,6 +15,7 @@ export class ModelPredictionComponent implements OnInit {
   @Input() fromTable = "";
 
   titanicTable = "Titanic_Table.Passenger"
+  noshowTable = "Noshow_Table.Patient"
 
   trainedModels: mlTrainedModel[] = [];
   models: mlModel[] = [];
@@ -105,7 +106,7 @@ export class ModelPredictionComponent implements OnInit {
     this.chosenModel = choice;
   }
 
-  retreivePassenger(id: string) {
+  retreiveValue(id: string) {
     this.chosenId = id;
   }
 
@@ -114,6 +115,9 @@ export class ModelPredictionComponent implements OnInit {
       this.dialog.open(ModelPredictionPassengerDetailComponent, {
         data: data
       });
+    else if (this.fromTable === this.noshowTable) {
+      // blabla
+    }   
   }
 }
 
