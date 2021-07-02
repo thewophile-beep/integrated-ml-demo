@@ -19,8 +19,6 @@ export class PatientDetailComponent implements OnInit {
 
   patientForm = this.fb.group({
     gender: [null, Validators.required],
-    scheduledDay: [null, Validators.required],
-    appointmentDay: [null, Validators.required],
     age: [null, Validators.required],
     neighbourhood: [null, Validators.required],
     scholarship: null,
@@ -30,6 +28,8 @@ export class PatientDetailComponent implements OnInit {
     handicap: null,
     smsReceived: null,
     noShow: null,
+    scheduledDay: [null, Validators.required],
+    appointmentDay: [null, Validators.required],
   });
 
   constructor(
@@ -60,20 +60,25 @@ export class PatientDetailComponent implements OnInit {
         alcoholism: patient.alcoholism,
         handicap: patient.handicap,
         smsReceived: patient.smsReceived,
-        noShow: patient.noShow,
+        noShow: patient.noShow === "Yes" ? 1 : 0,
       });
     });
   }
 
   update(): void {
     if (this.patient) {
+      this.patientForm.patchValue({
+        noShow: this.patientForm.value.noShow? "Yes" : "No",
+        scholarship: this.patientForm.value.scholarship? 1 : 0,
+        hypertension: this.patientForm.value.hypertension? 1 : 0,
+        diabetes: this.patientForm.value.diabetes? 1 : 0,
+        handicap: this.patientForm.value.handicap? 1 : 0,
+        alcoholism: this.patientForm.value.alcoholism? 1 : 0,
+        smsReceived: this.patientForm.value.smsReceived? 1 : 0,
+      })
       this.patientService.updatePatient(this.patient.patientId, this.patientForm.value)
         .subscribe();
     }
-  }
-
-  checkboxChange(event: any): void {
-    this.patientForm.patchValue({noShow: event.source.checked? "Yes" : "No"})
   }
 
 }

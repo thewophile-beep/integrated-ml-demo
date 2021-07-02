@@ -93,7 +93,7 @@
                                 <mat-checkbox formControlName="smsReceived">SMS received</mat-checkbox>
                             </div>
                             <div class="col">
-                                <mat-checkbox [checked]="patientForm.value.noShow === 'Yes'" (change)="checkboxChange($event);">No Show</mat-checkbox>
+                                <mat-checkbox formControlName="noShow">No Show</mat-checkbox>
                             </div>
                         </div>
 
