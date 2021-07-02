@@ -26,6 +26,17 @@ import { OverviewTitanicModelManagerComponent } from './titanic/overview-titanic
 import { OverviewTitanicPredictionsComponent } from './titanic/overview-titanic-predictions/overview-titanic-predictions.component';
 import { ModelPredictionComponent } from './model-manager/model-prediction/model-prediction.component';
 import { ModelPredictionPassengerSelectionComponent } from './titanic/model-prediction-passenger-selection/model-prediction-passenger-selection.component';
+import { PassengerCreationComponent } from './titanic/passenger-creation/passenger-creation.component';
+import { ModelPredictionPassengerDetailComponent } from './titanic/model-prediction-passenger-detail/model-prediction-passenger-detail.component';
+import { NavigationNoshowPresentationComponent } from './noshow/navigation-noshow-presentation/navigation-noshow-presentation.component';
+import { PatientsComponent } from './noshow/patients/patients.component';
+import { PatientCreationComponent } from './noshow/patient-creation/patient-creation.component';
+import { PatientDetailComponent } from './noshow/patient-detail/patient-detail.component';
+import { PatientSearchComponent } from './noshow/patient-search/patient-search.component';
+import { NavigationNoshowModelManagerComponent } from './noshow/navigation-noshow-model-manager/navigation-noshow-model-manager.component';
+import { NavigationNoshowPredictionsComponent } from './noshow/navigation-noshow-predictions/navigation-noshow-predictions.component';
+import { ModelPredictionPatientSelectionComponent } from './noshow/model-prediction-patient-selection/model-prediction-patient-selection.component';
+import { ModelPredictionPatientDetailComponent } from './noshow/model-prediction-patient-detail/model-prediction-patient-detail.component';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -49,17 +60,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSliderModule } from '@angular/material/slider';
-import { PassengerCreationComponent } from './titanic/passenger-creation/passenger-creation.component';
-import { ModelPredictionPassengerDetailComponent } from './titanic/model-prediction-passenger-detail/model-prediction-passenger-detail.component';
-import { NavigationNoshowPresentationComponent } from './noshow/navigation-noshow-presentation/navigation-noshow-presentation.component';
-import { PatientsComponent } from './noshow/patients/patients.component';
-import { PatientCreationComponent } from './noshow/patient-creation/patient-creation.component';
-import { PatientDetailComponent } from './noshow/patient-detail/patient-detail.component';
-import { PatientSearchComponent } from './noshow/patient-search/patient-search.component';
-import { NavigationNoshowModelManagerComponent } from './noshow/navigation-noshow-model-manager/navigation-noshow-model-manager.component';
-import { NavigationNoshowPredictionsComponent } from './noshow/navigation-noshow-predictions/navigation-noshow-predictions.component';
-import { ModelPredictionPatientSelectionComponent } from './noshow/model-prediction-patient-selection/model-prediction-patient-selection.component';
-import { ModelPredictionPatientDetailComponent } from './noshow/model-prediction-patient-detail/model-prediction-patient-detail.component';
+import { NavigationTitanicMainComponent } from './titanic/navigation-titanic-main/navigation-titanic-main.component';
 
 @NgModule({
   declarations: [
@@ -94,7 +95,8 @@ import { ModelPredictionPatientDetailComponent } from './noshow/model-prediction
     NavigationNoshowModelManagerComponent,
     NavigationNoshowPredictionsComponent,
     ModelPredictionPatientSelectionComponent,
-    ModelPredictionPatientDetailComponent
+    ModelPredictionPatientDetailComponent,
+    NavigationTitanicMainComponent
   ],
   imports: [
     BrowserModule,

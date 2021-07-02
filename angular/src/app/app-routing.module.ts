@@ -6,12 +6,15 @@ import { NavigationTitanicPredictionsComponent } from './titanic/navigation-tita
 import { NavigationNoshowPresentationComponent } from './noshow/navigation-noshow-presentation/navigation-noshow-presentation.component';
 import { NavigationNoshowModelManagerComponent } from './noshow/navigation-noshow-model-manager/navigation-noshow-model-manager.component';
 import { NavigationNoshowPredictionsComponent } from './noshow/navigation-noshow-predictions/navigation-noshow-predictions.component';
+import { NavigationTitanicMainComponent } from './titanic/navigation-titanic-main/navigation-titanic-main.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/titanic/dataset', pathMatch: 'full'},
+
   { path: 'titanic/dataset', component: NavigationTitanicPresentationComponent },
   { path: 'titanic/ml/management', component: NavigationTitanicModelManagerComponent },
   { path: 'titanic/ml/predictions', component: NavigationTitanicPredictionsComponent},
+
   { path: 'noshow/dataset', component: NavigationNoshowPresentationComponent },
   { path: 'noshow/ml/management', component: NavigationNoshowModelManagerComponent },
   { path: 'noshow/ml/predictions', component: NavigationNoshowPredictionsComponent},

@@ -1,0 +1,37 @@
+/* PatientDetailComponent's private CSS styles */
+.full-width {
+    width: 100%;
+}
+
+.dialog-card {
+    margin: 20px auto;
+}
+
+
+.mat-radio-button {
+    display: block;
+    margin: 5px 0;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.col {
+    flex: 1;
+    margin-right: 20px;
+}
+
+.col:last-child {
+    margin-right: 0;
+}
+
+.principal-header {
+    font-size: 35px;
+}
+
+.patient-creation-card {
+    margin-bottom: 15px;
+    overflow: scroll auto;
+}
