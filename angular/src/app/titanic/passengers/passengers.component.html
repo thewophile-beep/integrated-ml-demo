@@ -9,7 +9,8 @@
         <mat-paginator [length]="totalNum"
               [pageSize]="pageSize"
               [pageSizeOptions]="[10, 50, 100, 300]"
-              (page)="updateEvent($event)">
+              (page)="updateEvent($event)"
+              [showFirstLastButtons]="true">
         </mat-paginator>
         <div>
             <mat-nav-list>

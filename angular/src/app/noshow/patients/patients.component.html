@@ -6,10 +6,12 @@
     </mat-card-header>
     <mat-card-content>
         <app-patient-search></app-patient-search>
-        <mat-paginator [length]="totalNum"
-              [pageSize]="pageSize"
-              [pageSizeOptions]="[100, 300, 500]"
-              (page)="updateEvent($event)">
+        <mat-paginator 
+            [length]="totalNum"
+            [pageSize]="pageSize"
+            [pageSizeOptions]="[100, 300, 500]"
+            (page)="updateEvent($event)"
+            [showFirstLastButtons]="true">
         </mat-paginator>
         <div>
             <mat-nav-list>
