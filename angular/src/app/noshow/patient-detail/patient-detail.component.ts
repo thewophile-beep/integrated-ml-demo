@@ -40,7 +40,6 @@ export class PatientDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.getPatient();
-
   }
 
   getPatient(): void {

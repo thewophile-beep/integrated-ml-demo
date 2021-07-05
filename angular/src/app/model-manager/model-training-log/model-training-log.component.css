@@ -1,0 +1,10 @@
+.part-log {
+    border-radius: 5px;
+    padding: 10px;
+    white-space: pre-wrap;
+    width: 800px;
+}
+
+.principal-header {
+    font-size: 35px;
+}

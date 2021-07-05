@@ -1,27 +1,21 @@
 <mat-dialog-content>
-    <mat-card class="metrics-card">
-        <mat-card-header>
-            <mat-card-title class="principal-header">
-                Metrics for <strong>{{data.validationRunName}}</strong>
-            </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
+    <p class="principal-header">
+        Metrics for <strong>{{data.validationRunName}}</strong>
+    </p>
 
-            <mat-list role="list" *ngIf="validationMetrics.length > 0">
-                <mat-list-item role="listitem" *ngFor="let metric of validationMetrics; let isLast = last;">
-                    {{metric}}
-                    <div *ngIf="!isLast">
-                        <mat-divider></mat-divider>
-                    </div>
-                </mat-list-item>
-            </mat-list>
+    <mat-list role="list" *ngIf="validationMetrics.length > 0">
+        <mat-list-item role="listitem" *ngFor="let metric of validationMetrics; let isLast = last;">
+            {{metric}}
+            <div *ngIf="!isLast">
+                <mat-divider></mat-divider>
+            </div>
+        </mat-list-item>
+    </mat-list>
 
-        </mat-card-content>
-
-        <mat-card-actions>
-            <a mat-raised-button color="primary" href="https://docs.intersystems.com/irislatest/csp/docbook/Doc.View.cls?KEY=GIML_VALIDATEMODEL#GIML_VALIDATEMODEL_Metrics" target="_blank">
-                <mat-icon>informations</mat-icon>
-            </a>
-        </mat-card-actions>
-    </mat-card>
 </mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-raised-button [mat-dialog-close]="true" color="primary" cdkFocusInitial>Close</button>
+    <a mat-icon-button color="primary" href="https://docs.intersystems.com/irislatest/csp/docbook/Doc.View.cls?KEY=GIML_VALIDATEMODEL#GIML_VALIDATEMODEL_Metrics" target="_blank">
+        <mat-icon>informations</mat-icon>
+    </a>
+</mat-dialog-actions>

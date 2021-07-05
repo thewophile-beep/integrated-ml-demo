@@ -60,6 +60,8 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
   <Route Url="/ml/trainings/states" Method="get" Call="getStateTrainingRun" />
   <!-- Update configuration -->
   <Route Url="/ml/trainings/configurations" Method="put" Call="changeConfiguration" />
+  <!-- Get log of training run -->
+  <Route Url="/ml/trainings/logs" Method="get" Call="getLogTrainingRun" />
   <!-- Get all validation runs -->
   <Route Url="/ml/validations" Method="get" Call="getValidationRuns" />
   <!-- Validate a Model -->
@@ -380,6 +382,24 @@ ClassMethod changeConfiguration() As %Status
         If '$isobject(%request.Content) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"configName")) Quit
         Set pconfigName=%request.Content
         Set response=##class(IntegratedML.REST.impl).changeConfiguration(pconfigName)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
+/// Get log of training run
+ClassMethod getLogTrainingRun() As %Status
+{
+    Try {
+        If $data(%request.Data("trainingName",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"trainingName")) Quit
+        }
+        If $data(%request.Data("trainingName",1)) {
+            Set ptrainingName=%request.Data("trainingName",1)
+        }
+        Set response=##class(IntegratedML.REST.impl).getLogTrainingRun(.ptrainingName)
         Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))

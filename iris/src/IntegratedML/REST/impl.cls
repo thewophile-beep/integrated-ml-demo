@@ -1,6 +1,6 @@
 /// Rest API for the Integrated ML Demo<br/>
 /// Business logic class defined by OpenAPI in IntegratedML.REST.spec<br/>
-/// Updated Jul 1, 2021 07:32:46
+/// Updated Jul 5, 2021 12:01:21
 Class IntegratedML.REST.impl Extends %REST.Impl [ ProcedureBlock ]
 {
 
@@ -532,6 +532,22 @@ ClassMethod purgeModel(modelName As %String) As %Stream.Object
     $$$ThrowOnError(tStatement.%Prepare(myquery))
     set tRs = tStatement.%Execute()
     set tDyna = {}
+    set tDyna."query" = myquery
+    quit tDyna
+}
+
+/// Get the log of a speecific training run<br/>
+/// The method arguments hold values for:<br/>
+///     trainingName, Name of the training run<br/>
+ClassMethod getLogTrainingRun(trainingName As %String) As %Stream.Object
+{
+    set myquery = "SELECT substring(LOG,1,CHAR_LENGTH(LOG)) FROM INFORMATION_SCHEMA.ML_TRAINING_RUNS WHERE TRAINING_RUN_NAME = ?"
+    set tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    set tRs = tStatement.%Execute(trainingName)
+    do tRs.%Next()
+    set tDyna = {}
+    set tDyna."log" = tRs.%Get("Expression_1")
     set tDyna."query" = myquery
     quit tDyna
 }

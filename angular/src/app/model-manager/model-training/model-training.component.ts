@@ -3,11 +3,10 @@ import { mlTrainingModel } from '../../definitions/mlTrainingModel';
 import { mlModel } from '../../definitions/mlModel';
 import { ModelService } from '../../services/model.service';
 import { FormBuilder, Validators } from '@angular/forms';
-import { interval, Observable } from 'rxjs';
+import { interval } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { ModelTrainingAlertNameTakenComponent } from '../model-training-alert-name-taken/model-training-alert-name-taken.component';
-import { PassengerService } from '../../services/passenger.service';
-
+import { ModelTrainingLogComponent } from '../model-training-log/model-training-log.component'
 @Component({
   selector: 'app-model-training',
   templateUrl: './model-training.component.html',
@@ -18,7 +17,7 @@ export class ModelTrainingComponent implements OnInit {
   @Input() public fromTable = "";
 
   runs: mlTrainingModel[] = [];
-  displayedColumns: string[] = ["modelName",	"trainingRunName", 	"provider",	"startTimestamp",	"completedTimestamp",	"trainingDuration",	"runStatus",	"statusCode",	"log",	"settings",	"mlConfigurationName",	"trainingRunQuery"]
+  displayedColumns: string[] = ["modelName",	"trainingRunName", 	"provider",	"startTimestamp",	"completedTimestamp",	"trainingDuration",	"runStatus",	"statusCode",	"log",	"settings",	"mlConfigurationName",	"trainingRunQuery", "actions"]
   loopColumns: string[] = ["trainingRunName", 	"provider",	"startTimestamp",	"completedTimestamp",	"trainingDuration",	"runStatus",	"statusCode",	"log",	"settings",	"mlConfigurationName",	"trainingRunQuery"]
 
   models: mlModel[] = [];
@@ -118,5 +117,15 @@ export class ModelTrainingComponent implements OnInit {
       }
     })
     this.runForm.patchValue({runName: newName})
+  }
+
+  log(trainingName: string) {
+    this.modelService.getLogTrainingRun(trainingName).subscribe(
+      response => {
+        this.dialog.open(ModelTrainingLogComponent, {
+          data: response.log
+        });
+      }
+    )
   }
 }

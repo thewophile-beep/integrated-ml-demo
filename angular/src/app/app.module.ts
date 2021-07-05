@@ -63,6 +63,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { NavigationTitanicMainComponent } from './titanic/navigation-titanic-main/navigation-titanic-main.component';
 import { ModelPredictionPatientComponent } from './noshow/model-prediction-patient/model-prediction-patient.component';
 import { ModelPredictionPassengerComponent } from './titanic/model-prediction-passenger/model-prediction-passenger.component';
+import { ModelTrainingLogComponent } from './model-manager/model-training-log/model-training-log.component';
 
 @NgModule({
   declarations: [
@@ -100,7 +101,8 @@ import { ModelPredictionPassengerComponent } from './titanic/model-prediction-pa
     ModelPredictionPatientDetailComponent,
     NavigationTitanicMainComponent,
     ModelPredictionPatientComponent,
-    ModelPredictionPassengerComponent
+    ModelPredictionPassengerComponent,
+    ModelTrainingLogComponent
   ],
   imports: [
     BrowserModule,

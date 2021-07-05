@@ -216,4 +216,11 @@ export class ModelService {
       catchError(this.handleError<any>('purgeModel'))
     )
   }
+
+  getLogTrainingRun(trainingName: string) {
+    const url = this.ModelsUrl + "/trainings/logs?trainingName=" + trainingName;
+    return this.http.get<any>(url).pipe(
+      catchError(this.handleError<any>('getLogTrainingRun'))
+    )
+  }
 }

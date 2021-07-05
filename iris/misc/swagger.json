@@ -736,6 +736,44 @@
         }
       }
     },
+    "/ml/trainings/logs": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "trainingName",
+            "type": "string",
+            "description": "Name of the training run"
+          }
+        ],
+        "description": "Get the log of a speecific training run",
+        "summary": "Get log of training run",
+        "operationId": "getLogTrainingRun",
+        "x-ISC_ServiceMethod": "getLogTrainingRun",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "log": {
+                  "type": "string"
+                },
+                "query": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "(Not Found)"
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      }
+    },
     "/ml/validations": {
       "get": {
         "description": "Get all validation runs",
@@ -1066,13 +1104,13 @@
         "patientId": {
           "type": "number"
         },
-        "appointmentId": {
-          "type": "number"
-        },
         "gender": {
           "type": "string"
         },
         "scheduledDay": {
+          "type": "string"
+        },
+        "scheduledHour": {
           "type": "string"
         },
         "appointmentDay": {
@@ -1081,7 +1119,7 @@
         "age": {
           "type": "number"
         },
-        neighborhood: {
+        "neighborhood": {
           "type": "string"
         },
         "scholarship": {
@@ -1096,7 +1134,7 @@
         "alcoholism": {
           "type": "number"
         },
-        "handcap": {
+        "handicap": {
           "type": "number"
         },
         "smsReceived": {

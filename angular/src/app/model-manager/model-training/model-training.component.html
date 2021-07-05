@@ -96,6 +96,16 @@
                         <th mat-header-cell *matHeaderCellDef>{{column}}</th>
                         <td mat-cell *matCellDef="let run"> {{run[column]}} </td>
                     </ng-container> 
+
+                     <!-- Added sticky actions column to see log -->
+                     <ng-container matColumnDef="actions" stickyEnd>
+                        <th mat-header-cell  *matHeaderCellDef>Actions</th>
+                        <td mat-cell *matCellDef="let run" >
+                            <button mat-icon-button title="see log" (click)="log(run.trainingRunName)">
+                                <mat-icon>subject</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
                     
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>

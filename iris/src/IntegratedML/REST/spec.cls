@@ -741,6 +741,44 @@ XData OpenAPI [ MimeType = application/json ]
         }
       }
     },
+    "/ml/trainings/logs": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "trainingName",
+            "type": "string",
+            "description": "Name of the training run"
+          }
+        ],
+        "description": "Get the log of a speecific training run",
+        "summary": "Get log of training run",
+        "operationId": "getLogTrainingRun",
+        "x-ISC_ServiceMethod": "getLogTrainingRun",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "log": {
+                  "type": "string"
+                },
+                "query": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "(Not Found)"
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      }
+    },
     "/ml/validations": {
       "get": {
         "description": "Get all validation runs",
@@ -1071,13 +1109,13 @@ XData OpenAPI [ MimeType = application/json ]
         "patientId": {
           "type": "number"
         },
-        "appointmentId": {
-          "type": "number"
-        },
         "gender": {
           "type": "string"
         },
         "scheduledDay": {
+          "type": "string"
+        },
+        "scheduledHour": {
           "type": "string"
         },
         "appointmentDay": {
@@ -1086,7 +1124,7 @@ XData OpenAPI [ MimeType = application/json ]
         "age": {
           "type": "number"
         },
-        "neighbourhood": {
+        "neighborhood": {
           "type": "string"
         },
         "scholarship": {
@@ -1101,7 +1139,7 @@ XData OpenAPI [ MimeType = application/json ]
         "alcoholism": {
           "type": "number"
         },
-        "handcap": {
+        "handicap": {
           "type": "number"
         },
         "smsReceived": {
