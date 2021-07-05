@@ -20,7 +20,7 @@ export class PatientDetailComponent implements OnInit {
   patientForm = this.fb.group({
     gender: [null, Validators.required],
     age: [null, Validators.required],
-    neighbourhood: [null, Validators.required],
+    neighborhood: [null, Validators.required],
     scholarship: null,
     hypertension: null,
     diabetes: null,
@@ -48,34 +48,24 @@ export class PatientDetailComponent implements OnInit {
       this.patient = patient;
       this.patientForm.patchValue({
         patientId: patient.patientId,
-        appointmentId: patient.appointmentId,
         gender: patient.gender,
         scheduledDay: patient.scheduledDay,
         appointmentDay: patient.appointmentDay,
         age: patient.age,
-        neighbourhood: patient.neighbourhood,
+        neighborhood: patient.neighborhood,
         scholarship: patient.scholarship,
         hypertension: patient.hypertension,
         diabetes: patient.diabetes,
         alcoholism: patient.alcoholism,
         handicap: patient.handicap,
         smsReceived: patient.smsReceived,
-        noShow: patient.noShow === "Yes" ? 1 : 0,
+        noShow: patient.noShow,
       });
     });
   }
 
   update(): void {
     if (this.patient) {
-      this.patientForm.patchValue({
-        noShow: this.patientForm.value.noShow? "Yes" : "No",
-        scholarship: this.patientForm.value.scholarship? 1 : 0,
-        hypertension: this.patientForm.value.hypertension? 1 : 0,
-        diabetes: this.patientForm.value.diabetes? 1 : 0,
-        handicap: this.patientForm.value.handicap? 1 : 0,
-        alcoholism: this.patientForm.value.alcoholism? 1 : 0,
-        smsReceived: this.patientForm.value.smsReceived? 1 : 0,
-      })
       this.patientService.updatePatient(this.patient.patientId, this.patientForm.value)
         .subscribe();
     }

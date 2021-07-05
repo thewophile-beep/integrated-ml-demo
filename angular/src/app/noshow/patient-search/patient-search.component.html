@@ -11,7 +11,7 @@
         <ng-container *ngIf="patients.length; else noItems">
             <mat-nav-list>
                 <mat-list-item *ngFor="let patient of patients; let isLast = last;" (click)="openDialog(patient)">
-                    <span matLine>Patient n°{{patient.patientId}} in {{patient.neighbourhood}}</span>
+                    <span matLine>Patient n°{{patient.patientId}}</span>
                     <div *ngIf="!isLast">
                         <mat-divider></mat-divider>
                     </div>

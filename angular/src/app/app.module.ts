@@ -61,6 +61,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSliderModule } from '@angular/material/slider';
 import { NavigationTitanicMainComponent } from './titanic/navigation-titanic-main/navigation-titanic-main.component';
+import { ModelPredictionPatientComponent } from './noshow/model-prediction-patient/model-prediction-patient.component';
+import { ModelPredictionPassengerComponent } from './titanic/model-prediction-passenger/model-prediction-passenger.component';
 
 @NgModule({
   declarations: [
@@ -96,7 +98,9 @@ import { NavigationTitanicMainComponent } from './titanic/navigation-titanic-mai
     NavigationNoshowPredictionsComponent,
     ModelPredictionPatientSelectionComponent,
     ModelPredictionPatientDetailComponent,
-    NavigationTitanicMainComponent
+    NavigationTitanicMainComponent,
+    ModelPredictionPatientComponent,
+    ModelPredictionPassengerComponent
   ],
   imports: [
     BrowserModule,

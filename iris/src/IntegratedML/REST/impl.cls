@@ -118,12 +118,12 @@ ClassMethod getAllPatients(currPage As %Float, pageSize As %Float, id As %String
     set tDyna = {}
     set tPatients = []
     if ($Data(id)) {
-        set myquery = "SELECT Id FROM Noshow_Table.Patient WHERE ID = ?"
+        set myquery = "SELECT Id FROM Noshow_Table.Appointment WHERE ID = ?"
         set tStatement = ##class(%SQL.Statement).%New()
         $$$ThrowOnError(tStatement.%Prepare(myquery))
         set tRs = tStatement.%Execute(id)
         while tRs.%Next() {
-            do ##class(Noshow.Table.Patient).%OpenId(tRs.Id).%JSONExportToStream(.tStream)
+            do ##class(Noshow.Table.Appointment).%OpenId(tRs.Id).%JSONExportToStream(.tStream)
             set tNewPatient = {}.%FromJSON(tStream)
             set tNewPatient.patientId = tRs.Id
             do tPatients.%Push(tNewPatient)
@@ -133,17 +133,17 @@ ClassMethod getAllPatients(currPage As %Float, pageSize As %Float, id As %String
     else {
         set tStartRow = pageSize * (currPage - 1)
         set tEndRow = tStartRow + pageSize
-        set myquery = "SELECT Id FROM Noshow_Table.Patient WHERE ID > ? AND ID <= ?"
+        set myquery = "SELECT Id FROM Noshow_Table.Appointment WHERE ID > ? AND ID <= ?"
         set tStatement = ##class(%SQL.Statement).%New()
         $$$ThrowOnError(tStatement.%Prepare(myquery))
         set tRs = tStatement.%Execute(tStartRow, tEndRow)
         while tRs.%Next() {
-            do ##class(Noshow.Table.Patient).%OpenId(tRs.Id).%JSONExportToStream(.tStream)
+            do ##class(Noshow.Table.Appointment).%OpenId(tRs.Id).%JSONExportToStream(.tStream)
             set tNewPatient = {}.%FromJSON(tStream)
             set tNewPatient.patientId = tRs.Id
             do tPatients.%Push(tNewPatient)
         }
-        set myquery = "SELECT COUNT(Id) FROM Noshow_Table.Patient"
+        set myquery = "SELECT COUNT(Id) FROM Noshow_Table.Appointment"
         set tStatement = ##class(%SQL.Statement).%New()
         $$$ThrowOnError(tStatement.%Prepare(myquery))
         set tRs = tStatement.%Execute()
@@ -159,7 +159,7 @@ ClassMethod getAllPatients(currPage As %Float, pageSize As %Float, id As %String
 ///     payloadBody, Request body contents<br/>
 ClassMethod createPatient(payloadBody As %Stream.Object) As %Stream.Object
 {
-    set tPatient = ##class(Noshow.Table.Patient).%New()
+    set tPatient = ##class(Noshow.Table.Appointment).%New()
     set tDyna = {}
     try {
         $$$ThrowOnError(tPatient.%JSONImport(payloadBody)) 
@@ -177,8 +177,8 @@ ClassMethod createPatient(payloadBody As %Stream.Object) As %Stream.Object
 ClassMethod getPatient(id As %Integer) As %Stream.Object
 {
     set tDyna = {}
-    if ##class(Noshow.Table.Patient).%ExistsId(id) {
-        do ##class(Noshow.Table.Patient).%OpenId(id).%JSONExportToStream(.tStream)
+    if ##class(Noshow.Table.Appointment).%ExistsId(id) {
+        do ##class(Noshow.Table.Appointment).%OpenId(id).%JSONExportToStream(.tStream)
         set tDyna = {}.%FromJSON(tStream)
         set tDyna.patientId = id
     } else {
@@ -193,8 +193,8 @@ ClassMethod getPatient(id As %Integer) As %Stream.Object
 ///     payloadBody, Request body contents<br/>
 ClassMethod updatePatient(id As %Integer, payloadBody As %Stream.Object) As %Stream.Object
 {
-    if ##class(Noshow.Table.Patient).%ExistsId(id) {
-        set tPatient = ##class(Noshow.Table.Patient).%OpenId(id)
+    if ##class(Noshow.Table.Appointment).%ExistsId(id) {
+        set tPatient = ##class(Noshow.Table.Appointment).%OpenId(id)
         do tPatient.%JSONImport(payloadBody)
         do tPatient.%Save()
     } else {
@@ -208,8 +208,8 @@ ClassMethod updatePatient(id As %Integer, payloadBody As %Stream.Object) As %Str
 ///     id<br/>
 ClassMethod deletePatient(id As %Integer) As %Stream.Object
 {
-    if ##class(Noshow.Table.Patient).%ExistsId(id) {
-        do ##class(Noshow.Table.Patient).%DeleteId(id)
+    if ##class(Noshow.Table.Appointment).%ExistsId(id) {
+        do ##class(Noshow.Table.Appointment).%DeleteId(id)
     } else {
         do ..%SetStatusCode(204)
     }

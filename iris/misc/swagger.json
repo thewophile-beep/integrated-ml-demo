@@ -1081,7 +1081,7 @@
         "age": {
           "type": "number"
         },
-        "neighbourhood": {
+        neighborhood: {
           "type": "string"
         },
         "scholarship": {

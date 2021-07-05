@@ -46,18 +46,20 @@
       <span>Integrated ML Demo: {{router.url.includes('titanic') === true ? "Titanic Dataset" : "NoShow Dataset"}}</span>
       <div class="toggle">
         <button 
+          *ngIf="router.url.includes('titanic')"
           mat-raised-button 
           color="basic" 
-          routerLink="titanic/dataset" 
+          [routerLink]="router.url.replace('titanic','noshow')" 
           class="dataset-button">
-            Titanic Dataset
+            Switch to NoShow Dataset
         </button>
         <button 
+          *ngIf="router.url.includes('noshow')"
           mat-raised-button 
           color="basic" 
-          routerLink="noshow/dataset" 
+          [routerLink]="router.url.replace('noshow','titanic')" 
           class="dataset-button">
-            NoShow Dataset
+            Switch to Titanic Dataset
         </button>
       </div>
     </mat-toolbar>

@@ -1,16 +1,15 @@
 export interface Patient {
     patientId: number;
-    appointmentId: number;
     gender: string;
     scheduledDay: string;
     appointmentDay: string;
     age: number;
-    neighbourhood: string;
-    scholarship: number;
-    hypertension: number;
-    diabetes: number;
-    alcoholism: number;
+    neighborhood: string;
+    scholarship: boolean;
+    hypertension: boolean;
+    diabetes: boolean;
+    alcoholism: boolean;
     handicap: number;
-    smsReceived: number;
-    noShow: string;
+    smsReceived: boolean;
+    noShow: boolean;
 }

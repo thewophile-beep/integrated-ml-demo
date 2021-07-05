@@ -24,7 +24,7 @@
                                 <button mat-icon-button title="edit patient" (click)="openDialog(patient)" class="edit-button">
                                     <mat-icon>edit</mat-icon>
                                 </button>
-                                <span matLine>Patient n°{{patient.patientId}}</span>
+                                <span matLine>Patient n°{{patient.patientId}}: {{patient.noShow ? "did not show up": "showed up"}} / {{patient.smsReceived ? "SMS received" : "no SMS received"}}</span>
                             </div>
                             <div *ngIf="!isLast">
                                 <mat-divider></mat-divider>

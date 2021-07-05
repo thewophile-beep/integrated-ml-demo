@@ -11,13 +11,12 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 export class ModelPredictionPatientDetailComponent implements OnInit {
 
   patient: {[key:string]: string} = {
-    ID: "",
-    appointmentId: "",
+    patientId: "",
     gender: "",
     scheduledDay: "",
     appointmentDay: "",
     age: "",
-    neighbourhood: "",
+    neighborhood: "",
     scholarship: "",
     hypertension: "",
     diabetes: "",
@@ -38,13 +37,12 @@ export class ModelPredictionPatientDetailComponent implements OnInit {
   // Filling in this.patient object with injected data
   getPatient(): void {
     this.patientService.getPatient(this.data.id).subscribe(patient => {
-      this.patient.ID = String(patient.patientId);
-      this.patient.appointmentId = String(patient.appointmentId);
+      this.patient.patientId = String(patient.patientId);
       this.patient.gender = String(patient.gender);
       this.patient.scheduledDay = String(patient.scheduledDay);
       this.patient.appointmentDay = String(patient.appointmentDay);
       this.patient.age = String(patient.age);
-      this.patient.neighbourhood = String(patient.neighbourhood);
+      this.patient.neighborhood = String(patient.neighborhood);
       this.patient.scholarship = String(patient.scholarship);
       this.patient.hypertension = String(patient.hypertension);
       this.patient.diabetes = String(patient.diabetes);

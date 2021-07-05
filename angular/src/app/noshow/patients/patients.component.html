@@ -16,7 +16,7 @@
         <div>
             <mat-nav-list>
                 <mat-list-item *ngFor="let patient of patients; let isLast = last;" (click)="openDialog(patient)">
-                    <span matLine>Patient n°{{patient.patientId}}</span>
+                    <span matLine>Patient n°{{patient.patientId}} in {{patient.neighborhood}}, {{patient.gender}}, age {{patient.age}}</span>
                     <button mat-icon-button title="delete passepatientnger" (click)="delete(patient)">
                         <mat-icon>delete</mat-icon>
                     </button>

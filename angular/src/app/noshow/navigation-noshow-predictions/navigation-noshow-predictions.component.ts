@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavigationNoshowPredictionsComponent implements OnInit {
 
-  fromTable = "Noshow_Table.Patient"
+  fromTable = "Noshow_Table.Appointment"
 
   constructor() { }
 

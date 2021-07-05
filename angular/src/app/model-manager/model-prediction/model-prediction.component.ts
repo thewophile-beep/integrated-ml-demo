@@ -16,7 +16,7 @@ export class ModelPredictionComponent implements OnInit {
   @Input() fromTable = "";
 
   titanicTable = "Titanic_Table.Passenger"
-  noshowTable = "Noshow_Table.Patient"
+  noshowTable = "Noshow_Table.Appointment"
 
   trainedModels: mlTrainedModel[] = [];
   models: mlModel[] = [];
@@ -56,10 +56,10 @@ export class ModelPredictionComponent implements OnInit {
     }
 
     if (this.chosenModel && this.chosenId) {
+      const currModel = this.models.find(model => model.modelName === data.model);
       // Filling in data to send to dialog
       data.model = this.chosenModel.modelName;
       data.trainedModel = this.chosenModel.trainedModelName;
-      const currModel = this.models.find(model => model.modelName === data.model);
       if (currModel) {
         data.predicting = currModel.predictingColumnName
         data.withVariables = currModel.withColumns;
@@ -69,7 +69,7 @@ export class ModelPredictionComponent implements OnInit {
       // Predicting
       this.modelService.predict(data.model, data.trainedModel, data.id, this.fromTable).subscribe(
         predicted => {
-          data.predictedValue = String(predicted.predictedValue);
+          data.predictedValue = predicted.predictedValue;
           // if of type classification + prediction retreived, retreive probability too
           if (this.chosenModel && this.chosenId && (this.chosenModel.modelType === "classification")) {
               this.modelService.probability(data.model, data.trainedModel, data.predictedValue, data.id, this.fromTable).subscribe(
