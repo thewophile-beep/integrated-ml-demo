@@ -161,6 +161,9 @@ export class ModelTrainingComponent implements OnInit {
     if (this.DRExists)
       this.dialog.open(ModelTrainingAlterDrconfigComponent)
     else
-      this.dialog.open(ModelTrainingCreateDrconfigComponent)
+      this.dialog.open(ModelTrainingCreateDrconfigComponent).afterClosed().subscribe(response => {
+        if (response)
+          this.getAll()
+      })
   }
 }
