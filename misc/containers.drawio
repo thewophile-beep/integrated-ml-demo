@@ -7,10 +7,10 @@
                 <mxCell id="y_bkC_GhIzTOKFM2gDOU-18" value="iris/misc/" style="shape=card;whiteSpace=wrap;html=1;verticalAlign=top;fillColor=#fad7ac;strokeColor=#b46504;" parent="1" vertex="1">
                     <mxGeometry x="-250" y="250" width="170" height="300" as="geometry"/>
                 </mxCell>
-                <mxCell id="y_bkC_GhIzTOKFM2gDOU-1" value="&lt;div&gt;IRIS&lt;/div&gt;&lt;div&gt;http://localhost:52775/csp/sys/%25CSP.Portal.Home.zen?$NAMESPACE=IRISAPP&lt;br&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;verticalAlign=top;fillColor=#b1ddf0;strokeColor=#10739e;" parent="1" vertex="1">
+                <mxCell id="y_bkC_GhIzTOKFM2gDOU-1" value="&lt;div&gt;IRIS&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;verticalAlign=top;fillColor=#b1ddf0;strokeColor=#10739e;" parent="1" vertex="1">
                     <mxGeometry x="10" y="210" width="400" height="480" as="geometry"/>
                 </mxCell>
-                <mxCell id="y_bkC_GhIzTOKFM2gDOU-3" value="&lt;div&gt;nginx&lt;/div&gt;&lt;div&gt;http://localhost:8080/&lt;br&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;verticalAlign=top;fillColor=#b1ddf0;strokeColor=#10739e;" parent="1" vertex="1">
+                <mxCell id="y_bkC_GhIzTOKFM2gDOU-3" value="&lt;div&gt;nginx&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;verticalAlign=top;fillColor=#b1ddf0;strokeColor=#10739e;" parent="1" vertex="1">
                     <mxGeometry x="470" y="280" width="240" height="340" as="geometry"/>
                 </mxCell>
                 <mxCell id="y_bkC_GhIzTOKFM2gDOU-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="y_bkC_GhIzTOKFM2gDOU-4" target="y_bkC_GhIzTOKFM2gDOU-10" edge="1">
@@ -75,6 +75,12 @@
                         </Array>
                         <mxPoint x="150" y="580" as="targetPoint"/>
                     </mxGeometry>
+                </mxCell>
+                <mxCell id="2" value="&lt;span&gt;http://localhost:52775/csp/sys/%25CSP.Portal.Home.zen?$NAMESPACE=IRISAPP&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="30" y="170" width="360" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="http://localhost:8080/" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="501.25" y="240" width="177.5" height="30" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
