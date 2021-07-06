@@ -60,24 +60,15 @@
                             </p>
                         </div>
                     </div>
-                    <div class="row">
-                        <mat-form-field class="full-width">
-                            <mat-label>Appointment Day</mat-label>
-                            <input matInput placeholder="Enter a date" formControlName="appointmentDay">
-                            <mat-error *ngIf="patientForm.controls['appointmentDay'].hasError('required')">
-                                Appointment Day is <strong>required</strong>
-                            </mat-error>
-                        </mat-form-field>
-                    </div>
                 </mat-card-content>
             </mat-card>
-
+            
             <mat-card class="patient-creation-card">
                 <mat-card-header>
                     <mat-card-title>Scheduled Appointment Information</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
-                    <!-- scheduledDay / sms / noshw -->
+                    <!-- scheduledDay / scheduledHour -->
                     <div class="row">
                         <div class="col">
                             <mat-form-field class="full-width">
@@ -87,6 +78,28 @@
                                     Scheduled Day is <strong>required</strong>
                                 </mat-error>
                             </mat-form-field>
+                        </div>
+                        <div class="col">
+                            <mat-form-field class="full-width">
+                                <mat-label>Scheduled Hour</mat-label>
+                                <input matInput placeholder="Enter an hour" formControlName="scheduledHour">
+                                <mat-error *ngIf="patientForm.controls['scheduledHour'].hasError('required')">
+                                    Scheduled Hour is <strong>required</strong>
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <!-- sms / noshw -->
+                    <div class="row">
+                        <div class="col">
+                            <mat-form-field class="full-width">
+                                <mat-label>Appointment Day</mat-label>
+                                <input matInput placeholder="Enter a date" formControlName="appointmentDay">
+                                <mat-error *ngIf="patientForm.controls['appointmentDay'].hasError('required')">
+                                    Appointment Day is <strong>required</strong>
+                                </mat-error>
+                            </mat-form-field>
+                            
                         </div>
                         <div class="col">
                             <mat-checkbox formControlName="smsReceived">SMS received</mat-checkbox>

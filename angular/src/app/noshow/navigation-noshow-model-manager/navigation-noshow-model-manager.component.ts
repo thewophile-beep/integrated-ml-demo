@@ -12,6 +12,7 @@ export class NavigationNoshowModelManagerComponent implements OnInit {
     {name:'noShow', value: 'noShow string', selected: false},
     {name:'gender', value: 'gender timestamp', selected: false},
     {name:'scheduledDay', value: 'scheduledDay timestamp', selected: false},
+    {name:'scheduledHour', value: 'scheduledDay string', selected: false},
     {name:'appointmentDay', value: 'appointmentDay string', selected: false},
     {name:'age', value: 'age integer', selected: false},
     {name:'neighborhood', value: 'neighborhood integer', selected: false},

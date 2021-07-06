@@ -12,6 +12,7 @@ export class PatientCreationComponent implements OnInit {
   patientForm = this.fb.group({
     gender: [null, Validators.required],
     scheduledDay: [null, Validators.required],
+    scheduledHour: [null, Validators.required],
     appointmentDay: [null, Validators.required],
     age: [null, Validators.required],
     neighborhood: [null, Validators.required],

@@ -2,6 +2,7 @@ export interface Patient {
     patientId: number;
     gender: string;
     scheduledDay: string;
+    scheduledHour: string;
     appointmentDay: string;
     age: number;
     neighborhood: string;

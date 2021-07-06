@@ -29,6 +29,7 @@ export class PatientDetailComponent implements OnInit {
     smsReceived: null,
     noShow: null,
     scheduledDay: [null, Validators.required],
+    scheduledHour: [null, Validators.required],
     appointmentDay: [null, Validators.required],
   });
 
@@ -49,6 +50,7 @@ export class PatientDetailComponent implements OnInit {
         patientId: patient.patientId,
         gender: patient.gender,
         scheduledDay: patient.scheduledDay,
+        scheduledHour: patient.scheduledHour,
         appointmentDay: patient.appointmentDay,
         age: patient.age,
         neighborhood: patient.neighborhood,
