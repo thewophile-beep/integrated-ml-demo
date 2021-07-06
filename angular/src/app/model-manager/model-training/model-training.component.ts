@@ -7,6 +7,8 @@ import { interval } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { ModelTrainingAlertNameTakenComponent } from '../model-training-alert-name-taken/model-training-alert-name-taken.component';
 import { ModelTrainingLogComponent } from '../model-training-log/model-training-log.component'
+import { ModelTrainingCreateDrconfigComponent } from '../model-training-create-drconfig/model-training-create-drconfig.component';
+import { ModelTrainingAlterDrconfigComponent } from '../model-training-alter-drconfig/model-training-alter-drconfig.component';
 @Component({
   selector: 'app-model-training',
   templateUrl: './model-training.component.html',
@@ -15,12 +17,15 @@ import { ModelTrainingLogComponent } from '../model-training-log/model-training-
 export class ModelTrainingComponent implements OnInit {
 
   @Input() public fromTable = "";
+  dataset = "";
 
   runs: mlTrainingModel[] = [];
   displayedColumns: string[] = ["modelName",	"trainingRunName", 	"provider",	"startTimestamp",	"completedTimestamp",	"trainingDuration",	"runStatus",	"statusCode",	"log",	"settings",	"mlConfigurationName",	"trainingRunQuery", "actions"]
   loopColumns: string[] = ["trainingRunName", 	"provider",	"startTimestamp",	"completedTimestamp",	"trainingDuration",	"runStatus",	"statusCode",	"log",	"settings",	"mlConfigurationName",	"trainingRunQuery"]
 
   models: mlModel[] = [];
+
+  DRExists = false
 
   nbOfIds = 0;
   percentageTable = 80;
@@ -31,7 +36,7 @@ export class ModelTrainingComponent implements OnInit {
   runForm = this.fb.group({
     runName: ['', [Validators.required, Validators.pattern(/^\S*$/)]],
     modelName: ['', Validators.required],
-    MLconfig: ["AutoML", Validators.required],
+    MLconfig: ['', Validators.required],
     tableSelection: [this.percentageTable, Validators.required]
   })
   
@@ -42,13 +47,26 @@ export class ModelTrainingComponent implements OnInit {
   ) { }
   
   ngOnInit(): void {
+    this.dataset = this.fromTable.split('_')[0]
     this.getAll();
   }
   
   getAll(): void {
-    this.modelService.getTrainingRuns().subscribe(response => this.runs = response.trainingRuns);
-    this.modelService.getAllModels().subscribe(response => this.models = response.models);
+    this.modelService.getTrainingRuns().subscribe(response => {
+      this.runs = response.trainingRuns,
+      this.runs = this.runs.filter(run => run.trainingRunQuery.includes(this.dataset))
+    })
+    this.modelService.getAllModels().subscribe(response => {
+      this.models = response.models,
+      this.models = this.models.filter(model => model.defaultTrainingQuery.includes(this.dataset))
+    })
     this.modelService.getTableSize(this.fromTable).subscribe(response => this.nbOfIds = response.total)
+    this.modelService.getAllConfigurations().subscribe(response => {
+      this.runForm.patchValue({MLconfig: response.defaultConfigName})
+      if (response.configs.includes('DataRobotConfig')) {
+        this.DRExists = true
+      }
+    })
   }
 
   onSubmit(): void {
@@ -74,34 +92,44 @@ export class ModelTrainingComponent implements OnInit {
 
   
   postTraining() {
-    const fromTable = this.fromTable + " WHERE ID <= " + Math.round((this.runForm.value.tableSelection / 100) * this.nbOfIds);
-    const modelName = this.runForm.value.modelName
-    const trainingName = this.runForm.value.runName
-    this.modelService.changeConfiguration(this.runForm.value.MLconfig).subscribe(
-      _=> {
-        this.modelService.trainModel(modelName, trainingName, fromTable).subscribe(
-          _ => {
-            // Checks every 3 seconds if the training is completed or failed
-            const intervalObservable = interval(3000).subscribe(
-              _ => {
-                this.modelService.getStateTrainingRun(modelName, trainingName).subscribe(
-                  response => {
-                    if (response.state === "completed" || response.state === "failed") {
-                      // Need to unsubscribe to stop checking 
-                      intervalObservable.unsubscribe()
-                      this.runForm.patchValue({runName: '', modelName: ''})
-                      this.getAll()
-                      this.waiting = false;
-                    };
-                  }
-                );
-              }
-            );
-            this.waiting = true;
-          }
-        );
-      }
-    );
+    if (!this.DRExists && this.runForm.value.MLconfig === "DataRobotConfig") {
+      this.dialog.open(ModelTrainingCreateDrconfigComponent).afterClosed().subscribe(response => {
+        if (response) {
+          this.trainModel()
+        }
+      })
+    } else {
+      this.trainModel()
+    }
+  }
+
+  trainModel() {
+    this.modelService.changeConfiguration(this.runForm.value.MLconfig).subscribe(_=> {
+      const fromTable = this.fromTable + " WHERE ID <= " + Math.round((this.runForm.value.tableSelection / 100) * this.nbOfIds);
+      const modelName = this.runForm.value.modelName
+      const trainingName = this.runForm.value.runName
+      this.modelService.trainModel(modelName, trainingName, fromTable).subscribe(
+        _ => {
+          // Checks every 3 seconds if the training is completed or failed
+          const intervalObservable = interval(3000).subscribe(
+            _ => {
+              this.modelService.getStateTrainingRun(modelName, trainingName).subscribe(
+                response => {
+                  if (response.state === "completed" || response.state === "failed") {
+                    // Need to unsubscribe to stop checking 
+                    intervalObservable.unsubscribe()
+                    this.runForm.patchValue({runName: '', modelName: ''})
+                    this.getAll()
+                    this.waiting = false;
+                  };
+                }
+              );
+            }
+          );
+          this.waiting = true;
+        }
+      );
+    })
   }
 
   // Automatically give a name to the run
@@ -127,5 +155,12 @@ export class ModelTrainingComponent implements OnInit {
         });
       }
     )
+  }
+
+  openDRDialog() : void {
+    if (this.DRExists)
+      this.dialog.open(ModelTrainingAlterDrconfigComponent)
+    else
+      this.dialog.open(ModelTrainingCreateDrconfigComponent)
   }
 }

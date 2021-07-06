@@ -35,7 +35,10 @@ export class ModelsComponent implements OnInit {
   }
   
   getAll(): void {
-    this.modelService.getAllModels().subscribe(response => this.models = response.models);
+    this.modelService.getAllModels().subscribe(response => {
+      this.models = response.models,
+      this.models = this.models.filter(model => model.defaultTrainingQuery.includes(this.fromTable.split('_')[0]))
+    });
   }
   
   delete(model: mlModel): void {

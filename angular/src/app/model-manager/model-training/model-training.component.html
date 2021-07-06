@@ -14,9 +14,22 @@
             <div class="row" style="margin-bottom: 10px;">
                 <p> Provider:
                     <mat-button-toggle-group formControlName="MLconfig" aria-label="Font Style" style="margin-left: 10px;">
-                        <mat-button-toggle value="AutoML">AutoML</mat-button-toggle>
-                        <mat-button-toggle value="H2O">H2O</mat-button-toggle>
+                        <mat-button-toggle value="%AutoML">AutoML</mat-button-toggle>
+                        <mat-button-toggle value="%H2O">H2O</mat-button-toggle>
+                        <mat-button-toggle value="DataRobotConfig">DataRobot</mat-button-toggle>
                     </mat-button-toggle-group>
+                    <ng-container *ngIf="runForm.value.MLconfig === 'DataRobotConfig'">
+                        <button mat-icon-button (click)="openDRDialog()">
+                            <mat-icon>
+                                edit
+                            </mat-icon>
+                        </button>
+                        <a mat-icon-button color="primary" href="https://app2.datarobot.com" target="_blank">
+                            <mat-icon>
+                                open_in_new
+                            </mat-icon>
+                        </a>
+                    </ng-container>
                 </p>
             </div>
             <!-- Model / runName selection -->

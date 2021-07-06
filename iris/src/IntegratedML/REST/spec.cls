@@ -699,8 +699,30 @@ XData OpenAPI [ MimeType = application/json ]
       }
     },
     "/ml/trainings/configurations": {
+      "get": {
+        "description": "Get ml configurations",
+        "summary": "Get configurations",
+        "operationId": "getAllConfigurations",
+        "x-ISC_ServiceMetho": "getAllConfigurations",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "configName": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "(Bad Request)"
+          }
+        }
+      },
       "put": {
-        "description": "Update ml configuration (H20 or AutoML, for now)",
+        "description": "Update ml configuration",
         "summary": "Update configuration",
         "operationId": "changeConfiguration",
         "x-ISC_ServiceMethod": "changeConfiguration",
@@ -714,6 +736,99 @@ XData OpenAPI [ MimeType = application/json ]
               "type": "object",
               "properties": {
                 "configName": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "(Not Found)"
+          },
+          "400": {
+            "description": "(Bad Request)"
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      }
+    },
+    "/ml/trainings/configurations/datarobot": {
+      "post": {
+        "description": "Create a DataRobot configuration",
+        "summary": "Create DataRobot configuration",
+        "operationId": "createDRConfiguration",
+        "x-ISC_ServiceMethod": "createDRConfiguration",
+        "parameters": [
+          {
+            "name": "payload",
+            "in": "body",
+            "description": "URL to use",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string"
+                },
+                "apiToken": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "(Bad Request)"
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      },
+      "put": {
+        "description": "Alter DataRobot ml configuration",
+        "summary": "Alter DataRobot configuration",
+        "operationId": "alterDRConfiguration",
+        "x-ISC_ServiceMethod": "alterDRConfiguration",
+        "parameters": [
+          {
+            "name": "payload",
+            "in": "body",
+            "description": "URL to use",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string"
+                },
+                "apiToken": {
                   "type": "string"
                 }
               }

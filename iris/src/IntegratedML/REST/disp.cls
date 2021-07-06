@@ -58,8 +58,14 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
   <Route Url="/ml/trainings" Method="post" Call="trainModel" />
   <!-- Get state of training run -->
   <Route Url="/ml/trainings/states" Method="get" Call="getStateTrainingRun" />
+  <!-- Get configurations -->
+  <Route Url="/ml/trainings/configurations" Method="get" Call="getAllConfigurations" />
   <!-- Update configuration -->
   <Route Url="/ml/trainings/configurations" Method="put" Call="changeConfiguration" />
+  <!-- Create DataRobot configuration -->
+  <Route Url="/ml/trainings/configurations/datarobot" Method="post" Call="createDRConfiguration" />
+  <!-- Alter DataRobot configuration -->
+  <Route Url="/ml/trainings/configurations/datarobot" Method="put" Call="alterDRConfiguration" />
   <!-- Get log of training run -->
   <Route Url="/ml/trainings/logs" Method="get" Call="getLogTrainingRun" />
   <!-- Get all validation runs -->
@@ -375,6 +381,18 @@ ClassMethod getStateTrainingRun() As %Status
     Quit $$$OK
 }
 
+/// Get configurations
+ClassMethod getAllConfigurations() As %Status
+{
+    Try {
+        Set response=##class(IntegratedML.REST.impl).getAllConfigurations()
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
 /// Update configuration
 ClassMethod changeConfiguration() As %Status
 {
@@ -382,6 +400,34 @@ ClassMethod changeConfiguration() As %Status
         If '$isobject(%request.Content) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"configName")) Quit
         Set pconfigName=%request.Content
         Set response=##class(IntegratedML.REST.impl).changeConfiguration(pconfigName)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
+/// Create DataRobot configuration
+ClassMethod createDRConfiguration() As %Status
+{
+    Try {
+        If '$isobject(%request.Content) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"payload")) Quit
+        Set ppayload=%request.Content
+        Set response=##class(IntegratedML.REST.impl).createDRConfiguration(ppayload)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
+/// Alter DataRobot configuration
+ClassMethod alterDRConfiguration() As %Status
+{
+    Try {
+        If '$isobject(%request.Content) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"payload")) Quit
+        Set ppayload=%request.Content
+        Set response=##class(IntegratedML.REST.impl).alterDRConfiguration(ppayload)
         Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))

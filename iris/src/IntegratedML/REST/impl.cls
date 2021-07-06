@@ -1,6 +1,6 @@
 /// Rest API for the Integrated ML Demo<br/>
 /// Business logic class defined by OpenAPI in IntegratedML.REST.spec<br/>
-/// Updated Jul 5, 2021 12:01:21
+/// Updated Jul 6, 2021 09:07:30
 Class IntegratedML.REST.impl Extends %REST.Impl [ ProcedureBlock ]
 {
 
@@ -336,19 +336,23 @@ ClassMethod executeQuery(pQuery As %String) As %Status
     return sc
 }
 
-/// Update ml configuration (H20 or AutoML, for now)<br/>
+/// Get ml configurations
+ClassMethod getAllConfigurations() As %Stream.Object
+{
+    set tDyna = {}
+    set tDyna.configs = ##class(%SYS.ML.Configuration).%GetListOfAllConfigNames()
+    set tDyna.defaultConfigName = ##class(%SYS.ML.Configuration).%GetSystemDefault()
+    quit tDyna
+}
+
+/// Update ml configuration<br/>
 /// The method arguments hold values for:<br/>
 ///     configName, Configuration name to use<br/>
 ClassMethod changeConfiguration(configName As %Stream.Object) As %Stream.Object
 {
-    set tInfo = {}.%FromJSON(configName)    
-    set myquery = "SET ML CONFIGURATION %"_tInfo.configName
-    set tStatement = ##class(%SQL.Statement).%New()
-    $$$ThrowOnError(tStatement.%Prepare(myquery))
-    set tRs = tStatement.%Execute()
-    set tDyna = {}
-    set tDyna."query" = myquery
-    quit tDyna
+    set tInfo = {}.%FromJSON(configName)
+    set tSc = ##class(%SYS.ML.Configuration).%SetSystemDefault(tInfo.configName)
+    quit tSc
 }
 
 /// Get all trained models
@@ -548,6 +552,36 @@ ClassMethod getLogTrainingRun(trainingName As %String) As %Stream.Object
     do tRs.%Next()
     set tDyna = {}
     set tDyna."log" = tRs.%Get("Expression_1")
+    set tDyna."query" = myquery
+    quit tDyna
+}
+
+/// Create a DataRobot configuration<br/>
+/// The method arguments hold values for:<br/>
+///     payload, URL to use<br/>
+ClassMethod createDRConfiguration(payload As %Stream.Object) As %Stream.Object
+{
+    set tInfo = {}.%FromJSON(payload)
+    set myquery = "CREATE ML CONFIGURATION DataRobotConfig PROVIDER DataRobot URL '"_tInfo.url_"' APITOKEN '"_tInfo.apiToken_"'"
+    set tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    set tRs = tStatement.%Execute()
+    set tDyna = {}
+    set tDyna."query" = myquery
+    quit tDyna
+}
+
+/// Alter DataRobot ml configuration<br/>
+/// The method arguments hold values for:<br/>
+///     payload, URL to use<br/>
+ClassMethod alterDRConfiguration(payload As %Stream.Object) As %Stream.Object
+{
+    set tInfo = {}.%FromJSON(payload)
+    set myquery = "ALTER ML CONFIGURATION DataRobotConfig URL '"_tInfo.url_"' APITOKEN '"_tInfo.apiToken_"'"
+    set tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    set tRs = tStatement.%Execute()
+    set tDyna = {}
     set tDyna."query" = myquery
     quit tDyna
 }

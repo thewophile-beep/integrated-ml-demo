@@ -68,4 +68,13 @@
   padding-left: 10px;
 }
 
+.align-all {
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+.mat-icon {
+  font-size: 20px;
+}
+
 

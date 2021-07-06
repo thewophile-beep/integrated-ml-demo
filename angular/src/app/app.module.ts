@@ -64,6 +64,8 @@ import { NavigationTitanicMainComponent } from './titanic/navigation-titanic-mai
 import { ModelPredictionPatientComponent } from './noshow/model-prediction-patient/model-prediction-patient.component';
 import { ModelPredictionPassengerComponent } from './titanic/model-prediction-passenger/model-prediction-passenger.component';
 import { ModelTrainingLogComponent } from './model-manager/model-training-log/model-training-log.component';
+import { ModelTrainingCreateDrconfigComponent } from './model-manager/model-training-create-drconfig/model-training-create-drconfig.component';
+import { ModelTrainingAlterDrconfigComponent } from './model-manager/model-training-alter-drconfig/model-training-alter-drconfig.component';
 
 @NgModule({
   declarations: [
@@ -102,7 +104,9 @@ import { ModelTrainingLogComponent } from './model-manager/model-training-log/mo
     NavigationTitanicMainComponent,
     ModelPredictionPatientComponent,
     ModelPredictionPassengerComponent,
-    ModelTrainingLogComponent
+    ModelTrainingLogComponent,
+    ModelTrainingCreateDrconfigComponent,
+    ModelTrainingAlterDrconfigComponent
   ],
   imports: [
     BrowserModule,

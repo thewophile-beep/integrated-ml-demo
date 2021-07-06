@@ -1,0 +1,28 @@
+<mat-dialog-content>
+    DataRobot config does not exist yet. Please enter URL and API Token:
+    <form [formGroup]="configForm" novalidate>   
+        <div class="row">
+            <div class="col">
+                <mat-form-field class="full-width">
+                    <mat-label>URL</mat-label>
+                    <input matInput placeholder="Enter the url" formControlName="url">
+                    <mat-error *ngIf="configForm.controls['url'].hasError('required')">
+                        Model Name is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>        
+            </div>
+            <div class="col">
+                <mat-form-field class="full-width">
+                    <mat-label>API Token</mat-label>
+                    <input matInput placeholder="Enter the token" formControlName="apiToken">
+                    <mat-error *ngIf="configForm.controls['apiToken'].hasError('required')">
+                        Model Name is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>        
+            </div>
+        </div>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-raised-button color="primary" [mat-dialog-close]="true" (click)="onSubmit()" [disabled]="configForm.invalid">Submit</button>
+</mat-dialog-actions>

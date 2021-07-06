@@ -119,6 +119,13 @@ export class ModelService {
     );
   }
 
+  getAllConfigurations() {
+    const url = this.ModelsUrl + "/trainings/configurations";
+    return this.http.get<any>(url).pipe(
+      catchError(this.handleError<any>('getAllConfigurations'))
+    )
+  }
+
   // PUT configuration
   changeConfiguration(config: string): Observable<any> {
     const url = this.ModelsUrl + "/trainings/configurations";
@@ -126,7 +133,6 @@ export class ModelService {
       configName: config
     }
     return this.http.put<any>(url, payloadBody, this.httpOptions).pipe(
-      tap(response => this.log(response.query)),
       catchError(this.handleError<any>('changeConfiguration'))
     )
   }
@@ -221,6 +227,28 @@ export class ModelService {
     const url = this.ModelsUrl + "/trainings/logs?trainingName=" + trainingName;
     return this.http.get<any>(url).pipe(
       catchError(this.handleError<any>('getLogTrainingRun'))
+    )
+  }
+
+  createDRConfiguration(chosenUrl: string, apiToken: string) {
+    const url = this.ModelsUrl + "/trainings/configurations/datarobot";
+    const payloadBody = {
+      url: chosenUrl,
+      apiToken: apiToken,
+    }
+    return this.http.post<any>(url, payloadBody, this.httpOptions).pipe(
+      catchError(this.handleError<any>('createDRConfiguration'))
+    )
+  }
+  
+  alterDRConfiguration(chosenUrl: string, apiToken: string) {
+    const url = this.ModelsUrl + "/trainings/configurations/datarobot";
+    const payloadBody = {
+      url: chosenUrl,
+      apiToken: apiToken,
+    }
+    return this.http.put<any>(url, payloadBody, this.httpOptions).pipe(
+      catchError(this.handleError<any>('alterDRConfiguration'))
     )
   }
 }

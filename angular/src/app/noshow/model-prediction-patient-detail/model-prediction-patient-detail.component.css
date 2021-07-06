@@ -6,6 +6,11 @@
     font-size: 35px;
 }
 
+.subtitle {
+    font-size: 15px;
+    color: grey;
+}
+
 .answer {
     font-size: 25px;
     text-align: center;
