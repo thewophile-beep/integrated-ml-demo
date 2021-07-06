@@ -24,7 +24,6 @@ import { NavigationTitanicPredictionsComponent } from './titanic/navigation-tita
 import { OverviewTitanicPresentationComponent } from './titanic/overview-titanic-presentation/overview-titanic-presentation.component';
 import { OverviewTitanicModelManagerComponent } from './titanic/overview-titanic-model-manager/overview-titanic-model-manager.component'
 import { OverviewTitanicPredictionsComponent } from './titanic/overview-titanic-predictions/overview-titanic-predictions.component';
-import { ModelPredictionComponent } from './model-manager/model-prediction/model-prediction.component';
 import { ModelPredictionPassengerSelectionComponent } from './titanic/model-prediction-passenger-selection/model-prediction-passenger-selection.component';
 import { PassengerCreationComponent } from './titanic/passenger-creation/passenger-creation.component';
 import { ModelPredictionPassengerDetailComponent } from './titanic/model-prediction-passenger-detail/model-prediction-passenger-detail.component';
@@ -77,7 +76,6 @@ import { ModelTrainingAlterDrconfigComponent } from './model-manager/model-train
     NavigationComponent,
     ModelsComponent,
     ModelTrainingComponent,
-    ModelPredictionComponent,
     NavigationTitanicModelManagerComponent,
     NavigationTitanicPredictionsComponent,
     ModelValidationComponent,
