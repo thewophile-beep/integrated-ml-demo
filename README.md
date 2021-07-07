@@ -1,4 +1,4 @@
-# 1. integrated-ml-demo
+# 1. Integrated ML Demonstration
 
 This repository is a demonstration of integratedML. 
 
@@ -6,14 +6,28 @@ Using a web application, you will be able to create, train and validate the mode
 
 The front-end has been done with angular and the back-end with IRIS. 
 
-## 1.1. Building the demo
+- [1. Integrated ML Demonstration](#1-integrated-ml-demonstration)
+- [2. Building the demo](#2-building-the-demo)
+  - [2.1. Architecture](#21-architecture)
+  - [2.2. Building the nginx container](#22-building-the-nginx-container)
+- [3. Running the demo](#3-running-the-demo)
+  - [3.1. Exploring both datasets](#31-exploring-both-datasets)
+  - [3.2. Managing models](#32-managing-models)
+    - [3.2.1. Creating a model](#321-creating-a-model)
+    - [3.2.2. Training a model](#322-training-a-model)
+    - [3.2.3. Validating a model](#323-validating-a-model)
+    - [3.2.4. Making predictions](#324-making-predictions)
+- [4. Going further](#4-going-further)
+- [5. Conclusion](#5-conclusion)
+
+# 2. Building the demo
 
 To build the demo, you just have to run the command:
 ````
 docker compose up
 ````
 
-### 1.1.1. Architecture
+## 2.1. Architecture
 
 Two containers will be built: one with IRIS and one with an nginx server. 
 
@@ -21,7 +35,7 @@ Two containers will be built: one with IRIS and one with an nginx server.
 
 We are using the community package csvgen to import the titanic dataset into iris. For the noshow dataset, we use another custom method (the `Load()` classmethod of the `Util.Loader` class). In order for the container to have access to the csv files, we bind the `iris/` local directory to the `/tmp/iris/` directory in the container.
 
-### 1.1.2. Building the nginx container
+## 2.2. Building the nginx container
 
 In order to build our nginx container, we use multi-stage building. First, we create a container with node. We then install npm and copy all of our files in that container. We build the project with the command `ng build`. The output file is copied in a new container that only contains nginx. 
 
@@ -29,19 +43,19 @@ Thanks to that manoeuvre, we obtain a very light container that does not contain
 
 You can check the details of that multi-build in the `angular/Dockerfile` file. We also set up our nginx server parameters thanks to the `angular/nginx.default.conf` file.
 
-## 1.2. Running the demo
+# 3. Running the demo
 
 Just go to the address: http://localhost:8080/ and That's it! Enjoy!
 
-### Exploring both datasets
+## 3.1. Exploring both datasets
 
 For both datasets, you'll have access to a complete CRUD, enabling you to modify at will the saved tables. 
 
 In order to switch from one dataset to the other, you can press the button in the top right-hand corner. 
 
-### Managing models
+## 3.2. Managing models
 
-#### Creating a model
+### 3.2.1. Creating a model
 
 Once you have discovered the data, you can create model predicting the value you want. 
 
@@ -61,7 +75,7 @@ As you can see, creating a model only takes one SQL query. The informations you 
 
 In the `actions` column, you can delete a model or purge it. Purging a model will remove all of its training runs (and their validation runs) except for the last one. 
 
-#### Training a model
+### 3.2.2. Training a model
 
 In the next tab, you will be able to train your models. 
 
@@ -81,7 +95,7 @@ Training a model only takes a single SQL query, as you can see in the messages s
 Keep in mind that in these two tabs, you will only see the models that concern the dataset you are actually using.
 
 
-#### Validating a model
+### 3.2.3. Validating a model
 
 Finally, you can validate a model in the final tab. Clicking on a validation run will pop up a dialog with the metrics associated with the validation. There again, you can choose a percentage of the dataset to use for the validation. 
 
@@ -90,7 +104,7 @@ Finally, you can validate a model in the final tab. Clicking on a validation run
 Once again, it only takes a single SQL query.
 
 
-#### Making predictions
+### 3.2.4. Making predictions
 
 In the `Make Predictions` menu, last tab, you can make predictions using your newly trained models.
 
@@ -104,7 +118,7 @@ In the case of Mrs. Fatima Masselmani, the model correctly predicted that she su
 
 Once again, it takes on query to retreive the prediction and one for the probability.
 
-## Going further
+# 4. Going further
 
 If you want more explainability (more than what the log can offer you), we suggest you using the DataRobot provider. 
 
@@ -120,7 +134,7 @@ Once the models trained, you can have access to **a lot** of details, here's a p
 
 ![DRmodelDetails](https://raw.githubusercontent.com/thewophile-beep/integrated-ml-demo/main/misc/img/DRmodelDetails.png)
 
-## Conclusion
+# 5. Conclusion
 
 Through this demonstration, we have been able to see how easy it was to create, train and validate a model as well as to predict values through very few SQL queries.
 
