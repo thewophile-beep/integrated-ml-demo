@@ -4,13 +4,14 @@ import { catchError, tap } from 'rxjs/operators';
 
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ModelService {
 
-  private ModelsUrl = 'http://localhost:52775/api/integratedML/ml';
+  private ModelsUrl = environment.url + 'ml';
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })

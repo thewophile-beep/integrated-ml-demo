@@ -5,13 +5,14 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { Patient } from '../definitions/patient';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PatientService {
 
-  private PatientsUrl = 'http://localhost:52775/api/integratedML/patients';  // URL to web api
+  private PatientsUrl = environment.url + 'patients';  // URL to web api
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })

@@ -5,6 +5,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { Passenger } from '../definitions/passenger';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 export class PassengerService {
 
-  private PassengersUrl = 'http://localhost:52775/api/integratedML/passengers';  // URL to web api
+  private PassengersUrl = environment.url + 'passengers';  // URL to web api
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })

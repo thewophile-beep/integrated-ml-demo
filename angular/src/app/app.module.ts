@@ -59,7 +59,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSliderModule } from '@angular/material/slider';
-import { NavigationTitanicMainComponent } from './titanic/navigation-titanic-main/navigation-titanic-main.component';
 import { ModelPredictionPatientComponent } from './noshow/model-prediction-patient/model-prediction-patient.component';
 import { ModelPredictionPassengerComponent } from './titanic/model-prediction-passenger/model-prediction-passenger.component';
 import { ModelTrainingLogComponent } from './model-manager/model-training-log/model-training-log.component';
@@ -99,7 +98,6 @@ import { ModelTrainingAlterDrconfigComponent } from './model-manager/model-train
     NavigationNoshowPredictionsComponent,
     ModelPredictionPatientSelectionComponent,
     ModelPredictionPatientDetailComponent,
-    NavigationTitanicMainComponent,
     ModelPredictionPatientComponent,
     ModelPredictionPassengerComponent,
     ModelTrainingLogComponent,

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-navigation-noshow-predictions',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavigationNoshowPredictionsComponent implements OnInit {
 
-  fromTable = "Noshow_Table.Appointment"
+  fromTable = environment.noshowTable;
 
   constructor() { }
 

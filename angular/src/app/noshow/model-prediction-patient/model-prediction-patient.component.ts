@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { mlModel } from 'src/app/definitions/mlModel';
 import { mlTrainedModel } from 'src/app/definitions/mlTrainedModel';
 import { ModelService } from 'src/app/services/model.service';
+import { environment } from 'src/environments/environment';
 import { ModelPredictionPatientDetailComponent } from '../model-prediction-patient-detail/model-prediction-patient-detail.component';
 
 @Component({
@@ -11,7 +12,7 @@ import { ModelPredictionPatientDetailComponent } from '../model-prediction-patie
   styleUrls: ['./model-prediction-patient.component.css']
 })
 export class ModelPredictionPatientComponent implements OnInit {
-  fromTable = "NoShow_Table.Appointment";
+  fromTable = environment.noshowTable;
 
   trainedModels: mlTrainedModel[] = [];
   models: mlModel[] = [];
@@ -55,7 +56,7 @@ export class ModelPredictionPatientComponent implements OnInit {
       
       const currModel = this.models.find(model => model.modelName === data.model);
       if (currModel) {
-        if (currModel.defaultTrainingQuery.includes("Titanic")) {
+        if (!currModel.defaultTrainingQuery.includes("Noshow")) {
           alert("This model is used on the titanic dataset.")
         } else {
           // Filling in data to send to dialog

@@ -5,7 +5,6 @@ import { ModelService } from '../../services/model.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { mlValidationRun } from '../../definitions/mlValidationRun';
 import { ModelValidationMetricsComponent } from '../model-validation-metrics/model-validation-metrics.component';
-import { PassengerService } from '../../services/passenger.service';
 
 
 @Component({
