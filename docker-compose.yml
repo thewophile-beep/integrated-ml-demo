@@ -8,6 +8,7 @@ services:
     ports:
     - 52775:52773
     - 51776:1972
+    - 52777:8080
   angular:
     build:
       context: ./angular
