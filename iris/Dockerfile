@@ -23,5 +23,3 @@ USER ${ISC_PACKAGE_MGRUSER}
 # load demo stuff
 RUN iris start IRIS \
 	&& iris session IRIS < /tmp/iris/iris.script && iris stop IRIS quietly
-
-RUN /usr/irissys/bin/irispython /tmp/iris/src/python-flask-server/setup.py install

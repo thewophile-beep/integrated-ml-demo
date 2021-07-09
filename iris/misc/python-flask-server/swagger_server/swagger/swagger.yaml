@@ -9,19 +9,21 @@ info:
   license:
     name: " 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "localhost:52775"
+host: "localhost:52777"
 basePath: "/api/integratedML"
 schemes:
 - "http"
 - "https"
-
+consumes:
+- "application/json"
+produces:
+- "application/json"
 paths:
   /passengers:
     get:
       summary: "Get passengers with pagination and search by name possible"
-      description: "Retreive the total number of Passengers THEN the Passengers from\
-        \ currPage\\*(pageSize-1) to currPage\\*pageSize. Search by name possible\
-        \ too."
+      description: "Retreive the Passengers from the current page with specific page\
+        \ length. Search by name possible too."
       operationId: "get_all_passengers"
       parameters:
       - name: "currPage"
@@ -43,14 +45,9 @@ paths:
         "200":
           description: "(Expected Result)"
           schema:
-            type: "object"
-            properties:
-              total:
-                type: "number"
-              passengers:
-                type: "array"
-                items:
-                  $ref: "#/definitions/passenger"
+            type: "array"
+            items:
+              $ref: "#/definitions/passenger"
         default:
           description: "(Unexpected Error)"
       x-ISC_ServiceMethod: "getAllPassengers"
@@ -831,9 +828,6 @@ paths:
           description: "(Unexpected Error)"
       x-ISC_ServiceMethod: "probability"
       x-swagger-router-controller: "swagger_server.controllers.default_controller"
-securityDefinitions:
-  basicAuth:
-    type: "basic"
 definitions:
   passenger:
     type: "object"
@@ -863,18 +857,18 @@ definitions:
       embarked:
         type: "string"
     example:
-      fare: 2.3021358869347654518833223846741020679473876953125
+      fare: 7.061401241503109105224211816675961017608642578125
       ticket: "ticket"
       sex: "sex"
       name: "name"
       passengerId: 0
       cabin: "cabin"
       embarked: "embarked"
-      survived: true
+      survived: 6
       sibSp: 5
-      class: 6
-      age: 1.46581298050294517310021547018550336360931396484375
-      parCh: 5
+      class: 1
+      age: 5.962133916683182377482808078639209270477294921875
+      parCh: 2
   patient:
     type: "object"
     properties:

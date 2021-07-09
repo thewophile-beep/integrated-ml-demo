@@ -111,6 +111,7 @@ class TestDefaultController(BaseTestCase):
         response = self.client.open(
             '/api/integratedML/ml/models',
             method='DELETE',
+            content_type='application/json',
             query_string=query_string)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -122,7 +123,8 @@ class TestDefaultController(BaseTestCase):
         """
         response = self.client.open(
             '/api/integratedML/passengers/{id}'.format(id=56),
-            method='DELETE')
+            method='DELETE',
+            content_type='application/json')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
@@ -133,7 +135,8 @@ class TestDefaultController(BaseTestCase):
         """
         response = self.client.open(
             '/api/integratedML/patients/{id}'.format(id=56),
-            method='DELETE')
+            method='DELETE',
+            content_type='application/json')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
@@ -144,7 +147,8 @@ class TestDefaultController(BaseTestCase):
         """
         response = self.client.open(
             '/api/integratedML/ml/trainings/configurations',
-            method='GET')
+            method='GET',
+            content_type='application/json')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
@@ -155,7 +159,8 @@ class TestDefaultController(BaseTestCase):
         """
         response = self.client.open(
             '/api/integratedML/ml/models',
-            method='GET')
+            method='GET',
+            content_type='application/json')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
@@ -170,6 +175,7 @@ class TestDefaultController(BaseTestCase):
         response = self.client.open(
             '/api/integratedML/passengers',
             method='GET',
+            content_type='application/json',
             query_string=query_string)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -185,6 +191,7 @@ class TestDefaultController(BaseTestCase):
         response = self.client.open(
             '/api/integratedML/patients',
             method='GET',
+            content_type='application/json',
             query_string=query_string)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -198,6 +205,7 @@ class TestDefaultController(BaseTestCase):
         response = self.client.open(
             '/api/integratedML/ml/trainings/logs',
             method='GET',
+            content_type='application/json',
             query_string=query_string)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -212,6 +220,7 @@ class TestDefaultController(BaseTestCase):
         response = self.client.open(
             '/api/integratedML/ml/validations/metrics',
             method='GET',
+            content_type='application/json',
             query_string=query_string)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -223,7 +232,8 @@ class TestDefaultController(BaseTestCase):
         """
         response = self.client.open(
             '/api/integratedML/passengers/{id}'.format(id=56),
-            method='GET')
+            method='GET',
+            content_type='application/json')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
@@ -234,7 +244,8 @@ class TestDefaultController(BaseTestCase):
         """
         response = self.client.open(
             '/api/integratedML/patients/{id}'.format(id=56),
-            method='GET')
+            method='GET',
+            content_type='application/json')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
@@ -248,6 +259,7 @@ class TestDefaultController(BaseTestCase):
         response = self.client.open(
             '/api/integratedML/ml/trainings/states',
             method='GET',
+            content_type='application/json',
             query_string=query_string)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -261,6 +273,7 @@ class TestDefaultController(BaseTestCase):
         response = self.client.open(
             '/api/integratedML/ml/tablesize',
             method='GET',
+            content_type='application/json',
             query_string=query_string)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -272,7 +285,8 @@ class TestDefaultController(BaseTestCase):
         """
         response = self.client.open(
             '/api/integratedML/ml/predictions/models',
-            method='GET')
+            method='GET',
+            content_type='application/json')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
@@ -283,7 +297,8 @@ class TestDefaultController(BaseTestCase):
         """
         response = self.client.open(
             '/api/integratedML/ml/trainings',
-            method='GET')
+            method='GET',
+            content_type='application/json')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
@@ -294,7 +309,8 @@ class TestDefaultController(BaseTestCase):
         """
         response = self.client.open(
             '/api/integratedML/ml/validations',
-            method='GET')
+            method='GET',
+            content_type='application/json')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 
@@ -310,6 +326,7 @@ class TestDefaultController(BaseTestCase):
         response = self.client.open(
             '/api/integratedML/ml/predictions',
             method='GET',
+            content_type='application/json',
             query_string=query_string)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -327,6 +344,7 @@ class TestDefaultController(BaseTestCase):
         response = self.client.open(
             '/api/integratedML/ml/predictions/probabilities',
             method='GET',
+            content_type='application/json',
             query_string=query_string)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -340,6 +358,7 @@ class TestDefaultController(BaseTestCase):
         response = self.client.open(
             '/api/integratedML/ml/models/purge',
             method='DELETE',
+            content_type='application/json',
             query_string=query_string)
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))

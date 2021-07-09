@@ -1,10 +1,13 @@
 import connexion
 import six
-import iris
-import json
 
+from swagger_server.models.config_name import ConfigName  # noqa: E501
+from swagger_server.models.create_info import CreateInfo  # noqa: E501
 from swagger_server.models.passenger import Passenger  # noqa: E501
 from swagger_server.models.patient import Patient  # noqa: E501
+from swagger_server.models.payload import Payload  # noqa: E501
+from swagger_server.models.training_info import TrainingInfo  # noqa: E501
+from swagger_server.models.validation_info import ValidationInfo  # noqa: E501
 from swagger_server import util
 
 
@@ -18,7 +21,8 @@ def alter_dr_configuration(payload):  # noqa: E501
 
     :rtype: object
     """
-    
+    if connexion.request.is_json:
+        payload = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -32,7 +36,8 @@ def change_configuration(configName):  # noqa: E501
 
     :rtype: None
     """
-    
+    if connexion.request.is_json:
+        configName = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -46,7 +51,8 @@ def create_dr_configuration(payload):  # noqa: E501
 
     :rtype: object
     """
-    
+    if connexion.request.is_json:
+        payload = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -60,7 +66,8 @@ def create_model(createInfo):  # noqa: E501
 
     :rtype: object
     """
-    
+    if connexion.request.is_json:
+        createInfo = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -74,11 +81,9 @@ def create_passenger(payloadBody=None):  # noqa: E501
 
     :rtype: object
     """
-    query = "INSERT INTO Titanic_Table.Passenger (survived, class, name, sex, age, sibSp, parCh, ticket, fare, cabin, embarked) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-    iris.sql.exec(query, payloadBody['survived'], payloadBody['class'], payloadBody['name'], payloadBody['sex'], payloadBody['age'], payloadBody['sibSp'], payloadBody['parCh'], payloadBody['ticket'], payloadBody['fare'], payloadBody['cabin'], payloadBody['embarked'])
-    payload = {}
-    payload['query'] = query
-    return json.dumps(payload)
+    if connexion.request.is_json:
+        payloadBody = Passenger.from_dict(connexion.request.get_json())  # noqa: E501
+    return 'do some magic!'
 
 
 def create_patient(payloadBody=None):  # noqa: E501
@@ -91,7 +96,9 @@ def create_patient(payloadBody=None):  # noqa: E501
 
     :rtype: object
     """
-    return "not yet"
+    if connexion.request.is_json:
+        payloadBody = Patient.from_dict(connexion.request.get_json())  # noqa: E501
+    return 'do some magic!'
 
 
 def delete_model(modelName):  # noqa: E501
@@ -158,7 +165,7 @@ def get_all_models():  # noqa: E501
 def get_all_passengers(currPage=None, pageSize=None, name=None):  # noqa: E501
     """Get passengers with pagination and search by name possible
 
-    Retreive the total number of Passengers THEN the Passengers from currPage\\*(pageSize-1) to currPage\\*pageSize. Search by name possible too. # noqa: E501
+    Retreive the Passengers from the current page with specific page length. Search by name possible too. # noqa: E501
 
     :param currPage: The current page at which the client is
     :type currPage: 
@@ -167,14 +174,9 @@ def get_all_passengers(currPage=None, pageSize=None, name=None):  # noqa: E501
     :param name: Search passenger by name
     :type name: str
 
-    :rtype: object
+    :rtype: List[Passenger]
     """
-    query = "SELECT * FROM Titanic_Table.Passenger"
-    rs = iris.sql.exec(query)
-    payload = {}
-    payload['data'] = rs.dataframe().to_dict(orient="records")
-    payload['query'] = query
-    return json.dumps(payload)
+    return 'do some magic!'
 
 
 def get_all_patients(currPage=None, pageSize=None, id=None):  # noqa: E501
@@ -232,12 +234,7 @@ def get_passenger(id):  # noqa: E501
 
     :rtype: Passenger
     """
-    query = "SELECT * FROM Titanic_Table.Passenger WHERE ID = " + str(id)
-    rs = iris.sql.exec(query)
-    payload = {}
-    payload['data'] = rs.dataframe().to_dict(orient="records")
-    payload['query'] = query
-    return json.dumps(payload)
+    return 'do some magic!'
 
 
 def get_patient(id):  # noqa: E501
@@ -377,7 +374,8 @@ def train_model(trainingInfo):  # noqa: E501
 
     :rtype: object
     """
-    
+    if connexion.request.is_json:
+        trainingInfo = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -393,7 +391,9 @@ def update_passenger(id, payloadBody=None):  # noqa: E501
 
     :rtype: None
     """
-    return "not yet"
+    if connexion.request.is_json:
+        payloadBody = Passenger.from_dict(connexion.request.get_json())  # noqa: E501
+    return 'do some magic!'
 
 
 def update_patient(id, payloadBody=None):  # noqa: E501
@@ -408,7 +408,8 @@ def update_patient(id, payloadBody=None):  # noqa: E501
 
     :rtype: None
     """
-    
+    if connexion.request.is_json:
+        payloadBody = Patient.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -422,5 +423,6 @@ def validate_model(validationInfo):  # noqa: E501
 
     :rtype: object
     """
-    
+    if connexion.request.is_json:
+        validationInfo = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
