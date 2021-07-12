@@ -40,7 +40,7 @@ export class PassengerService {
   }
   
   private log(message: string) {
-    // this.messageService.add(`PassengerService: ${message}`);
+    this.messageService.add(`PassengerService: ${message}`);
   }
   
   constructor(
@@ -53,7 +53,7 @@ export class PassengerService {
     const url = `${this.PassengersUrl}?currPage=${currPage + 1}&pageSize=${pageSize}`
     return this.http.get<any>(url)
       .pipe(
-        tap(_ => this.log('fetched Passengers')),
+        tap(response => this.log(response.query)),
         catchError(this.handleError<any>('getPassengers', []))
       );
   }
@@ -65,10 +65,8 @@ export class PassengerService {
       return of([]);
     }
     return this.http.get<any>(`${this.PassengersUrl}?name=${term}`).pipe(
+      tap(response => this.log(response.query)),
       map(res => res.passengers),
-      tap(x => x.length ?
-        this.log(`found Passengers matching "${term}"`) :
-        this.log(`no Passengers matching "${term}"`)),
       catchError(this.handleError<any>('searchPassengers', []))
     );
   }
@@ -76,7 +74,7 @@ export class PassengerService {
   /** POST: add a new Passenger to the server */
   createPassenger(Passenger: Passenger): Observable<any> {
     return this.http.post<any>(this.PassengersUrl, Passenger, this.httpOptions).pipe(
-      tap(response => this.log(`added Passenger w/ id=${response.passengerId}`)),
+      tap(response => this.log(response.query)),
       catchError(this.handleError<any>('createPassenger'))
     );
   }
@@ -84,31 +82,29 @@ export class PassengerService {
   /** GET Passenger by id. Will 404 if id not found */
   getPassenger(id: number): Observable<Passenger> {
     const url = `${this.PassengersUrl}/${id}`;
-    return this.http.get<Passenger>(url)
-      .pipe(
-        tap(_ => this.log(`fetched Passenger id=${id}`)),
-        catchError(this.handleError<Passenger>(`getPassenger id=${id}`))
-      );
+    return this.http.get<any>(url).pipe(
+      tap(response => this.log(response.query)),
+      map(res => res.passenger),
+      catchError(this.handleError<any>(`getPassenger id=${id}`))
+    );
   }
 
   /** PUT: update the Passenger on the server */
   updatePassenger(id: number, Passenger: Passenger): Observable<any> {
-    return this.http.put(`${this.PassengersUrl}/${id}`, Passenger, this.httpOptions)
-      .pipe(
-        tap(_ => this.log(`updated Passenger id=${id}`)),
-        catchError(this.handleError<any>('updatePassenger'))
-      );
+    return this.http.put<any>(`${this.PassengersUrl}/${id}`, Passenger, this.httpOptions).pipe(
+      tap(response => this.log(response.query)),
+      catchError(this.handleError<any>('updatePassenger'))
+    );
   }
 
   /** DELETE: delete the Passenger from the server */
-  deletePassenger(id: number): Observable<Passenger> {
+  deletePassenger(id: number): Observable<any> {
     const url = `${this.PassengersUrl}/${id}`;
 
-    return this.http.delete<Passenger>(url, this.httpOptions)
-      .pipe(
-        tap(_ => this.log(`deleted Passenger id=${id}`)),
-        catchError(this.handleError<Passenger>('deletePassenger'))
-      );
+    return this.http.delete<any>(url, this.httpOptions).pipe(
+      tap(response => this.log(response.query)),
+      catchError(this.handleError<any>('deletePassenger'))
+    );
   }
 
 }

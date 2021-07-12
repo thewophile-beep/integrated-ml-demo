@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  url: "http://localhost:52775/api/integratedML/",
+  url: "http://localhost:52777/api/integratedML/",
   dataRobotUrl: "https://app2.datarobot.com/api/v2",
   titanicTable: "Titanic_Table.Passenger",
   titanicVariables:  [
@@ -13,8 +13,8 @@ export const environment = {
     {name:'name', value: 'name string', selected: false},
     {name:'sex', value: 'sex string', selected: false},
     {name:'age', value: 'age integer', selected: false},
-    {name:'sibSp', value: 'sibSp integer', selected: false},
-    {name:'parCh', value: 'parCh integer', selected: false},
+    {name:'sibSp', value: 'sib_sp integer', selected: false},
+    {name:'parCh', value: 'par_ch integer', selected: false},
     {name:'ticket', value: 'ticket string', selected: false},
     {name:'fare', value: 'fare numeric', selected: false},
     {name:'cabin', value: 'cabin string', selected: false},
@@ -22,11 +22,11 @@ export const environment = {
   ],
   noshowTable: "Noshow_Table.Appointment",
   noshowVariables: [
-    {name:'noShow', value: 'noShow string', selected: false},
+    {name:'noShow', value: 'no_show string', selected: false},
     {name:'gender', value: 'gender timestamp', selected: false},
-    {name:'scheduledDay', value: 'scheduledDay timestamp', selected: false},
-    {name:'scheduledHour', value: 'scheduledDay string', selected: false},
-    {name:'appointmentDay', value: 'appointmentDay string', selected: false},
+    {name:'scheduledDay', value: 'scheduled_day timestamp', selected: false},
+    {name:'scheduledHour', value: 'scheduled_day string', selected: false},
+    {name:'appointmentDay', value: 'appointment_day string', selected: false},
     {name:'age', value: 'age integer', selected: false},
     {name:'neighborhood', value: 'neighborhood integer', selected: false},
     {name:'scholarship', value: 'scholarship integer', selected: false},
@@ -34,7 +34,7 @@ export const environment = {
     {name:'diabetes', value: 'diabetes integer', selected: false},
     {name:'alcoholism', value: 'alcoholism integer', selected: false},
     {name:'handicap', value: 'handicap integer', selected: false},
-    {name:'smsReceived', value: 'smsReceived integer', selected: false},
+    {name:'smsReceived', value: 'sms_received integer', selected: false},
   ],
 };
 

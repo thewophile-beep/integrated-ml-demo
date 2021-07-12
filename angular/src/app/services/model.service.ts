@@ -38,7 +38,7 @@ export class ModelService {
   }
 
   private log(message: string) {
-    this.messageService.add(`SQL query: ${message}`);
+    this.messageService.add(`ModelService: ${message}`);
   }
 
   constructor(private http: HttpClient, private messageService: MessageService) { }
@@ -47,7 +47,7 @@ export class ModelService {
   getAllModels(): Observable<any> {
     const url = this.ModelsUrl + "/models";
     return this.http.get<any>(url).pipe(
-        // tap(response => this.log(response.query)),
+        tap(response => this.log(response.query)),
         catchError(this.handleError<any>('getModels', []))
       );
   }
@@ -93,7 +93,7 @@ export class ModelService {
   getTrainingRuns(): Observable<any> {
     const url = this.ModelsUrl + "/trainings";
     return this.http.get<any>(url).pipe(
-      // tap(response => this.log(response.query)),
+      tap(response => this.log(response.query)),
       catchError(this.handleError<any>('getTrainingRuns', []))
     );
   }
@@ -116,6 +116,7 @@ export class ModelService {
   getStateTrainingRun(modelName: string, trainingName: string): Observable<any> {
     const url = this.ModelsUrl + "/trainings/states?modelName=" + modelName + "&trainingName=" + trainingName ;
     return this.http.get<any>(url, this.httpOptions).pipe(
+      tap(response => this.log(response.query)),
       catchError(this.handleError<any>('getStateTrainingRun'))
     );
   }
@@ -142,7 +143,7 @@ export class ModelService {
   getTrainedModels(): Observable<any> {
     const url = this.ModelsUrl + "/predictions/models";
     return this.http.get<any>(url).pipe(
-      // tap(response => this.log(response.query)),
+      tap(response => this.log(response.query)),
       catchError(this.handleError<any>('getTrainedModels', []))
     );
   }
@@ -160,7 +161,7 @@ export class ModelService {
   getValidationRuns(): Observable<any> {
     const url = this.ModelsUrl + "/validations";
     return this.http.get<any>(url).pipe(
-      // tap(response => this.log(response.query)),
+      tap(response => this.log(response.query)),
       catchError(this.handleError<any>('getValidationRuns', []))
     );
   }
@@ -196,7 +197,7 @@ export class ModelService {
   getMetrics(modelName: string, validationName: string): Observable<any> {
     const url = this.ModelsUrl + "/validations/metrics?modelName=" + modelName + "&validationName=" + validationName;
     return this.http.get<any>(url).pipe(
-      // tap(response => this.log(response.query)),
+      tap(response => this.log(response.query)),
       catchError(this.handleError<any>('getMetrics', []))
     );
   }
@@ -220,6 +221,7 @@ export class ModelService {
   purgeModel(modelName: string) {
     const url = this.ModelsUrl + "/models/purge?modelName=" + modelName;
     return this.http.delete<any>(url).pipe(
+      tap(response => this.log(response.query)),
       catchError(this.handleError<any>('purgeModel'))
     )
   }
@@ -227,6 +229,7 @@ export class ModelService {
   getLogTrainingRun(trainingName: string) {
     const url = this.ModelsUrl + "/trainings/logs?trainingName=" + trainingName;
     return this.http.get<any>(url).pipe(
+      tap(response => this.log(response.query)),
       catchError(this.handleError<any>('getLogTrainingRun'))
     )
   }

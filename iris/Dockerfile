@@ -2,6 +2,7 @@ ARG IMAGE=containers.intersystems.com/intersystems/iris-ml-community:2021.1.0.21
 ARG IMAGE=containers.intersystems.com/intersystems/iris-ml-community:2020.3.0.304.0
 ARG IMAGE=arti.iscinternal.com/intersystems/iris:2021.1.0PYTHON.300.0
 
+
 FROM $IMAGE
 # copy files
 COPY . /tmp/iris
@@ -23,3 +24,9 @@ USER ${ISC_PACKAGE_MGRUSER}
 # load demo stuff
 RUN iris start IRIS \
 	&& iris session IRIS < /tmp/iris/iris.script && iris stop IRIS quietly
+
+ARG PYTHON_PATH=/usr/irissys/bin/irispython
+ARG FLASK_PATH=/tmp/iris/src/flask
+RUN ${PYTHON_PATH} -m pip install -r ${FLASK_PATH}/requirements.txt
+
+# ENTRYPOINT [ "/usr/irissys/bin/irispython", "/tmp/iris/src/flask/server.py" ]

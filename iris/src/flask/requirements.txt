@@ -1,0 +1,4 @@
+flask>=2.0.1
+flask_cors>=2.0.10
+gunicorn
+pyhumps

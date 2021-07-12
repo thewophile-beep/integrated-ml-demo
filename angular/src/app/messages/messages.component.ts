@@ -7,7 +7,7 @@ import { MessageService } from '../services/message.service';
 })
 export class MessagesComponent implements OnInit {
 
-  isChecked: boolean = false;
+  isChecked: boolean = true;
 
   constructor(public messageService: MessageService) { }
 
