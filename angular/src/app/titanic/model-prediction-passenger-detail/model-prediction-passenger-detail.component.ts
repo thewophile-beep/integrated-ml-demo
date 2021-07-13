@@ -39,7 +39,7 @@ export class ModelPredictionPassengerDetailComponent implements OnInit {
     this.passengerService.getPassenger(this.data.id).subscribe(passenger => {
       this.passenger.passengerId = String(passenger.passengerId);
       this.passenger.survived = String(passenger.survived);
-      this.passenger.class = String(passenger.class);
+      this.passenger.pclass = String(passenger.pclass);
       this.passenger.name = passenger.name;
       this.passenger.sex = passenger.sex;
       this.passenger.age = String(passenger.age);

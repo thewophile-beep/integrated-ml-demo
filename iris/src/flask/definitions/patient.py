@@ -1,0 +1,16 @@
+class Patient:
+    def __init__(self, data):
+        self.patientId = data[0]
+        self.gender = data[1]
+        self.scheduledDay = data[2]
+        self.scheduledHour = data[3]
+        self.appointmentDay = data[4]
+        self.age = data[5]
+        self.neighborhood = data[6]
+        self.scholarship = data[7]
+        self.hypertension = data[8]
+        self.diabetes = data[9]
+        self.alcoholism = data[10]
+        self.handicap = data[11]
+        self.smsReceived = data[12]
+        self.noShow = data[13]

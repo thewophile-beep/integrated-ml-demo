@@ -49,7 +49,7 @@ export class PassengerDetailComponent implements OnInit {
         name: passenger.name,
         sex: passenger.sex,
         ticket: passenger.ticket, 
-        class: passenger.class,
+        class: passenger.pclass,
         sibSp: passenger.sibSp,
         parCh: passenger.parCh,
         fare: passenger.fare,

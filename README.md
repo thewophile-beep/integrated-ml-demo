@@ -33,7 +33,7 @@ Two containers will be built: one with IRIS and one with an nginx server.
 
 ![containers](https://raw.githubusercontent.com/thewophile-beep/integrated-ml-demo/main/misc/img/containers.png)
 
-We are using the community package csvgen to import the titanic dataset into iris. For the noshow dataset, we use another custom method (the `Load()` classmethod of the `Util.Loader` class). In order for the container to have access to the csv files, we bind the `iris/` local directory to the `/tmp/iris/` directory in the container.
+We are using the community package csvgen to import the titanic dataset into iris. For the noshow dataset, we use another custom method (the `Load()` classmethod of the `Util.Loader` class). In order for the container to have access to the csv files, we bind the `iris/` local directory to the `/opt/irisapp/` directory in the container.
 
 ## 2.2. Building the nginx container
 

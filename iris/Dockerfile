@@ -5,7 +5,6 @@ ARG IMAGE=arti.iscinternal.com/intersystems/iris:2021.1.0PYTHON.300.0
 
 FROM $IMAGE
 # copy files
-COPY . /tmp/iris
 COPY key/iris.key /usr/irissys/mgr/iris.key
 
 USER root
@@ -20,13 +19,12 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /opt/irisapp
 RUN chown ${ISC_PACKAGE_MGRUSER}:${ISC_PACKAGE_IRISGROUP} /opt/irisapp
 USER ${ISC_PACKAGE_MGRUSER}
+COPY . /opt/irisapp
 
 # load demo stuff
 RUN iris start IRIS \
-	&& iris session IRIS < /tmp/iris/iris.script && iris stop IRIS quietly
+	&& iris session IRIS < /opt/irisapp/iris.script && iris stop IRIS quietly
 
 ARG PYTHON_PATH=/usr/irissys/bin/irispython
-ARG FLASK_PATH=/tmp/iris/src/flask
+ARG FLASK_PATH=/opt/irisapp/src/flask
 RUN ${PYTHON_PATH} -m pip install -r ${FLASK_PATH}/requirements.txt
-
-# ENTRYPOINT [ "/usr/irissys/bin/irispython", "/tmp/iris/src/flask/server.py" ]

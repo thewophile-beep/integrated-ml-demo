@@ -4,14 +4,14 @@
 
     zn "USER"
     ; run installer to create namespace
-    do $SYSTEM.OBJ.Load("/tmp/iris/Installer.cls", "ck")
-    set sc = ##class(App.Installer).setup() 
-    zw $SYSTEM.OBJ.ImportDir("/tmp/iris/src", "*.cls", "cubk", .tErrors, 1)
+    #; do $SYSTEM.OBJ.Load("/opt/irisapp/Installer.cls", "ck")
+    #; set sc = ##class(App.Installer).setup() 
+    zw $SYSTEM.OBJ.ImportDir("/opt/irisapp/src", "*.cls", "cubk", .tErrors, 1)
 
     zpm "install csvgen"
 
-    do ##class(community.csvgen).Generate("/tmp/iris/misc/titanic.csv",,"Titanic.Table.Passenger")
-    do ##class(Util.Loader).Load("/tmp/iris/misc/appointment-noshows.csv","Noshow.Table.Appointment")
+    do ##class(community.csvgen).Generate("/opt/irisapp/misc/titanic.csv",,"Titanic.Table.Passenger")
+    do ##class(Util.Loader).Load("/opt/irisapp/misc/appointment-noshows.csv","Noshow.Table.Appointment")
 
     zn "%SYS"
     set props("NameSpace") = "USER"
@@ -29,7 +29,7 @@
     do ##class(Security.Services).Modify("%Service_CallIn",.prop)
 
     zn "USER"
-    zw $SYSTEM.OBJ.Load("/tmp/iris/src/IntegratedML/REST/disp.cls", "ck")
+    zw $SYSTEM.OBJ.Load("/opt/irisapp/src/IntegratedML/REST/disp.cls", "ck")
 
 
     h
