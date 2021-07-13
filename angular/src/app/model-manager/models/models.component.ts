@@ -3,13 +3,15 @@ import { mlModel } from '../../definitions/mlModel';
 import { ModelService } from '../../services/model.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatChip } from '@angular/material/chips';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 @Component({
   selector: 'app-models',
   templateUrl: './models.component.html',
   styleUrls: ['./models.component.css']
 })
 export class ModelsComponent implements OnInit {
-  models: mlModel[] = [];
+  models$!: Observable<mlModel[]>;
   displayedColumns: string[] = ["modelName", "description", "predictingColumnName", "predictingColumnType", "withColumns", "createTimestamp", "defaultTrainedModelName", "defaultSettings", "defaultTrainingQuery", "actions"]
   loopColumns: string[] = ["description", "predictingColumnName", "predictingColumnType", "withColumns", "createTimestamp", "defaultTrainedModelName", "defaultSettings", "defaultTrainingQuery"]
 
@@ -35,14 +37,13 @@ export class ModelsComponent implements OnInit {
   }
   
   getAll(): void {
-    this.modelService.getAllModels().subscribe(response => {
-      this.models = response.models,
-      this.models = this.models.filter(model => model.defaultTrainingQuery.includes(this.fromTable.split('_')[0]))
-    });
+    this.models$ = this.modelService.getAllModels().pipe(
+      map(models => models.filter(model => model.defaultTrainingQuery.includes(this.fromTable.split('_')[0])))
+    )
   }
   
   delete(model: mlModel): void {
-    this.models = this.models.filter(h => h !== model);
+    this.models$.subscribe(models => models.filter(h => h !== model));
     this.modelService.deleteModel(model.modelName).subscribe(
       _ => this.getAll()
     );
@@ -55,11 +56,13 @@ export class ModelsComponent implements OnInit {
   onSubmit(): void {
     var isValid = true;
     // Name already taken ?
-    this.models.forEach(model => {
-      if (this.modelForm.value.modelName === model.modelName) {
-        isValid = false;
-      }
-    })
+    this.models$.subscribe(models => 
+      models.forEach(model => {
+        if (this.modelForm.value.modelName === model.modelName) {
+          isValid = false;
+        }
+      })
+    )
     if (isValid) {
       // If not taken
       // Preparing variables -> needs to be like "varName varType"

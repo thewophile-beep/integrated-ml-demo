@@ -3,12 +3,13 @@ import { mlTrainingModel } from '../../definitions/mlTrainingModel';
 import { mlModel } from '../../definitions/mlModel';
 import { ModelService } from '../../services/model.service';
 import { FormBuilder, Validators } from '@angular/forms';
-import { interval } from 'rxjs';
+import { interval, Observable } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { ModelTrainingAlertNameTakenComponent } from '../model-training-alert-name-taken/model-training-alert-name-taken.component';
 import { ModelTrainingLogComponent } from '../model-training-log/model-training-log.component'
 import { ModelTrainingCreateDrconfigComponent } from '../model-training-create-drconfig/model-training-create-drconfig.component';
 import { ModelTrainingAlterDrconfigComponent } from '../model-training-alter-drconfig/model-training-alter-drconfig.component';
+import { map } from 'rxjs/operators';
 @Component({
   selector: 'app-model-training',
   templateUrl: './model-training.component.html',
@@ -19,11 +20,11 @@ export class ModelTrainingComponent implements OnInit {
   @Input() public fromTable = "";
   dataset = "";
 
-  runs: mlTrainingModel[] = [];
+  runs$!: Observable<mlTrainingModel[]>;
   displayedColumns: string[] = ["modelName",	"trainingRunName", 	"provider",	"startTimestamp",	"completedTimestamp",	"trainingDuration",	"runStatus",	"statusCode",	"settings",	"mlConfigurationName",	"trainingRunQuery", "log"]
   loopColumns: string[] = ["trainingRunName", 	"provider",	"startTimestamp",	"completedTimestamp",	"trainingDuration",	"runStatus",	"statusCode",	"settings",	"mlConfigurationName",	"trainingRunQuery"]
 
-  models: mlModel[] = [];
+  models$!: Observable<mlModel[]>;
 
   DRExists = false
 
@@ -52,15 +53,13 @@ export class ModelTrainingComponent implements OnInit {
   }
   
   getAll(): void {
-    this.modelService.getTrainingRuns().subscribe(response => {
-      this.runs = response.trainingRuns,
-      this.runs = this.runs.filter(run => run.trainingRunQuery.includes(this.dataset))
-    })
-    this.modelService.getAllModels().subscribe(response => {
-      this.models = response.models,
-      this.models = this.models.filter(model => model.defaultTrainingQuery.includes(this.dataset))
-    })
-    this.modelService.getTableSize(this.fromTable).subscribe(response => this.nbOfIds = response.total)
+    this.runs$ = this.modelService.getTrainingRuns().pipe(
+      map(runs => runs.filter(run => run.trainingRunQuery.includes(this.dataset)))
+    )
+    this.models$ = this.modelService.getAllModels().pipe(
+      map(models => models.filter(model => model.defaultTrainingQuery.includes(this.dataset)))
+    )
+    this.modelService.getTableSize(this.fromTable).subscribe(response => this.nbOfIds = Number(response))
     this.modelService.getAllConfigurations().subscribe(response => {
       this.runForm.patchValue({MLconfig: response.defaultConfigName})
       if (response.configs.includes('DataRobotConfig')) {
@@ -72,11 +71,13 @@ export class ModelTrainingComponent implements OnInit {
   onSubmit(): void {
     var isValid = true;
     // Name already taken ?
-    this.runs.forEach(run => {
-      if (this.runForm.value.runName === run.trainingRunName) {
-        isValid = false;
-      }
-    })
+    this.runs$.subscribe(runs => 
+      runs.forEach(run => {
+        if (this.runForm.value.runName === run.trainingRunName) {
+          isValid = false;
+        }
+      })
+    )
     // If already taken
     if (!isValid) { 
       // Asks if want to replace 
@@ -115,7 +116,7 @@ export class ModelTrainingComponent implements OnInit {
             _ => {
               this.modelService.getStateTrainingRun(modelName, trainingName).subscribe(
                 response => {
-                  if (response.state === "completed" || response.state === "failed") {
+                  if (response === "completed" || response === "failed") {
                     // Need to unsubscribe to stop checking 
                     intervalObservable.unsubscribe()
                     this.runForm.patchValue({runName: '', modelName: ''})
@@ -138,12 +139,14 @@ export class ModelTrainingComponent implements OnInit {
     const regExp = modelName + "_t[0-9]+"
     var i = 1
     var newName = modelName + "_t" + i
-    this.runs.forEach(run => {
-      if (run.trainingRunName.match(regExp)) {
-        i = Number(run.trainingRunName.split(`${modelName}_t`).pop()) + 1
-        newName = modelName + "_t" + i
-      }
-    })
+    this.runs$.subscribe(runs => 
+      runs.forEach(run => {
+        if (run.trainingRunName.match(regExp)) {
+          i = Number(run.trainingRunName.split(`${modelName}_t`).pop()) + 1
+          newName = modelName + "_t" + i
+        }
+      })
+    )
     this.runForm.patchValue({runName: newName})
   }
 
@@ -151,7 +154,7 @@ export class ModelTrainingComponent implements OnInit {
     this.modelService.getLogTrainingRun(trainingName).subscribe(
       response => {
         this.dialog.open(ModelTrainingLogComponent, {
-          data: response.log
+          data: response
         });
       }
     )

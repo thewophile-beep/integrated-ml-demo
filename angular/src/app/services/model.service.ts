@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { mlValidationRun } from '../definitions/mlValidationRun';
+import { mlTrainedModel } from '../definitions/mlTrainedModel';
+import { mlModel } from '../definitions/mlModel';
+import { mlTrainingModel } from '../definitions/mlTrainingModel';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +27,7 @@ export class ModelService {
    * @param operation - name of the operation that failed
    * @param result - optional value to return as the observable result
    */
-   private handleError<T>(operation = 'operation', result?: T) {
+  private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
 
       // TODO: send the error to remote logging infrastructure
@@ -44,16 +48,17 @@ export class ModelService {
   constructor(private http: HttpClient, private messageService: MessageService) { }
 
   // GET models from the server
-  getAllModels(): Observable<any> {
+  getAllModels(): Observable<mlModel[]> {
     const url = this.ModelsUrl + "/models";
     return this.http.get<any>(url).pipe(
         tap(response => this.log(response.query)),
+        map(res => res.models),
         catchError(this.handleError<any>('getModels', []))
       );
   }
 
   // POST a new model
-  createModel(modelName: string, predictValue: string, fromTable: string, withVariables: string[]): Observable<any> {
+  createModel(modelName: string, predictValue: string, fromTable: string, withVariables: string[]) {
     const url = this.ModelsUrl + "/models";
     if (withVariables.length > 0) {
     const payloadBody = {
@@ -80,7 +85,7 @@ export class ModelService {
   }
  
   // DELETE model
-  deleteModel(name: string): Observable<any> {
+  deleteModel(name: string) {
     const url = `${this.ModelsUrl}/models?modelName=${name}`;
 
     return this.http.delete<any>(url, this.httpOptions).pipe(
@@ -90,16 +95,17 @@ export class ModelService {
   }
 
   // GET training runs
-  getTrainingRuns(): Observable<any> {
+  getTrainingRuns(): Observable<mlTrainingModel[]> {
     const url = this.ModelsUrl + "/trainings";
     return this.http.get<any>(url).pipe(
       tap(response => this.log(response.query)),
+      map(res => res.trainingRuns),
       catchError(this.handleError<any>('getTrainingRuns', []))
     );
   }
 
   // POST new training run
-  trainModel(modelName: string, trainingName: string, fromTable: string): Observable<any> {
+  trainModel(modelName: string, trainingName: string, fromTable: string) {
     const url = this.ModelsUrl + "/trainings";
     const payloadBody = {
       modelName: modelName,
@@ -113,15 +119,17 @@ export class ModelService {
   }
 
   // GET state of training run
-  getStateTrainingRun(modelName: string, trainingName: string): Observable<any> {
+  getStateTrainingRun(modelName: string, trainingName: string): Observable<string> {
     const url = this.ModelsUrl + "/trainings/states?modelName=" + modelName + "&trainingName=" + trainingName ;
     return this.http.get<any>(url, this.httpOptions).pipe(
       tap(response => this.log(response.query)),
+      map(res => res.state),
       catchError(this.handleError<any>('getStateTrainingRun'))
     );
   }
 
-  getAllConfigurations() {
+  // GET all configurations and defatul configuration
+  getAllConfigurations(): Observable<any> {
     const url = this.ModelsUrl + "/trainings/configurations";
     return this.http.get<any>(url).pipe(
       catchError(this.handleError<any>('getAllConfigurations'))
@@ -129,7 +137,7 @@ export class ModelService {
   }
 
   // PUT configuration
-  changeConfiguration(config: string): Observable<any> {
+  changeConfiguration(config: string) {
     const url = this.ModelsUrl + "/trainings/configurations";
     const payloadBody = {
       configName: config
@@ -140,34 +148,37 @@ export class ModelService {
   }
   
   // GET trained models
-  getTrainedModels(): Observable<any> {
+  getTrainedModels(): Observable<mlTrainedModel[]> {
     const url = this.ModelsUrl + "/predictions/models";
     return this.http.get<any>(url).pipe(
       tap(response => this.log(response.query)),
+      map(res => res.models),
       catchError(this.handleError<any>('getTrainedModels', []))
     );
   }
 
   // GET prediction
-  predict(model: string, trainedModelName: string, id: string, fromTable: string): Observable<any> {
+  predict(model: string, trainedModelName: string, id: string, fromTable: string): Observable<string> {
     const url = `${this.ModelsUrl}/predictions?model=${model}&trainedModel=${trainedModelName}&id=${id}&fromTable=${fromTable}`;
     return this.http.get<any>(url, this.httpOptions).pipe(
       tap(response => this.log(response.query)),
+      map(res => res.predictedValue),
       catchError(this.handleError<any>('predict'))
     )
   }
 
   // GET validation runs
-  getValidationRuns(): Observable<any> {
+  getValidationRuns(): Observable<mlValidationRun[]> {
     const url = this.ModelsUrl + "/validations";
     return this.http.get<any>(url).pipe(
       tap(response => this.log(response.query)),
+      map(res => res.validationRuns),
       catchError(this.handleError<any>('getValidationRuns', []))
     );
   }
 
   // POST new validation
-  validateModel(modelName: string, validationName: string, trainedModelName: string, fromTable: string): Observable<any> {
+  validateModel(modelName: string, validationName: string, trainedModelName: string, fromTable: string) {
     const url = this.ModelsUrl + "/validations";
     if (validationName.length > 0){
       const payloadBody = {
@@ -194,26 +205,29 @@ export class ModelService {
   }
 
   // GET metrics
-  getMetrics(modelName: string, validationName: string): Observable<any> {
+  getMetrics(modelName: string, validationName: string): Observable<any[]> {
     const url = this.ModelsUrl + "/validations/metrics?modelName=" + modelName + "&validationName=" + validationName;
     return this.http.get<any>(url).pipe(
       tap(response => this.log(response.query)),
+      map(res => res.metrics),
       catchError(this.handleError<any>('getMetrics', []))
     );
   }
 
   // GET probability
-  probability(model: string, trainedModelName: string, labelValue: string, id: string, fromTable: string): Observable<any> {
+  probability(model: string, trainedModelName: string, labelValue: string, id: string, fromTable: string): Observable<string> {
     const url = `${this.ModelsUrl}/predictions/probabilities?model=${model}&trainedModel=${trainedModelName}&labelValue=${labelValue}&id=${id}&fromTable=${fromTable}`;
     return this.http.get<any>(url).pipe(
       tap(probability => this.log(probability.query)),
+      map(res => res.probability),
       catchError(this.handleError<any>('probability'))
     )
   }
 
-  getTableSize(table: string) {
+  getTableSize(table: string): Observable<string> {
     const url = this.ModelsUrl + "/tablesize?table=" + table;
     return this.http.get<any>(url).pipe(
+      map(res => res.total),
       catchError(this.handleError<any>('getTableSize'))
     )
   }
@@ -226,10 +240,11 @@ export class ModelService {
     )
   }
 
-  getLogTrainingRun(trainingName: string) {
+  getLogTrainingRun(trainingName: string): Observable<string> {
     const url = this.ModelsUrl + "/trainings/logs?trainingName=" + trainingName;
     return this.http.get<any>(url).pipe(
       tap(response => this.log(response.query)),
+      map(res => res.log),
       catchError(this.handleError<any>('getLogTrainingRun'))
     )
   }

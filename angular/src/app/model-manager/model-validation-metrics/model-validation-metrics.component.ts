@@ -10,7 +10,7 @@ import { ModelService } from '../../services/model.service';
 })
 export class ModelValidationMetricsComponent implements OnInit {
 
-  validationMetrics: string[] = [];
+  validationMetrics: any[] = [];
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: mlValidationRun, private modelService: ModelService) { }
 
@@ -19,6 +19,6 @@ export class ModelValidationMetricsComponent implements OnInit {
   }
 
   getAll() {
-    this.modelService.getMetrics(this.data.modelName, this.data.validationRunName).subscribe(response => this.validationMetrics = response.metrics)
+    this.modelService.getMetrics(this.data.modelName, this.data.validationRunName).subscribe(response => response.forEach(metric => this.validationMetrics.push(metric)))
   }
 }

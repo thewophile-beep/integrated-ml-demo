@@ -7,7 +7,6 @@ from definitions.patient import Patient
 
 import iris
 
-# /usr/irissys/bin/irispython /opt/irisapp/src/flask/app.py
 
 app = Flask(__name__)
 CORS(app)
@@ -316,7 +315,7 @@ def getLogTrainingRun():
 
 @app.route("/api/integratedML/ml/validations", methods=["GET"])
 def getValidationRuns():
-    query = "SELECT * FROM INFORMATION_SCHEMA.ML_VALIDATION_RUNS"
+    query = "SELECT MODEL_NAME, TRAINED_MODEL_NAME, VALIDATION_RUN_NAME, START_TIMESTAMP, COMPLETED_TIMESTAMP, VALIDATION_DURATION, RUN_STATUS, STATUS_CODE, SETTINGS, VALIDATION_RUN_QUERY FROM INFORMATION_SCHEMA.ML_VALIDATION_RUNS"
     rs = iris.sql.exec(query)
     payload = {}
     payload['validationRuns'] = humps.camelize(rs.dataframe().replace({float("Nan"): ""}).to_dict(orient="records"))

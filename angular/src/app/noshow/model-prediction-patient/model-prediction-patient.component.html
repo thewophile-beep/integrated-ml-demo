@@ -11,7 +11,7 @@
         </mat-card-header>
 
         <mat-card-content>
-            <div *ngIf="trainedModels.length > 0; else isEmpty">
+            <div *ngIf="trainedModels$ | async as trainedModels">
                 <div class="overflow">
                     <table mat-table [dataSource]="trainedModels" class="mat-table">
                         
@@ -34,11 +34,7 @@
                         </tr>
                     </table>
                 </div>
-            </div> 
-            <!-- If no models to show -->
-            <ng-template #isEmpty>
-                <div class="align-middle">No trained models to show yet.</div>
-            </ng-template>       
+            </div>     
         </mat-card-content>
 
     </mat-card>

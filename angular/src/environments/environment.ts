@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  url: "http://localhost:52777/api/integratedML/",
+  url: "http://localhost:4041/api/integratedML/",
   dataRobotUrl: "https://app2.datarobot.com/api/v2",
   titanicTable: "Titanic_Table.Passenger",
   titanicVariables:  [

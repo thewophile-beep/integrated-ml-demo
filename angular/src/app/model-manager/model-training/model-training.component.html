@@ -38,7 +38,7 @@
                 <div class="col">
                     <mat-form-field class="full-width">
                         <mat-label>Model to train</mat-label>
-                        <mat-select formControlName="modelName" (selectionChange)="defaultTrainingName()">
+                        <mat-select formControlName="modelName" (selectionChange)="defaultTrainingName()" *ngIf="models$ | async as models">
                             <mat-option *ngFor="let model of models" [value]="model.modelName">{{model.modelName}}</mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -94,7 +94,7 @@
     </mat-card-header>
 
     <mat-card-content>
-        <div *ngIf="runs.length > 0; else isEmpty">
+        <div *ngIf="runs$ | async as runs">
             <div class="overflow">
                 <table mat-table [dataSource]="runs.slice().reverse()" class="mat-table">
                     
