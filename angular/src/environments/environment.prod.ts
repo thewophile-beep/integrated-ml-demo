@@ -1,11 +1,11 @@
 export const environment = {
   production: true,
-  url: "http://localhost:52775/api/integratedML/",
+  url: "http://localhost:52777/api/integratedML/",
   dataRobotUrl: "https://app2.datarobot.com/api/v2",
   titanicTable: "Titanic_Table.Passenger",
   titanicVariables:  [
     {name:'survived', value: 'survived integer', selected: false},
-    {name:'class', value: 'class integer', selected: false},
+    {name:'pclass', value: 'pclass integer', selected: false},
     {name:'name', value: 'name string', selected: false},
     {name:'sex', value: 'sex string', selected: false},
     {name:'age', value: 'age integer', selected: false},
@@ -21,7 +21,7 @@ export const environment = {
     {name:'noShow', value: 'noShow string', selected: false},
     {name:'gender', value: 'gender timestamp', selected: false},
     {name:'scheduledDay', value: 'scheduledDay timestamp', selected: false},
-    {name:'scheduledHour', value: 'scheduledDay string', selected: false},
+    {name:'scheduledHour', value: 'scheduledHour string', selected: false},
     {name:'appointmentDay', value: 'appointmentDay string', selected: false},
     {name:'age', value: 'age integer', selected: false},
     {name:'neighborhood', value: 'neighborhood integer', selected: false},

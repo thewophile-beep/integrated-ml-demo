@@ -20,8 +20,8 @@ export class ModelTrainingComponent implements OnInit {
   dataset = "";
 
   runs: mlTrainingModel[] = [];
-  displayedColumns: string[] = ["modelName",	"trainingRunName", 	"provider",	"startTimestamp",	"completedTimestamp",	"trainingDuration",	"runStatus",	"statusCode",	"log",	"settings",	"mlConfigurationName",	"trainingRunQuery", "actions"]
-  loopColumns: string[] = ["trainingRunName", 	"provider",	"startTimestamp",	"completedTimestamp",	"trainingDuration",	"runStatus",	"statusCode",	"log",	"settings",	"mlConfigurationName",	"trainingRunQuery"]
+  displayedColumns: string[] = ["modelName",	"trainingRunName", 	"provider",	"startTimestamp",	"completedTimestamp",	"trainingDuration",	"runStatus",	"statusCode",	"settings",	"mlConfigurationName",	"trainingRunQuery", "log"]
+  loopColumns: string[] = ["trainingRunName", 	"provider",	"startTimestamp",	"completedTimestamp",	"trainingDuration",	"runStatus",	"statusCode",	"settings",	"mlConfigurationName",	"trainingRunQuery"]
 
   models: mlModel[] = [];
 

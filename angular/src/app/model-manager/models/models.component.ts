@@ -80,8 +80,11 @@ export class ModelsComponent implements OnInit {
 
   // To toggle selection of chips when clicked
   toggleSelection(chip: MatChip) {
+    // We change only if the chip is enabled (clicking on a disabled chip will not do anything)
     if (!chip.disabled) {
+      // We toggle the selection
       chip.toggleSelected();
+      // We look for the value of the chip (the corresponding variable) and toggle selection of found variable
       const index = this.possibleVariables.findIndex(i => i.name === chip.value)
       this.possibleVariables[index].selected = !this.possibleVariables[index].selected;
     }
@@ -89,12 +92,16 @@ export class ModelsComponent implements OnInit {
 
   // Check to disable chips or not
   checkingPredicting(chip: MatChip): boolean {
+    // If the selected value to predict is the value of this chip
     if (this.modelForm.value.predicting === chip.value) {
+      // We toggle the selection if selected (to have the predicting value to "not selected")
       if (chip.selected) {
         this.toggleSelection(chip);
       }
+      // We disable the chip
       return true;
     }
+    // Else the chip is enabled
     return false;
   }
 }

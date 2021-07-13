@@ -111,8 +111,8 @@
                     </ng-container> 
 
                      <!-- Added sticky actions column to see log -->
-                     <ng-container matColumnDef="actions" stickyEnd>
-                        <th mat-header-cell  *matHeaderCellDef>Actions</th>
+                     <ng-container matColumnDef="log" stickyEnd>
+                        <th mat-header-cell  *matHeaderCellDef>Log</th>
                         <td mat-cell *matCellDef="let run" >
                             <button mat-icon-button title="see log" (click)="log(run.trainingRunName)">
                                 <mat-icon>subject</mat-icon>

@@ -2,7 +2,6 @@ from flask import Flask, jsonify, request, make_response
 from flask_cors import CORS
 import humps 
 import threading
-import json
 from definitions.passenger import Passenger
 from definitions.patient import Patient
 
@@ -47,9 +46,9 @@ def getAllPassengers():
 @app.route("/api/integratedML/passengers", methods=["POST"])
 def createPassenger():
     passenger = request.get_json()
-    query = "INSERT INTO Titanic_Table.Passenger (survived, pclass, name, sex, age, sibSp, parCh, ticket, fare, cabin, embarked, passenger_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    query = "INSERT INTO Titanic_Table.Passenger (survived, pclass, name, sex, age, sibSp, parCh, ticket, fare, cabin, embarked) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     newId = int(iris.sql.exec("SELECT MAX(ID) FROM Titanic_Table.Passenger").__next__()[0]) + 1
-    iris.sql.exec(query, passenger['survived'], passenger['pclass'], passenger['name'], passenger['sex'], passenger['age'], passenger['sibSp'], passenger['parCh'], passenger['ticket'], passenger['fare'], passenger['cabin'], passenger['embarked'], newId)
+    iris.sql.exec(query, passenger['survived'], passenger['pclass'], passenger['name'], passenger['sex'], passenger['age'], passenger['sibSp'], passenger['parCh'], passenger['ticket'], passenger['fare'], passenger['cabin'], passenger['embarked'])
     payload = {
         'query': query,
         'passengerId': newId
@@ -68,15 +67,15 @@ def getPassenger(id):
             'Not Found',
             204
         )
-    payload['passengers'] = passenger
+    payload['passenger'] = passenger
     payload['query'] = query
     return jsonify(payload)
 
 @app.route("/api/integratedML/passengers/<int:id>", methods=["PUT"])
 def updatePassenger(id):
     passenger = request.get_json()
-    query = "UPDATE Titanic_Table.Passenger SET survived = ?, class = ?, name = ?, sex = ?, age = ?, sibSp = ?, par_ch = ?, ticket = ?, fare = ?, cabin = ?, embarked = ? WHERE ID = ?"
-    iris.sql.exec(query, passenger['survived'], passenger['class'], passenger['name'], passenger['sex'], passenger['age'], passenger['sibSp'], passenger['parCh'], passenger['ticket'], passenger['fare'], passenger['cabin'], passenger['embarked'], id)
+    query = "UPDATE Titanic_Table.Passenger SET survived = ?, pclass = ?, name = ?, sex = ?, age = ?, sibSp = ?, parCh = ?, ticket = ?, fare = ?, cabin = ?, embarked = ? WHERE ID = ?"
+    iris.sql.exec(query, passenger['survived'], passenger['pclass'], passenger['name'], passenger['sex'], passenger['age'], passenger['sibSp'], passenger['parCh'], passenger['ticket'], passenger['fare'], passenger['cabin'], passenger['embarked'], id)
     payload = {
         'query': query,
     }
@@ -218,7 +217,7 @@ def createModel():
             query += ", " + var
         query += ")"
     query += " FROM " + createInfo['fromTable']
-    rs = iris.sql.exec(query)
+    iris.sql.exec(query)
     payload = {}
     payload['query'] = query
     return jsonify(payload)
@@ -252,9 +251,9 @@ def getTrainingRuns():
 def trainModel():
     trainingInfo = request.get_json()
     query = "TRAIN MODEL " + trainingInfo['modelName'] + " AS " + trainingInfo['trainingName'] + " FROM " + trainingInfo['fromTable']
-    iris.sql.exec(query)
-    # trainProcess = threading.Thread(target=iris.cls("IntegratedML.REST.impl").executeQuery, args=(query,))
-    # trainProcess.start()
+    # iris.sql.exec(query)
+    trainProcess = threading.Thread(target=iris.cls("IntegratedML.REST.impl").executeQuery, args=(query,))
+    trainProcess.start()
     # iris.cls("IntegratedML.REST.impl").executeQuery(query)
     payload = {}
     payload['query'] = query
@@ -282,7 +281,7 @@ def getAllConfigurations():
 @app.route("/api/integratedML/ml/trainings/configurations", methods=["PUT"])
 def changeConfiguration():
     configName = request.get_json()
-    iris.cls("%SYS.ML.Configuration")._SetSystemDefault(configName['configName'])
+    iris.cls("%SYS.ML.Configuration")._SetSystemDefault("\"" + configName['configName'] + "\"")
     return make_response(
         'Expected Result',
         200
