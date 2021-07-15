@@ -1,4 +1,4 @@
-Class Titanic.Table.Passenger Extends %Library.Persistent [ Not Abstract, DdlAllowed, Not LegacyInstanceContext, ProcedureBlock ]
+Class Titanic.Table.Passenger Extends (%Library.Persistent, %JSON.Adaptor) [ Not Abstract, DdlAllowed, Not LegacyInstanceContext, ProcedureBlock ]
 {
 
 Property survived As %Library.Integer(MAXVAL = 2147483647, MINVAL = -2147483648) [ SqlColumnNumber = 2 ];

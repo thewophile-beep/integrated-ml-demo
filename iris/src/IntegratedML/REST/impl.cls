@@ -7,6 +7,12 @@ Class IntegratedML.REST.impl Extends %REST.Impl [ ProcedureBlock ]
 /// if ExposeServerExceptions is true, then details of internal errors will be exposed.
 Parameter ExposeServerExceptions = 1;
 
+// ----------------------------------------------------------------
+
+// CRUD FOR TITANIC_TABLE.PASSENGER
+
+// ----------------------------------------------------------------
+
 /// Retreive the total number of Passengers THEN the Passengers from currPage\*(pageSize-1) to currPage\*pageSize. Search by name possible too.<br/>
 /// The method arguments hold values for:<br/>
 ///     currPage, The current page at which the client is<br/>
@@ -17,30 +23,52 @@ ClassMethod getAllPassengers(currPage As %Float, pageSize As %Float, name As %St
     set tDyna = {}
     set tPassengers = []
     if ($Data(name)) {
-        set myquery = "SELECT Id FROM Titanic_Table.Passenger WHERE Titanic_Table.Passenger.name %STARTSWITH ?"
+        // If search by name
+        set myquery = "SELECT Id FROM Titanic_Table.Passenger WHERE name %STARTSWITH ?"
         set tStatement = ##class(%SQL.Statement).%New()
         $$$ThrowOnError(tStatement.%Prepare(myquery))
         set tRs = tStatement.%Execute(name)
         while tRs.%Next() {
             do ##class(Titanic.Table.Passenger).%OpenId(tRs.Id).%JSONExportToStream(.tStream)
-            do tPassengers.%Push({}.%FromJSON(tStream)) 
+            set tp = {}.%FromJSON(tStream)
+            set tp."passengerId" = tRs.ID
+            do tPassengers.%Push(tp)
         }
-        set tDyna."total" = tRs.%ROWCOUNT
     } 
     else {
-        set tStartRow = pageSize * (currPage - 1)
-        set tEndRow = tStartRow + pageSize
-        set tRow = 0
-        set tRs = ##class(Titanic.Table.Passenger).ExtentFunc()
-        while (tRs.%Next() && (tRow < tEndRow)) {
-            set tRow = tRow + 1
-            continue:(tRow<=tStartRow)
-            do ##class(Titanic.Table.Passenger).%OpenId(tRs.Id).%JSONExportToStream(.tStream)
-            do tPassengers.%Push({}.%FromJSON(tStream))
+        if ($Data(pageSize) && $Data(currPage)) {
+            // if pagination 
+            set tStartRow = pageSize * (currPage - 1)
+            set tEndRow = tStartRow + pageSize
+            set tRow = 0
+            set tRs = ##class(Titanic.Table.Passenger).ExtentFunc()
+            while (tRs.%Next() && (tRow < tEndRow)) {
+                set tRow = tRow + 1
+                continue:(tRow<=tStartRow)
+                do ##class(Titanic.Table.Passenger).%OpenId(tRs.Id).%JSONExportToStream(.tStream)
+                set tp = {}.%FromJSON(tStream)
+                set tp."passengerId" = tRs.ID
+                do tPassengers.%Push(tp)
+            }
+        } else {
+            // else return all passengers
+            set tRs = ##class(Titanic.Table.Passenger).ExtentFunc()
+            while (tRs.%Next()) {
+                do ##class(Titanic.Table.Passenger).%OpenId(tRs.Id).%JSONExportToStream(.tStream)
+                set tp = {}.%FromJSON(tStream)
+                set tp."passengerId" = tRs.ID
+                do tPassengers.%Push(tp)
+            }
         }
-        while (tRs.%Next()) {}
-        set tDyna."total" = tRs.%ROWCOUNT
     }
+    set myquery = "SELECT COUNT(*) AS total FROM Titanic_Table.Passenger"
+    set tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    set tRs = tStatement.%Execute()
+    do tRs.%Next()
+    set tDyna = {}
+    set tDyna."total" = tRs."total"
+    set tDyna."query" = "no SQL there; selected via objects"
     set tDyna."passengers" = tPassengers
     quit tDyna
 }
@@ -55,12 +83,12 @@ ClassMethod createPassenger(payloadBody As %Stream.Object) As %Stream.Object
     try {
         $$$ThrowOnError(tPassenger.%JSONImport(payloadBody)) 
         do tPassenger.%Save()
-        set tPassenger.passengerId = tPassenger.%Id()
-        do tPassenger.%Save()
         set tDyna.passengerId = tPassenger.%Id()
     } catch(ex) {
         do ##class(%REST.Impl).%ReportRESTError(400,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions")) 
     }
+    // Query equivalent
+    set tDyna."query" = "INSERT INTO Titanic_Table.Passenger (survived, pclass, name, sex, age, sibSp, parCh, ticket, fare, cabin, embarked) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     quit tDyna
 }
 
@@ -69,13 +97,18 @@ ClassMethod createPassenger(payloadBody As %Stream.Object) As %Stream.Object
 ///     id<br/>
 ClassMethod getPassenger(id As %Integer) As %Stream.Object
 {
-    set tDyna = {}
+    set tp = {}
     if ##class(Titanic.Table.Passenger).%ExistsId(id) {
         do ##class(Titanic.Table.Passenger).%OpenId(id).%JSONExportToStream(.tStream)
-        set tDyna = {}.%FromJSON(tStream)
+        set tp = {}.%FromJSON(tStream)
+        set tp."passengerId" = id
     } else {
         Do ..%SetStatusCode(204)
     }
+    set tDyna = {}
+    set tDyna."passenger" = tp
+    // Query equivalent
+    set tDyna."query" = "SELECT * FROM Titanic_Table.Passenger WHERE ID = ?"
     quit tDyna
 }
 
@@ -92,7 +125,10 @@ ClassMethod updatePassenger(id As %Integer, payloadBody As %Stream.Object) As %S
     } else {
         do ..%SetStatusCode(204)
     }
-    quit {}
+    set tDyna = {}
+    // Query equivalent
+    set tDyna."query" = "UPDATE Titanic_Table.Passenger SET survived = ?, pclass = ?, name = ?, sex = ?, age = ?, sibSp = ?, parCh = ?, ticket = ?, fare = ?, cabin = ?, embarked = ? WHERE ID = ?"
+    quit tDyna
 }
 
 /// Delete existing passenger with {id}<br/>
@@ -105,8 +141,17 @@ ClassMethod deletePassenger(id As %Integer) As %Stream.Object
     } else {
         do ..%SetStatusCode(204)
     }
-    quit {}
+    set tDyna = {}
+    // Query equivalent
+    set tDyna."query" = "DELETE FROM Titanic_Table.Passenger WHERE ID = ?"
+    quit tDyna
 }
+
+// ----------------------------------------------------------------
+
+// CRUD FOR NOSHO_TABLE.APPOINTMENT
+
+// ----------------------------------------------------------------
 
 /// Retreive the total number of Patients THEN the Patients from currPage\*(pageSize-1) to currPage\*pageSize. Search by name possible too.<br/>
 /// The method arguments hold values for:<br/>
@@ -118,38 +163,45 @@ ClassMethod getAllPatients(currPage As %Float, pageSize As %Float, id As %String
     set tDyna = {}
     set tPatients = []
     if ($Data(id)) {
-        set myquery = "SELECT Id FROM Noshow_Table.Appointment WHERE ID = ?"
-        set tStatement = ##class(%SQL.Statement).%New()
-        $$$ThrowOnError(tStatement.%Prepare(myquery))
-        set tRs = tStatement.%Execute(id)
-        while tRs.%Next() {
-            do ##class(Noshow.Table.Appointment).%OpenId(tRs.Id).%JSONExportToStream(.tStream)
-            set tNewPatient = {}.%FromJSON(tStream)
-            set tNewPatient.patientId = tRs.Id
-            do tPatients.%Push(tNewPatient)
-        }
-        set tDyna."total" = tRs.%ROWCOUNT
+        do ##class(Noshow.Table.Appointment).%OpenId(id).%JSONExportToStream(.tStream)
+        set tp = {}.%FromJSON(tStream)
+        set tp."patientId" = id
+        do tPatients.%Push(tp)
     } 
     else {
-        set tStartRow = pageSize * (currPage - 1)
-        set tEndRow = tStartRow + pageSize
-        set myquery = "SELECT Id FROM Noshow_Table.Appointment WHERE ID > ? AND ID <= ?"
-        set tStatement = ##class(%SQL.Statement).%New()
-        $$$ThrowOnError(tStatement.%Prepare(myquery))
-        set tRs = tStatement.%Execute(tStartRow, tEndRow)
-        while tRs.%Next() {
-            do ##class(Noshow.Table.Appointment).%OpenId(tRs.Id).%JSONExportToStream(.tStream)
-            set tNewPatient = {}.%FromJSON(tStream)
-            set tNewPatient.patientId = tRs.Id
-            do tPatients.%Push(tNewPatient)
+        if ($Data(pageSize) && $Data(currPage)) {
+            // if pagination 
+            set tStartRow = pageSize * (currPage - 1)
+            set tEndRow = tStartRow + pageSize
+            set tRow = 0
+            set tRs = ##class(Noshow.Table.Appointment).ExtentFunc()
+            while (tRs.%Next() && (tRow < tEndRow)) {
+                set tRow = tRow + 1
+                continue:(tRow<=tStartRow)
+                do ##class(Noshow.Table.Appointment).%OpenId(tRs.Id).%JSONExportToStream(.tStream)
+                set tp = {}.%FromJSON(tStream)
+                set tp."patientId" = tRs.ID
+                do tPatients.%Push(tp)
+            }
+        } else {
+            // else return all patients
+            set tRs = ##class(Noshow.Table.Appointment).ExtentFunc()
+            while (tRs.%Next()) {
+                do ##class(Noshow.Table.Appointment).%OpenId(tRs.Id).%JSONExportToStream(.tStream)
+                set tp = {}.%FromJSON(tStream)
+                set tp."patientId" = tRs.ID
+                do tPatients.%Push(tp)
+            }
         }
-        set myquery = "SELECT COUNT(Id) FROM Noshow_Table.Appointment"
-        set tStatement = ##class(%SQL.Statement).%New()
-        $$$ThrowOnError(tStatement.%Prepare(myquery))
-        set tRs = tStatement.%Execute()
-        do tRs.%Next()
-        set tDyna."total" = tRs.%Get("Aggregate_1") 
     }
+    set myquery = "SELECT COUNT(*) AS total FROM Noshow_Table.Appointment"
+    set tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    set tRs = tStatement.%Execute()
+    do tRs.%Next()
+    set tDyna = {}
+    set tDyna."total" = tRs."total"
+    set tDyna."query" = "no SQL there; selected via objects"
     set tDyna."patients" = tPatients
     quit tDyna
 }
@@ -168,6 +220,8 @@ ClassMethod createPatient(payloadBody As %Stream.Object) As %Stream.Object
     } catch(ex) {
         do ##class(%REST.Impl).%ReportRESTError(400,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions")) 
     }
+    // Query equivalent
+    set tDyna."query" = "INSERT INTO Noshow_Table.Appointment (gender, scheduledDay, scheduledHour, appointmentDay, age, neighborhood, scholarship, hypertension, diabetes, alcoholism, handicap, smsReceived, noShow) VALUES (?, DATE(?), ?, DATE(?), ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     quit tDyna
 }
 
@@ -176,14 +230,18 @@ ClassMethod createPatient(payloadBody As %Stream.Object) As %Stream.Object
 ///     id<br/>
 ClassMethod getPatient(id As %Integer) As %Stream.Object
 {
-    set tDyna = {}
+    set tp = {}
     if ##class(Noshow.Table.Appointment).%ExistsId(id) {
         do ##class(Noshow.Table.Appointment).%OpenId(id).%JSONExportToStream(.tStream)
-        set tDyna = {}.%FromJSON(tStream)
-        set tDyna.patientId = id
+        set tp = {}.%FromJSON(tStream)
+        set tp.patientId = id
     } else {
         Do ..%SetStatusCode(204)
     }
+    set tDyna = {}
+    set tDyna."patient" = tp
+    // Query equivalent
+    set tDyna."query" = "SELECT * FROM Noshow_Table.Appointment WHERE ID = ?"
     quit tDyna
 }
 
@@ -200,7 +258,10 @@ ClassMethod updatePatient(id As %Integer, payloadBody As %Stream.Object) As %Str
     } else {
         do ..%SetStatusCode(204)
     }
-    quit {}
+    set tDyna = {}
+    // Query equivalent
+    set tDyna."query" = "UPDATE Noshow_Table.Appointment SET gender = ?, scheduledDay = DATE(?), scheduledHour = ?, appointmentDay = DATE(?), age = ?, neighborhood = ?, scholarship = ?, hypertension = ?, diabetes = ?, alcoholism = ?, handicap = ?, smsReceived = ?, noShow = ? WHERE ID = ?"
+    quit tDyna
 }
 
 /// Delete existing patient with {id}<br/>
@@ -213,6 +274,9 @@ ClassMethod deletePatient(id As %Integer) As %Stream.Object
     } else {
         do ..%SetStatusCode(204)
     }
+    set tDyna = {}
+    // Query equivalent
+    set tDyna."query" = "DELETE FROM Titanic_Table.Passenger WHERE ID = ?"
     quit {}
 }
 

@@ -9,7 +9,7 @@ import iris
 # TODO: 
 # - [ ] Find a way to have more parametered queries
 # - [ ] Find a way to catch the irisbuiltins.SQLError to return 400 messages instead of the default 500
-# - [ ] Do one example with iris.cls and not sql query
+# - [ ] Change the get all with objects 
 # - [ ] Find a way to make training work. Maybe it is the same pb than with the Stream type
 
 app = Flask(__name__)
@@ -32,8 +32,8 @@ def getAllPassengers():
         query += " WHERE name %STARTSWITH ?"
         rs = iris.sql.exec(query, name)
     else:
-        # if paginator
         if not (currPage is None or pageSize is None):
+            # if paginator
             currPage = int(currPage)
             pageSize = int(pageSize)
             query += " WHERE ID > ? AND ID <= ?"
@@ -46,7 +46,7 @@ def getAllPassengers():
     for p in rs:
         payload['passengers'].append(Passenger(p).__dict__)
     # Getting the total number of passengers
-    rs = iris.sql.exec("SELECT COUNT(ID) FROM Titanic_Table.Passenger")
+    rs = iris.sql.exec("SELECT MAX(ID) FROM Titanic_Table.Passenger")
     payload['total'] = rs.__next__()[0]
     payload['query'] = query
     return jsonify(payload)

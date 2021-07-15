@@ -9,6 +9,9 @@ Parameter SpecificationClass = "IntegratedML.REST.spec";
 /// Ignore any writes done directly by the REST method.
 Parameter IgnoreWrites = 1;
 
+/// Default the Content-Type for this application.
+Parameter CONTENTTYPE = "application/json";
+
 /// By default convert the input stream to Unicode
 Parameter CONVERTINPUTSTREAM = 1;
 
@@ -16,8 +19,6 @@ Parameter CONVERTINPUTSTREAM = 1;
 Parameter CHARSET = "utf-8";
 
 Parameter HandleCorsRequest = 1;
-
-Parameter CONTENTTYPE = "application/json";
 
 XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 {
@@ -58,6 +59,8 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
   <Route Url="/ml/trainings" Method="post" Call="trainModel" />
   <!-- Get state of training run -->
   <Route Url="/ml/trainings/states" Method="get" Call="getStateTrainingRun" />
+  <!-- Get log of training run -->
+  <Route Url="/ml/trainings/logs" Method="get" Call="getLogTrainingRun" />
   <!-- Get configurations -->
   <Route Url="/ml/trainings/configurations" Method="get" Call="getAllConfigurations" />
   <!-- Update configuration -->
@@ -66,8 +69,6 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
   <Route Url="/ml/trainings/configurations/datarobot" Method="post" Call="createDRConfiguration" />
   <!-- Alter DataRobot configuration -->
   <Route Url="/ml/trainings/configurations/datarobot" Method="put" Call="alterDRConfiguration" />
-  <!-- Get log of training run -->
-  <Route Url="/ml/trainings/logs" Method="get" Call="getLogTrainingRun" />
   <!-- Get all validation runs -->
   <Route Url="/ml/validations" Method="get" Call="getValidationRuns" />
   <!-- Validate a Model -->
@@ -87,6 +88,8 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 ClassMethod getAllPassengers() As %Status
 {
     Try {
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
         If $data(%request.Data("currPage",2)) {
             Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"currPage")) Quit
         }
@@ -119,7 +122,10 @@ ClassMethod getAllPassengers() As %Status
 ClassMethod createPassenger() As %Status
 {
     Try {
-        If $isobject(%request.Content) Set ppayloadBody=%request.Content
+        If $case(%request.ContentType,"application/json":0,:1) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP415UNSUPPORTEDMEDIATYPE,$$$ERROR($$$RESTContentType,%request.ContentType)) Quit
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
+        If $isobject(%request.Content),%request.Content.Size>0 Set ppayloadBody=##class(%DynamicAbstractObject).%FromJSON(%request.Content)
         Set response=##class(IntegratedML.REST.impl).createPassenger(.ppayloadBody)
         Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
@@ -132,6 +138,8 @@ ClassMethod createPassenger() As %Status
 ClassMethod getPassenger(pid As %String) As %Status
 {
     Try {
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
         If ($number(pid,"I")="") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"id",pid)) Quit
         Set response=##class(IntegratedML.REST.impl).getPassenger(pid)
         Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
@@ -145,8 +153,11 @@ ClassMethod getPassenger(pid As %String) As %Status
 ClassMethod updatePassenger(pid As %String) As %Status
 {
     Try {
+        If $case(%request.ContentType,"application/json":0,:1) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP415UNSUPPORTEDMEDIATYPE,$$$ERROR($$$RESTContentType,%request.ContentType)) Quit
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
         If ($number(pid,"I")="") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"id",pid)) Quit
-        If $isobject(%request.Content) Set ppayloadBody=%request.Content
+        If $isobject(%request.Content),%request.Content.Size>0 Set ppayloadBody=##class(%DynamicAbstractObject).%FromJSON(%request.Content)
         Set response=##class(IntegratedML.REST.impl).updatePassenger(pid,.ppayloadBody)
         Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
@@ -159,6 +170,8 @@ ClassMethod updatePassenger(pid As %String) As %Status
 ClassMethod deletePassenger(pid As %String) As %Status
 {
     Try {
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
         If ($number(pid,"I")="") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"id",pid)) Quit
         Set response=##class(IntegratedML.REST.impl).deletePassenger(pid)
         Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
@@ -172,6 +185,8 @@ ClassMethod deletePassenger(pid As %String) As %Status
 ClassMethod getAllPatients() As %Status
 {
     Try {
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
         If $data(%request.Data("currPage",2)) {
             Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"currPage")) Quit
         }
@@ -204,7 +219,10 @@ ClassMethod getAllPatients() As %Status
 ClassMethod createPatient() As %Status
 {
     Try {
-        If $isobject(%request.Content) Set ppayloadBody=%request.Content
+        If $case(%request.ContentType,"application/json":0,:1) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP415UNSUPPORTEDMEDIATYPE,$$$ERROR($$$RESTContentType,%request.ContentType)) Quit
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
+        If $isobject(%request.Content),%request.Content.Size>0 Set ppayloadBody=##class(%DynamicAbstractObject).%FromJSON(%request.Content)
         Set response=##class(IntegratedML.REST.impl).createPatient(.ppayloadBody)
         Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
@@ -217,6 +235,8 @@ ClassMethod createPatient() As %Status
 ClassMethod getPatient(pid As %String) As %Status
 {
     Try {
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
         If ($number(pid,"I")="") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"id",pid)) Quit
         Set response=##class(IntegratedML.REST.impl).getPatient(pid)
         Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
@@ -230,8 +250,11 @@ ClassMethod getPatient(pid As %String) As %Status
 ClassMethod updatePatient(pid As %String) As %Status
 {
     Try {
+        If $case(%request.ContentType,"application/json":0,:1) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP415UNSUPPORTEDMEDIATYPE,$$$ERROR($$$RESTContentType,%request.ContentType)) Quit
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
         If ($number(pid,"I")="") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"id",pid)) Quit
-        If $isobject(%request.Content) Set ppayloadBody=%request.Content
+        If $isobject(%request.Content),%request.Content.Size>0 Set ppayloadBody=##class(%DynamicAbstractObject).%FromJSON(%request.Content)
         Set response=##class(IntegratedML.REST.impl).updatePatient(pid,.ppayloadBody)
         Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
@@ -244,6 +267,8 @@ ClassMethod updatePatient(pid As %String) As %Status
 ClassMethod deletePatient(pid As %String) As %Status
 {
     Try {
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
         If ($number(pid,"I")="") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTInvalid,"id",pid)) Quit
         Set response=##class(IntegratedML.REST.impl).deletePatient(pid)
         Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
@@ -257,6 +282,8 @@ ClassMethod deletePatient(pid As %String) As %Status
 ClassMethod getTableSize() As %Status
 {
     Try {
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
         If $data(%request.Data("table",2)) {
             Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"table")) Quit
         }
@@ -275,6 +302,8 @@ ClassMethod getTableSize() As %Status
 ClassMethod getAllModels() As %Status
 {
     Try {
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
         Set response=##class(IntegratedML.REST.impl).getAllModels()
         Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
@@ -287,8 +316,11 @@ ClassMethod getAllModels() As %Status
 ClassMethod createModel() As %Status
 {
     Try {
-        If '$isobject(%request.Content) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"createInfo")) Quit
-        Set pcreateInfo=%request.Content
+        If $case(%request.ContentType,"application/json":0,:1) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP415UNSUPPORTEDMEDIATYPE,$$$ERROR($$$RESTContentType,%request.ContentType)) Quit
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
+        If '$isobject(%request.Content) || (%request.Content.Size=0) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"createInfo")) Quit
+        Set pcreateInfo=##class(%DynamicAbstractObject).%FromJSON(%request.Content)
         Set response=##class(IntegratedML.REST.impl).createModel(pcreateInfo)
         Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
@@ -301,6 +333,8 @@ ClassMethod createModel() As %Status
 ClassMethod deleteModel() As %Status
 {
     Try {
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
         If '$data(%request.Data("modelName",1)) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"modelName")) Quit
         If $data(%request.Data("modelName",2)) {
             Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"modelName")) Quit
@@ -318,6 +352,8 @@ ClassMethod deleteModel() As %Status
 ClassMethod purgeModel() As %Status
 {
     Try {
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
         If '$data(%request.Data("modelName",1)) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"modelName")) Quit
         If $data(%request.Data("modelName",2)) {
             Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"modelName")) Quit
@@ -335,6 +371,8 @@ ClassMethod purgeModel() As %Status
 ClassMethod getTrainingRuns() As %Status
 {
     Try {
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
         Set response=##class(IntegratedML.REST.impl).getTrainingRuns()
         Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
@@ -347,8 +385,11 @@ ClassMethod getTrainingRuns() As %Status
 ClassMethod trainModel() As %Status
 {
     Try {
-        If '$isobject(%request.Content) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"trainingInfo")) Quit
-        Set ptrainingInfo=%request.Content
+        If $case(%request.ContentType,"application/json":0,:1) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP415UNSUPPORTEDMEDIATYPE,$$$ERROR($$$RESTContentType,%request.ContentType)) Quit
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
+        If '$isobject(%request.Content) || (%request.Content.Size=0) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"trainingInfo")) Quit
+        Set ptrainingInfo=##class(%DynamicAbstractObject).%FromJSON(%request.Content)
         Set response=##class(IntegratedML.REST.impl).trainModel(ptrainingInfo)
         Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
@@ -361,6 +402,8 @@ ClassMethod trainModel() As %Status
 ClassMethod getStateTrainingRun() As %Status
 {
     Try {
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
         If $data(%request.Data("modelName",2)) {
             Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"modelName")) Quit
         }
@@ -381,64 +424,12 @@ ClassMethod getStateTrainingRun() As %Status
     Quit $$$OK
 }
 
-/// Get configurations
-ClassMethod getAllConfigurations() As %Status
-{
-    Try {
-        Set response=##class(IntegratedML.REST.impl).getAllConfigurations()
-        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
-    } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
-    }
-    Quit $$$OK
-}
-
-/// Update configuration
-ClassMethod changeConfiguration() As %Status
-{
-    Try {
-        If '$isobject(%request.Content) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"configName")) Quit
-        Set pconfigName=%request.Content
-        Set response=##class(IntegratedML.REST.impl).changeConfiguration(pconfigName)
-        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
-    } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
-    }
-    Quit $$$OK
-}
-
-/// Create DataRobot configuration
-ClassMethod createDRConfiguration() As %Status
-{
-    Try {
-        If '$isobject(%request.Content) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"payload")) Quit
-        Set ppayload=%request.Content
-        Set response=##class(IntegratedML.REST.impl).createDRConfiguration(ppayload)
-        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
-    } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
-    }
-    Quit $$$OK
-}
-
-/// Alter DataRobot configuration
-ClassMethod alterDRConfiguration() As %Status
-{
-    Try {
-        If '$isobject(%request.Content) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"payload")) Quit
-        Set ppayload=%request.Content
-        Set response=##class(IntegratedML.REST.impl).alterDRConfiguration(ppayload)
-        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
-    } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
-    }
-    Quit $$$OK
-}
-
 /// Get log of training run
 ClassMethod getLogTrainingRun() As %Status
 {
     Try {
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
         If $data(%request.Data("trainingName",2)) {
             Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"trainingName")) Quit
         }
@@ -453,10 +444,77 @@ ClassMethod getLogTrainingRun() As %Status
     Quit $$$OK
 }
 
+/// Get configurations
+ClassMethod getAllConfigurations() As %Status
+{
+    Try {
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
+        Set response=##class(IntegratedML.REST.impl).getAllConfigurations()
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
+/// Update configuration
+ClassMethod changeConfiguration() As %Status
+{
+    Try {
+        If $case(%request.ContentType,"application/json":0,:1) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP415UNSUPPORTEDMEDIATYPE,$$$ERROR($$$RESTContentType,%request.ContentType)) Quit
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
+        If '$isobject(%request.Content) || (%request.Content.Size=0) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"configName")) Quit
+        Set pconfigName=##class(%DynamicAbstractObject).%FromJSON(%request.Content)
+        Set response=##class(IntegratedML.REST.impl).changeConfiguration(pconfigName)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
+/// Create DataRobot configuration
+ClassMethod createDRConfiguration() As %Status
+{
+    Try {
+        If $case(%request.ContentType,"application/json":0,:1) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP415UNSUPPORTEDMEDIATYPE,$$$ERROR($$$RESTContentType,%request.ContentType)) Quit
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
+        If '$isobject(%request.Content) || (%request.Content.Size=0) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"payload")) Quit
+        Set ppayload=##class(%DynamicAbstractObject).%FromJSON(%request.Content)
+        Set response=##class(IntegratedML.REST.impl).createDRConfiguration(ppayload)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
+/// Alter DataRobot configuration
+ClassMethod alterDRConfiguration() As %Status
+{
+    Try {
+        If $case(%request.ContentType,"application/json":0,:1) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP415UNSUPPORTEDMEDIATYPE,$$$ERROR($$$RESTContentType,%request.ContentType)) Quit
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
+        If '$isobject(%request.Content) || (%request.Content.Size=0) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"payload")) Quit
+        Set ppayload=##class(%DynamicAbstractObject).%FromJSON(%request.Content)
+        Set response=##class(IntegratedML.REST.impl).alterDRConfiguration(ppayload)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
 /// Get all validation runs
 ClassMethod getValidationRuns() As %Status
 {
     Try {
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
         Set response=##class(IntegratedML.REST.impl).getValidationRuns()
         Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
@@ -469,8 +527,11 @@ ClassMethod getValidationRuns() As %Status
 ClassMethod validateModel() As %Status
 {
     Try {
-        If '$isobject(%request.Content) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"validationInfo")) Quit
-        Set pvalidationInfo=%request.Content
+        If $case(%request.ContentType,"application/json":0,:1) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP415UNSUPPORTEDMEDIATYPE,$$$ERROR($$$RESTContentType,%request.ContentType)) Quit
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
+        If '$isobject(%request.Content) || (%request.Content.Size=0) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"validationInfo")) Quit
+        Set pvalidationInfo=##class(%DynamicAbstractObject).%FromJSON(%request.Content)
         Set response=##class(IntegratedML.REST.impl).validateModel(pvalidationInfo)
         Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
@@ -483,6 +544,8 @@ ClassMethod validateModel() As %Status
 ClassMethod getMetrics() As %Status
 {
     Try {
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
         If $data(%request.Data("modelName",2)) {
             Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"modelName")) Quit
         }
@@ -507,6 +570,8 @@ ClassMethod getMetrics() As %Status
 ClassMethod getTrainedModels() As %Status
 {
     Try {
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
         Set response=##class(IntegratedML.REST.impl).getTrainedModels()
         Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
@@ -519,6 +584,8 @@ ClassMethod getTrainedModels() As %Status
 ClassMethod predict() As %Status
 {
     Try {
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
         If '$data(%request.Data("model",1)) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"model")) Quit
         If $data(%request.Data("model",2)) {
             Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"model")) Quit
@@ -551,6 +618,8 @@ ClassMethod predict() As %Status
 ClassMethod probability() As %Status
 {
     Try {
+        Do ##class(%REST.Impl).%SetContentType("application/json")
+        If '##class(%REST.Impl).%CheckAccepts("application/json") Do ##class(%REST.Impl).%ReportRESTError(..#HTTP406NOTACCEPTABLE,$$$ERROR($$$RESTBadAccepts)) Quit
         If '$data(%request.Data("model",1)) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"model")) Quit
         If $data(%request.Data("model",2)) {
             Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"model")) Quit
