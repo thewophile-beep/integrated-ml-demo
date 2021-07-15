@@ -280,6 +280,35 @@ ClassMethod deletePatient(id As %Integer) As %Stream.Object
     quit {}
 }
 
+// ----------------------------------------------------------------
+
+// ADDITIONAL METHODS FOR ALL TABLES
+
+// ----------------------------------------------------------------
+
+/// Retreive the total number of objects in a table<br/>
+/// The method arguments hold values for:<br/>
+///     table, The table we need the max size from<br/>
+ClassMethod getTableSize(table As %String) As %Stream.Object
+{
+    set myquery = "SELECT COUNT(*) FROM "_table
+    set tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    set tRs = tStatement.%Execute()
+    do tRs.%Next()
+    set tDyna = {}
+    set tDyna."total" = tRs.%Get("Aggregate_1") 
+    quit tDyna
+}
+
+// ----------------------------------------------------------------
+
+// MODEL MANAGEMENT
+
+// ----------------------------------------------------------------
+
+// ----- MODELS -----
+
 /// Retreive all created models
 ClassMethod getAllModels() As %Stream.Object
 {
@@ -348,6 +377,22 @@ ClassMethod deleteModel(modelName As %String) As %Stream.Object
     quit tDyna
 }
 
+/// Purge runs from a model<br/>
+/// The method arguments hold values for:<br/>
+///     modelName<br/>
+ClassMethod purgeModel(modelName As %String) As %Stream.Object
+{
+    set myquery = "ALTER MODEL "_modelName_" PURGE ALL"
+    set tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    set tRs = tStatement.%Execute()
+    set tDyna = {}
+    set tDyna."query" = myquery
+    quit tDyna
+}
+
+// ----- TRAINING RUNS ----- 
+
 /// Get all training runs
 ClassMethod getTrainingRuns() As %Stream.Object
 {
@@ -400,6 +445,44 @@ ClassMethod executeQuery(pQuery As %String) As %Status
     return sc
 }
 
+/// Get the state of a speecific training run<br/>
+/// The method arguments hold values for:<br/>
+///     modelName, Name of the model<br/>
+///     trainingName, Name of the training run<br/>
+ClassMethod getStateTrainingRun(modelName As %String, trainingName As %String) As %Stream.Object
+{
+    set myquery = "SELECT RUN_STATUS "
+        _"FROM INFORMATION_SCHEMA.ML_TRAINING_RUNS "
+        _"WHERE TRAINING_RUN_NAME=? "
+        _"AND MODEL_NAME=?"
+    set tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    set tRs = tStatement.%Execute(trainingName, modelName)
+    do tRs.%Next()
+    set tDyna = {}
+    set tDyna."state" = tRs.%Get("RUN_STATUS") 
+    set tDyna."query" = myquery
+    quit tDyna
+}
+
+/// Get the log of a speecific training run<br/>
+/// The method arguments hold values for:<br/>
+///     trainingName, Name of the training run<br/>
+ClassMethod getLogTrainingRun(trainingName As %String) As %Stream.Object
+{
+    set myquery = "SELECT substring(LOG,1,CHAR_LENGTH(LOG)) FROM INFORMATION_SCHEMA.ML_TRAINING_RUNS WHERE TRAINING_RUN_NAME = ?"
+    set tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    set tRs = tStatement.%Execute(trainingName)
+    do tRs.%Next()
+    set tDyna = {}
+    set tDyna."log" = tRs.%Get("Expression_1")
+    set tDyna."query" = myquery
+    quit tDyna
+}
+
+// ----- ML CONFIGURATION -----
+
 /// Get ml configurations
 ClassMethod getAllConfigurations() As %Stream.Object
 {
@@ -419,48 +502,37 @@ ClassMethod changeConfiguration(configName As %Stream.Object) As %Stream.Object
     quit tSc
 }
 
-/// Get all trained models
-ClassMethod getTrainedModels() As %Stream.Object
+/// Create a DataRobot configuration<br/>
+/// The method arguments hold values for:<br/>
+///     payload, URL to use<br/>
+ClassMethod createDRConfiguration(payload As %Stream.Object) As %Stream.Object
 {
-    set tDyna = {}
-    set tModels = []
-    set myquery = "SELECT * FROM INFORMATION_SCHEMA.ML_TRAINED_MODELS"
+    set tInfo = {}.%FromJSON(payload)
+    set myquery = "CREATE ML CONFIGURATION DataRobotConfig PROVIDER DataRobot URL '"_tInfo.url_"' APITOKEN '"_tInfo.apiToken_"'"
     set tStatement = ##class(%SQL.Statement).%New()
     $$$ThrowOnError(tStatement.%Prepare(myquery))
-    set tRs = tStatement.%Execute()	 	 	
-    while (tRs.%Next()) {
-        set tModel = {}
-        set tModel."modelName" = tRs."MODEL_NAME"
-        set tModel."trainedModelName" = tRs."TRAINED_MODEL_NAME"
-        set tModel."provider" = tRs."PROVIDER"
-        set tModel."trainedTimestamp" = tRs."TRAINED_TIMESTAMP"
-        set tModel."modelType" = tRs."MODEL_TYPE"
-        set tModel."modelInfo" = tRs."MODEL_INFO"
-        do tModels.%Push(tModel)
-    }
-    set tDyna."models" = tModels
+    set tRs = tStatement.%Execute()
+    set tDyna = {}
     set tDyna."query" = myquery
     quit tDyna
 }
 
-/// Predict with a certain model, a certain trained model and a certain id from a certain table<br/>
+/// Alter DataRobot ml configuration<br/>
 /// The method arguments hold values for:<br/>
-///     model, Model to predict with<br/>
-///     trainedModel, Trained Model to predict with<br/>
-///     id, ID to predict with<br/>
-///     fromTable, Table to predict from<br/>
-ClassMethod predict(model As %String, trainedModel As %String, id As %String, fromTable As %String) As %Stream.Object
+///     payload, URL to use<br/>
+ClassMethod alterDRConfiguration(payload As %Stream.Object) As %Stream.Object
 {
-    set myquery = "SELECT PREDICT("_model_" USE "_trainedModel_") FROM "_fromTable_" WHERE ID="_id
+    set tInfo = {}.%FromJSON(payload)
+    set myquery = "ALTER ML CONFIGURATION DataRobotConfig URL '"_tInfo.url_"' APITOKEN '"_tInfo.apiToken_"'"
     set tStatement = ##class(%SQL.Statement).%New()
     $$$ThrowOnError(tStatement.%Prepare(myquery))
     set tRs = tStatement.%Execute()
-    do tRs.%Next()
     set tDyna = {}
-    set tDyna."predictedValue" = tRs.%Get("Expression_1") 
     set tDyna."query" = myquery
     quit tDyna
 }
+
+// ----- VALIDATION RUNS -----
 
 /// Get all validation runs
 ClassMethod getValidationRuns() As %Stream.Object
@@ -519,18 +591,63 @@ ClassMethod getMetrics(modelName As %String, validationName As %String) As %Stre
     set tDyna = {}
     set tMetrics = []
     set tLine = ""
-    set myquery = "SELECT * FROM INFORMATION_SCHEMA.ML_VALIDATION_METRICS WHERE (VALIDATION_RUN_NAME='"_validationName_"' AND MODEL_NAME='"_modelName_"')"
+    set myquery = "SELECT METRIC_NAME, METRIC_VALUE, TARGET_VALUE FROM INFORMATION_SCHEMA.ML_VALIDATION_METRICS WHERE (VALIDATION_RUN_NAME='"_validationName_"' AND MODEL_NAME='"_modelName_"')"
     set tStatement = ##class(%SQL.Statement).%New()
     $$$ThrowOnError(tStatement.%Prepare(myquery))
     set tRs = tStatement.%Execute()	 	 
     while (tRs.%Next()) {
-        set tLine = tRs."METRIC_NAME"_" : "_tRs."METRIC_VALUE"
-        if ($length(tRs."TARGET_VALUE")) {
-            set tLine = tLine_"  - for target value: "_tRs."TARGET_VALUE"
-        }
+        set tm = {}
+        set tm."METRIC_NAME" = tRs."METRIC_NAME"
+        set tm."METRIC_VALUE" = tRs."METRIC_VALUE"
+        set tm."TARGET_VALUE" = tRs."TARGET_VALUE"
         do tMetrics.%Push(tLine)
     }
     set tDyna."metrics" = tMetrics
+    set tDyna."query" = myquery
+    quit tDyna
+}
+
+// ----- TRAINED MODELS -----
+
+/// Get all trained models
+ClassMethod getTrainedModels() As %Stream.Object
+{
+    set tDyna = {}
+    set tModels = []
+    set myquery = "SELECT * FROM INFORMATION_SCHEMA.ML_TRAINED_MODELS"
+    set tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    set tRs = tStatement.%Execute()	 	 	
+    while (tRs.%Next()) {
+        set tModel = {}
+        set tModel."modelName" = tRs."MODEL_NAME"
+        set tModel."trainedModelName" = tRs."TRAINED_MODEL_NAME"
+        set tModel."provider" = tRs."PROVIDER"
+        set tModel."trainedTimestamp" = tRs."TRAINED_TIMESTAMP"
+        set tModel."modelType" = tRs."MODEL_TYPE"
+        set tModel."modelInfo" = tRs."MODEL_INFO"
+        do tModels.%Push(tModel)
+    }
+    set tDyna."models" = tModels
+    set tDyna."query" = myquery
+    quit tDyna
+}
+
+/// Predict with a certain model, a certain trained model and a certain id from a certain table<br/>
+/// The method arguments hold values for:<br/>
+///     model, Model to predict with<br/>
+///     trainedModel, Trained Model to predict with<br/>
+///     id, ID to predict with<br/>
+///     fromTable, Table to predict from<br/>
+ClassMethod predict(model As %String, trainedModel As %String, id As %String, fromTable As %String) As %Stream.Object
+{
+    set myquery = "SELECT PREDICT("_model_" USE "_trainedModel_") FROM "_fromTable_" WHERE ID="_id
+    set tStatement = ##class(%SQL.Statement).%New()
+    $$$ThrowOnError(tStatement.%Prepare(myquery))
+    set tRs = tStatement.%Execute()
+    do tRs.%Next()
+    set tDyna = {}
+    set tDyna."predictedValue" = tRs.%Get("Expression_1") 
     set tDyna."query" = myquery
     quit tDyna
 }
@@ -551,101 +668,6 @@ ClassMethod probability(model As %String, trainedModel As %String, labelValue As
     do tRs.%Next()
     set tDyna = {}
     set tDyna."probability" = tRs.%Get("Expression_1") 
-    set tDyna."query" = myquery
-    quit tDyna
-}
-
-/// Get the state of a speecific training run<br/>
-/// The method arguments hold values for:<br/>
-///     modelName, Name of the model<br/>
-///     trainingName, Name of the training run<br/>
-ClassMethod getStateTrainingRun(modelName As %String, trainingName As %String) As %Stream.Object
-{
-    set myquery = "SELECT RUN_STATUS "
-        _"FROM INFORMATION_SCHEMA.ML_TRAINING_RUNS "
-        _"WHERE TRAINING_RUN_NAME=? "
-        _"AND MODEL_NAME=?"
-    set tStatement = ##class(%SQL.Statement).%New()
-    $$$ThrowOnError(tStatement.%Prepare(myquery))
-    set tRs = tStatement.%Execute(trainingName, modelName)
-    do tRs.%Next()
-    set tDyna = {}
-    set tDyna."state" = tRs.%Get("RUN_STATUS") 
-    set tDyna."query" = myquery
-    quit tDyna
-}
-
-/// Retreive the total number of objects in a table<br/>
-/// The method arguments hold values for:<br/>
-///     table, The table we need the max size from<br/>
-ClassMethod getTableSize(table As %String) As %Stream.Object
-{
-    set myquery = "SELECT COUNT(*) FROM "_table
-    set tStatement = ##class(%SQL.Statement).%New()
-    $$$ThrowOnError(tStatement.%Prepare(myquery))
-    set tRs = tStatement.%Execute()
-    do tRs.%Next()
-    set tDyna = {}
-    set tDyna."total" = tRs.%Get("Aggregate_1") 
-    quit tDyna
-}
-
-/// Purge runs from a model<br/>
-/// The method arguments hold values for:<br/>
-///     modelName<br/>
-ClassMethod purgeModel(modelName As %String) As %Stream.Object
-{
-    set myquery = "ALTER MODEL "_modelName_" PURGE ALL"
-    set tStatement = ##class(%SQL.Statement).%New()
-    $$$ThrowOnError(tStatement.%Prepare(myquery))
-    set tRs = tStatement.%Execute()
-    set tDyna = {}
-    set tDyna."query" = myquery
-    quit tDyna
-}
-
-/// Get the log of a speecific training run<br/>
-/// The method arguments hold values for:<br/>
-///     trainingName, Name of the training run<br/>
-ClassMethod getLogTrainingRun(trainingName As %String) As %Stream.Object
-{
-    set myquery = "SELECT substring(LOG,1,CHAR_LENGTH(LOG)) FROM INFORMATION_SCHEMA.ML_TRAINING_RUNS WHERE TRAINING_RUN_NAME = ?"
-    set tStatement = ##class(%SQL.Statement).%New()
-    $$$ThrowOnError(tStatement.%Prepare(myquery))
-    set tRs = tStatement.%Execute(trainingName)
-    do tRs.%Next()
-    set tDyna = {}
-    set tDyna."log" = tRs.%Get("Expression_1")
-    set tDyna."query" = myquery
-    quit tDyna
-}
-
-/// Create a DataRobot configuration<br/>
-/// The method arguments hold values for:<br/>
-///     payload, URL to use<br/>
-ClassMethod createDRConfiguration(payload As %Stream.Object) As %Stream.Object
-{
-    set tInfo = {}.%FromJSON(payload)
-    set myquery = "CREATE ML CONFIGURATION DataRobotConfig PROVIDER DataRobot URL '"_tInfo.url_"' APITOKEN '"_tInfo.apiToken_"'"
-    set tStatement = ##class(%SQL.Statement).%New()
-    $$$ThrowOnError(tStatement.%Prepare(myquery))
-    set tRs = tStatement.%Execute()
-    set tDyna = {}
-    set tDyna."query" = myquery
-    quit tDyna
-}
-
-/// Alter DataRobot ml configuration<br/>
-/// The method arguments hold values for:<br/>
-///     payload, URL to use<br/>
-ClassMethod alterDRConfiguration(payload As %Stream.Object) As %Stream.Object
-{
-    set tInfo = {}.%FromJSON(payload)
-    set myquery = "ALTER ML CONFIGURATION DataRobotConfig URL '"_tInfo.url_"' APITOKEN '"_tInfo.apiToken_"'"
-    set tStatement = ##class(%SQL.Statement).%New()
-    $$$ThrowOnError(tStatement.%Prepare(myquery))
-    set tRs = tStatement.%Execute()
-    set tDyna = {}
     set tDyna."query" = myquery
     quit tDyna
 }
