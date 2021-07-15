@@ -1,12 +1,16 @@
 from flask import Flask, jsonify, request, make_response
 from flask_cors import CORS
-import humps 
+from humps import camelize
 import threading
 from definitions.passenger import Passenger
 from definitions.patient import Patient
-
 import iris
 
+# TODO: 
+# - [ ] Find a way to have more parametered queries
+# - [ ] Find a way to catch the irisbuiltins.SQLError to return 400 messages instead of the default 500
+# - [ ] Do one example with iris.cls and not sql query
+# - [ ] Find a way to make training work. Maybe it is the same pb than with the Stream type
 
 app = Flask(__name__)
 CORS(app)
@@ -273,7 +277,7 @@ def getAllModels():
     rs = iris.sql.exec(query)
     payload = {}
     # We first take the rs as a dataframe. We then replace the values Nan with "". We camelize the keys of this dataframe (to have camel case, in accord with the swagger). Finally, we convert this dataframe to a dictionary, wde orient that conversion with records so that we have an array with each model as an element.
-    payload['models'] = humps.camelize(rs.dataframe().replace({float("Nan"): ""}).to_dict(orient="records"))
+    payload['models'] = camelize(rs.dataframe().replace({float("Nan"): ""}).to_dict(orient="records"))
     payload['query'] = query
     return jsonify(payload)
 
@@ -281,7 +285,6 @@ def getAllModels():
 @app.route("/api/integratedML/ml/models", methods=["POST"])
 def createModel():
     createInfo = request.get_json()
-    # TODO: find a way to use parametered query
     query = "CREATE MODEL " + createInfo['modelName'] + " PREDICTING(" + createInfo['predictValue'] + ")"
     if ('withVariables' in createInfo):
         query += " WITH("
@@ -341,7 +344,7 @@ def getTrainingRuns():
     rs = iris.sql.exec(query)
     payload = {}
     # Same procedure than with getting all models
-    payload['trainingRuns'] = humps.camelize(rs.dataframe().replace({float("Nan"): ""}).to_dict(orient="records"))
+    payload['trainingRuns'] = camelize(rs.dataframe().replace({float("Nan"): ""}).to_dict(orient="records"))
     payload['query'] = query
     return jsonify(payload)
 
@@ -373,6 +376,16 @@ def getStateTrainingRun():
     payload['query'] = query
     return jsonify(payload)
 
+# GET log for a training run
+@app.route("/api/integratedML/ml/trainings/logs", methods=["GET"])
+def getLogTrainingRun():
+    query = "SELECT substring(LOG,1,CHAR_LENGTH(LOG)) FROM INFORMATION_SCHEMA.ML_TRAINING_RUNS WHERE TRAINING_RUN_NAME = ?"
+    rs = iris.sql.exec(query, request.args.get('trainingName'))
+    payload = {}
+    payload['log'] = rs.__next__()[0]
+    payload['query'] = query
+    return jsonify(payload)
+
 # ----- ML CONFIGURATION -----
 
 # GET all configurations
@@ -386,7 +399,7 @@ def getAllConfigurations():
 # PUT to change configuration
 @app.route("/api/integratedML/ml/trainings/configurations", methods=["PUT"])
 def changeConfiguration():
-    configName = request.get_json()
+    configName = request.get_json()    
     try:
         iris.cls("%SYS.ML.Configuration")._SetSystemDefault(configName['configName'])
     except:
@@ -394,11 +407,9 @@ def changeConfiguration():
             'Not Found',
             204
         )
-    return make_response(
-        'Expected Regusult',
-        200
-    )
+    return jsonify()
 
+# POST new DR configuration
 @app.route("/api/integratedML/ml/trainings/configurations/datarobot", methods=["POST"])
 def createDRConfiguration():
     configInfo = request.get_json()
@@ -408,6 +419,7 @@ def createDRConfiguration():
     payload['query'] = query
     return jsonify(payload)
 
+# PUT to change DR config
 @app.route("/api/integratedML/ml/trainings/configurations/datarobot", methods=["PUT"])
 def alterDRConfiguration():
     configInfo = request.get_json()
@@ -417,24 +429,20 @@ def alterDRConfiguration():
     payload['query'] = query
     return jsonify(payload)
 
-@app.route("/api/integratedML/ml/trainings/logs", methods=["GET"])
-def getLogTrainingRun():
-    query = "SELECT substring(LOG,1,CHAR_LENGTH(LOG)) FROM INFORMATION_SCHEMA.ML_TRAINING_RUNS WHERE TRAINING_RUN_NAME = ?"
-    rs = iris.sql.exec(query, request.args.get('trainingName'))
-    payload = {}
-    payload['log'] = rs.__next__()[0]
-    payload['query'] = query
-    return jsonify(payload)
+# ----- VALIDATION RUNS -----
 
+# GET all validation runs
 @app.route("/api/integratedML/ml/validations", methods=["GET"])
 def getValidationRuns():
     query = "SELECT MODEL_NAME, TRAINED_MODEL_NAME, VALIDATION_RUN_NAME, START_TIMESTAMP, COMPLETED_TIMESTAMP, VALIDATION_DURATION, RUN_STATUS, STATUS_CODE, SETTINGS, VALIDATION_RUN_QUERY FROM INFORMATION_SCHEMA.ML_VALIDATION_RUNS"
     rs = iris.sql.exec(query)
     payload = {}
-    payload['validationRuns'] = humps.camelize(rs.dataframe().replace({float("Nan"): ""}).to_dict(orient="records"))
+    # Standard operational procedure 
+    payload['validationRuns'] = camelize(rs.dataframe().replace({float("Nan"): ""}).to_dict(orient="records"))
     payload['query'] = query
     return jsonify(payload)
 
+# POST new validation run
 @app.route("/api/integratedML/ml/validations", methods=["POST"])
 def validateModel():
     validationInfo = request.get_json()
@@ -442,46 +450,82 @@ def validateModel():
     if ('validationName' in validationInfo):
         query += " AS " + validationInfo['validationName'] 
     query += " USE " + validationInfo['trainedModelName'] + " FROM " + validationInfo['fromTable']
-    iris.sql.exec(query)
+    try: 
+        iris.sql.exec(query)
+    except:
+        return make_response(
+            'Bad Request', 
+            400
+        )
     payload = {}
     payload['query'] = query
     return jsonify(payload)
 
+# GET metrics for a validation run
 @app.route("/api/integratedML/ml/validations/metrics", methods=["GET"])
 def getMetrics():
     query = "SELECT METRIC_NAME, METRIC_VALUE, TARGET_VALUE FROM INFORMATION_SCHEMA.ML_VALIDATION_METRICS WHERE (VALIDATION_RUN_NAME='" + request.args.get('validationName') + "' AND MODEL_NAME='" + request.args.get('modelName') + "')"
-    rs = iris.sql.exec(query)
+    try:
+        rs = iris.sql.exec(query)
+    except:
+        return make_response(
+            'Not Found',
+            204
+        )
     payload = {}
-    payload['metrics'] = humps.camelize(rs.dataframe().replace({float("Nan"): ""}).to_dict(orient="records"))
+    # Same as always
+    payload['metrics'] = camelize(rs.dataframe().replace({float("Nan"): ""}).to_dict(orient="records"))
     payload['query'] = query
     return jsonify(payload)
 
+# ----- TRAINED MODELS -----
+
+# GET all trained models
 @app.route("/api/integratedML/ml/predictions/models", methods=["GET"])
 def getTrainedModels():
     query = "SELECT * FROM INFORMATION_SCHEMA.ML_TRAINED_MODELS"
     rs = iris.sql.exec(query)
     payload = {}
-    payload['models'] = humps.camelize(rs.dataframe().replace({float("Nan"): ""}).to_dict(orient="records"))
+    payload['models'] = camelize(rs.dataframe().replace({float("Nan"): ""}).to_dict(orient="records"))
     payload['query'] = query
     return jsonify(payload)
 
+# GET prediction for an id from a certain trained model and a certain table
 @app.route("/api/integratedML/ml/predictions", methods=["GET"])
 def predict():
     query = "SELECT PREDICT(" + request.args.get('model') + " USE " + request.args.get('trainedModel') + ") FROM " + request.args.get('fromTable') + " WHERE ID = ?"
-    rs = iris.sql.exec(query, request.args.get('id'))
+    try:
+        rs = iris.sql.exec(query, request.args.get('id'))
+    except:
+        return make_response(
+            'Bad Request',
+            400
+        )
     payload = {}
     payload['predictedValue'] = rs.__next__()[0]
     payload['query'] = query
     return jsonify(payload)
 
+# GET probability
 @app.route("/api/integratedML/ml/predictions/probabilities", methods=["GET"])
 def probability():
     query = "SELECT PROBABILITY(" + request.args.get('model') + " USE " + request.args.get('trainedModel') + " FOR " + request.args.get('labelValue') + ") FROM " + request.args.get('fromTable') + " WHERE ID = ?"
-    rs = iris.sql.exec(query, request.args.get('id'))
+    try:
+        rs = iris.sql.exec(query, request.args.get('id'))
+    except:
+        return make_response(
+            'Bad Request',
+            400
+        )
     payload = {}
     payload['probability'] = rs.__next__()[0]
     payload['query'] = query
     return jsonify(payload)
+
+
+# ----------------------------------------------------------------
+### MAIN PROGRAM
+# ----------------------------------------------------------------
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port = "8080")

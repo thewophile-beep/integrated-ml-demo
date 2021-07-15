@@ -256,6 +256,7 @@ export class ModelService {
       apiToken: apiToken,
     }
     return this.http.post<any>(url, payloadBody, this.httpOptions).pipe(
+      tap(res => this.log(res.query)),
       catchError(this.handleError<any>('createDRConfiguration'))
     )
   }
@@ -267,6 +268,7 @@ export class ModelService {
       apiToken: apiToken,
     }
     return this.http.put<any>(url, payloadBody, this.httpOptions).pipe(
+      tap(res => this.log(res.query)),
       catchError(this.handleError<any>('alterDRConfiguration'))
     )
   }
