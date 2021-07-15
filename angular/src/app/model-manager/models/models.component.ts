@@ -37,9 +37,7 @@ export class ModelsComponent implements OnInit {
   }
   
   getAll(): void {
-    this.models$ = this.modelService.getAllModels().pipe(
-      map(models => models.filter(model => model.defaultTrainingQuery.includes(this.fromTable.split('_')[0])))
-    )
+    this.models$ = this.modelService.getAllModels()
   }
   
   delete(model: mlModel): void {

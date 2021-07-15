@@ -38,8 +38,11 @@
                 <div class="col">
                     <mat-form-field class="full-width">
                         <mat-label>Model to train</mat-label>
-                        <mat-select formControlName="modelName" (selectionChange)="defaultTrainingName()" *ngIf="models$ | async as models">
-                            <mat-option *ngFor="let model of models" [value]="model.modelName">{{model.modelName}}</mat-option>
+                        <mat-select formControlName="modelName" (selectionChange)="defaultTrainingName()">
+                            <mat-option>--</mat-option>
+                            <div *ngIf="models$ | async as models">
+                                <mat-option *ngFor="let model of models" [value]="model.modelName">{{model.modelName}}</mat-option>
+                            </div>
                         </mat-select>
                     </mat-form-field>
                 </div>

@@ -25,6 +25,6 @@ COPY . /opt/irisapp
 RUN iris start IRIS \
 	&& iris session IRIS < /opt/irisapp/iris.script && iris stop IRIS quietly
 
-ARG PYTHON_PATH=/usr/irissys/bin/irispython
-ARG FLASK_PATH=/opt/irisapp/src/flask
+ENV PYTHON_PATH=/usr/irissys/bin/irispython
+ENV FLASK_PATH=/opt/irisapp/python/flask
 RUN ${PYTHON_PATH} -m pip install -r ${FLASK_PATH}/requirements.txt

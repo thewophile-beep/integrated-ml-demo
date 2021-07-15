@@ -136,18 +136,20 @@ export class ModelTrainingComponent implements OnInit {
   // Automatically give a name to the run
   defaultTrainingName() {
     const modelName = this.runForm.value.modelName
-    const regExp = modelName + "_t[0-9]+"
-    var i = 1
-    var newName = modelName + "_t" + i
-    this.runs$.subscribe(runs => 
-      runs.forEach(run => {
-        if (run.trainingRunName.match(regExp)) {
-          i = Number(run.trainingRunName.split(`${modelName}_t`).pop()) + 1
-          newName = modelName + "_t" + i
-        }
-      })
-    )
-    this.runForm.patchValue({runName: newName})
+    if (modelName !== undefined) {
+      const regExp = modelName + "_t[0-9]+"
+      var i = 1
+      var newName = modelName + "_t" + i
+      this.runs$.subscribe(runs => 
+        runs.forEach(run => {
+          if (run.trainingRunName.match(regExp)) {
+            i = Number(run.trainingRunName.split(`${modelName}_t`).pop()) + 1
+            newName = modelName + "_t" + i
+          }
+        })
+      )
+      this.runForm.patchValue({runName: newName})
+    }
   }
 
   log(trainingName: string) {
