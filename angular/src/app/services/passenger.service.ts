@@ -5,7 +5,6 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { Passenger } from '../definitions/passenger';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +12,8 @@ import { environment } from 'src/environments/environment';
 
 export class PassengerService {
 
-  private PassengersUrl = environment.url + 'passengers';  // URL to web api
+  private currentUrl = localStorage.getItem('url')
+  private PassengersUrl = this.currentUrl + 'passengers';
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })

@@ -9,8 +9,15 @@ import iris
 # TODO: 
 # - [ ] Find a way to have more parametered queries
 # - [ ] Find a way to catch the irisbuiltins.SQLError to return 400 messages instead of the default 500
-# - [ ] Change the get all with objects 
-# - [ ] Find a way to make training work. Maybe it is the same pb than with the Stream type
+# - [ ] Change the get all >>> with objects 
+
+# Changing the ML Configuration with `iris.cls("%SYS.ML.Configuration")._SetSystemDefault()` makes IRIS go boom ?
+# And changing it with an SQL query doesn't work in all namespaces / users
+# Bypass: don't change
+
+# - [x] Find a way to make training work. Maybe it is the same pb than with the Stream type
+# When training a model, in %ML.Utils.RunMethodWithCapture(), $ZU(82, 12) throws an error. Is it due to the %Stream bug ?
+# Bypass: commenting all lines with ZU, and setting capture to 1 in said method
 
 app = Flask(__name__)
 CORS(app)
@@ -400,13 +407,13 @@ def getAllConfigurations():
 @app.route("/api/integratedML/ml/trainings/configurations", methods=["PUT"])
 def changeConfiguration():
     configName = request.get_json()    
-    try:
-        iris.cls("%SYS.ML.Configuration")._SetSystemDefault(configName['configName'])
-    except:
-        return make_response(
-            'Not Found',
-            204
-        )
+    # try:
+    #     iris.cls("%SYS.ML.Configuration")._SetSystemDefault(configName['configName'])
+    # except:
+    #     return make_response(
+    #         'Not Found',
+    #         204
+    #     )
     return jsonify()
 
 # POST new DR configuration

@@ -4,7 +4,6 @@ import { catchError, map, tap } from 'rxjs/operators';
 
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
 import { mlValidationRun } from '../definitions/mlValidationRun';
 import { mlTrainedModel } from '../definitions/mlTrainedModel';
 import { mlModel } from '../definitions/mlModel';
@@ -13,9 +12,10 @@ import { mlTrainingModel } from '../definitions/mlTrainingModel';
 @Injectable({
   providedIn: 'root'
 })
-export class ModelService {
-
-  private ModelsUrl = environment.url + 'ml';
+export class ModelService  {
+  
+  private currentUrl = localStorage.getItem('url')
+  private ModelsUrl = this.currentUrl + 'ml';
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -45,7 +45,7 @@ export class ModelService {
     this.messageService.add(`ModelService: ${message}`);
   }
 
-  constructor(private http: HttpClient, private messageService: MessageService) { }
+  constructor(private http: HttpClient, private messageService: MessageService) {}
 
   // GET models from the server
   getAllModels(): Observable<mlModel[]> {

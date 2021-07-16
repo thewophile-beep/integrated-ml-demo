@@ -5,14 +5,14 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { Patient } from '../definitions/patient';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PatientService {
 
-  private PatientsUrl = environment.url + 'patients';  // URL to web api
+  private currentUrl = localStorage.getItem('url')
+  private PatientsUrl = this.currentUrl + 'patients';  // URL to web api
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
