@@ -1,6 +1,6 @@
 /// Rest API for the Integrated ML Demo<br/>
 /// Business logic class defined by OpenAPI in IntegratedML.REST.spec<br/>
-/// Updated Jul 6, 2021 09:07:30
+/// Updated Jul 16, 2021 09:32:20
 Class IntegratedML.REST.impl Extends %REST.Impl [ ProcedureBlock ]
 {
 
@@ -13,11 +13,12 @@ Parameter ExposeServerExceptions = 1;
 
 // ----------------------------------------------------------------
 
-/// Retreive the total number of Passengers THEN the Passengers from currPage\*(pageSize-1) to currPage\*pageSize. Search by name possible too.<br/>
+/// Retreive the Passengers from the current page with specific page length. Search by name possible too.<br/>
 /// The method arguments hold values for:<br/>
 ///     currPage, The current page at which the client is<br/>
 ///     pageSize, The number of passengers per page<br/>
 ///     name, Search passenger by name<br/>
+/// WARNING: This method's signature has changed.
 ClassMethod getAllPassengers(currPage As %Float, pageSize As %Float, name As %String) As %Stream.Object
 {
     set tDyna = {}
@@ -76,6 +77,7 @@ ClassMethod getAllPassengers(currPage As %Float, pageSize As %Float, name As %St
 /// Create a new passenger to put in the table<br/>
 /// The method arguments hold values for:<br/>
 ///     payloadBody, Request body contents<br/>
+/// WARNING: This method's signature has changed.
 ClassMethod createPassenger(payloadBody As %Stream.Object) As %Stream.Object
 {
     set tPassenger = ##class(Titanic.Table.Passenger).%New()
@@ -95,6 +97,7 @@ ClassMethod createPassenger(payloadBody As %Stream.Object) As %Stream.Object
 /// Return the saved informations of passenger n°{id}<br/>
 /// The method arguments hold values for:<br/>
 ///     id<br/>
+/// WARNING: This method's signature has changed.
 ClassMethod getPassenger(id As %Integer) As %Stream.Object
 {
     set tp = {}
@@ -116,6 +119,7 @@ ClassMethod getPassenger(id As %Integer) As %Stream.Object
 /// The method arguments hold values for:<br/>
 ///     id<br/>
 ///     payloadBody, Request body contents<br/>
+/// WARNING: This method's signature has changed.
 ClassMethod updatePassenger(id As %Integer, payloadBody As %Stream.Object) As %Stream.Object
 {
     if ##class(Titanic.Table.Passenger).%ExistsId(id) {
@@ -134,6 +138,7 @@ ClassMethod updatePassenger(id As %Integer, payloadBody As %Stream.Object) As %S
 /// Delete existing passenger with {id}<br/>
 /// The method arguments hold values for:<br/>
 ///     id<br/>
+/// WARNING: This method's signature has changed.
 ClassMethod deletePassenger(id As %Integer) As %Stream.Object
 {
     if ##class(Titanic.Table.Passenger).%ExistsId(id) {
@@ -158,6 +163,7 @@ ClassMethod deletePassenger(id As %Integer) As %Stream.Object
 ///     currPage, The current page at which the client is<br/>
 ///     pageSize, The number of patients per page<br/>
 ///     id, Search patient by id<br/>
+/// WARNING: This method's signature has changed.
 ClassMethod getAllPatients(currPage As %Float, pageSize As %Float, id As %String) As %Stream.Object
 {
     set tDyna = {}
@@ -209,6 +215,7 @@ ClassMethod getAllPatients(currPage As %Float, pageSize As %Float, id As %String
 /// Create a new patient to put in the table<br/>
 /// The method arguments hold values for:<br/>
 ///     payloadBody, Request body contents<br/>
+/// WARNING: This method's signature has changed.
 ClassMethod createPatient(payloadBody As %Stream.Object) As %Stream.Object
 {
     set tPatient = ##class(Noshow.Table.Appointment).%New()
@@ -228,6 +235,7 @@ ClassMethod createPatient(payloadBody As %Stream.Object) As %Stream.Object
 /// Return the saved informations of patient n°{id}<br/>
 /// The method arguments hold values for:<br/>
 ///     id<br/>
+/// WARNING: This method's signature has changed.
 ClassMethod getPatient(id As %Integer) As %Stream.Object
 {
     set tp = {}
@@ -249,6 +257,7 @@ ClassMethod getPatient(id As %Integer) As %Stream.Object
 /// The method arguments hold values for:<br/>
 ///     id<br/>
 ///     payloadBody, Request body contents<br/>
+/// WARNING: This method's signature has changed.
 ClassMethod updatePatient(id As %Integer, payloadBody As %Stream.Object) As %Stream.Object
 {
     if ##class(Noshow.Table.Appointment).%ExistsId(id) {
@@ -267,6 +276,7 @@ ClassMethod updatePatient(id As %Integer, payloadBody As %Stream.Object) As %Str
 /// Delete existing patient with {id}<br/>
 /// The method arguments hold values for:<br/>
 ///     id<br/>
+/// WARNING: This method's signature has changed.
 ClassMethod deletePatient(id As %Integer) As %Stream.Object
 {
     if ##class(Noshow.Table.Appointment).%ExistsId(id) {
@@ -289,6 +299,7 @@ ClassMethod deletePatient(id As %Integer) As %Stream.Object
 /// Retreive the total number of objects in a table<br/>
 /// The method arguments hold values for:<br/>
 ///     table, The table we need the max size from<br/>
+/// WARNING: This method's signature has changed.
 ClassMethod getTableSize(table As %String) As %Stream.Object
 {
     set myquery = "SELECT COUNT(*) FROM "_table
@@ -310,6 +321,7 @@ ClassMethod getTableSize(table As %String) As %Stream.Object
 // ----- MODELS -----
 
 /// Retreive all created models
+/// WARNING: This method's signature has changed.
 ClassMethod getAllModels() As %Stream.Object
 {
     set tDyna = {}
@@ -339,6 +351,7 @@ ClassMethod getAllModels() As %Stream.Object
 /// Create a model modelName that predicts predictValue from the table tableName using the variables in the array withVariables<br/>
 /// The method arguments hold values for:<br/>
 ///     createInfo, Information about model creation<br/>
+/// WARNING: This method's signature has changed.
 ClassMethod createModel(createInfo As %Stream.Object) As %Stream.Object
 {
     set tInfo = {}.%FromJSON(createInfo)
@@ -366,6 +379,7 @@ ClassMethod createModel(createInfo As %Stream.Object) As %Stream.Object
 /// Delete a model (along with all of its trained runs)<br/>
 /// The method arguments hold values for:<br/>
 ///     modelName, Name of the model to be deleted<br/>
+/// WARNING: This method's signature has changed.
 ClassMethod deleteModel(modelName As %String) As %Stream.Object
 {
     set myquery = "DROP MODEL "_modelName
@@ -380,6 +394,7 @@ ClassMethod deleteModel(modelName As %String) As %Stream.Object
 /// Purge runs from a model<br/>
 /// The method arguments hold values for:<br/>
 ///     modelName<br/>
+/// WARNING: This method's signature has changed.
 ClassMethod purgeModel(modelName As %String) As %Stream.Object
 {
     set myquery = "ALTER MODEL "_modelName_" PURGE ALL"
@@ -394,6 +409,7 @@ ClassMethod purgeModel(modelName As %String) As %Stream.Object
 // ----- TRAINING RUNS ----- 
 
 /// Get all training runs
+/// WARNING: This method's signature has changed.
 ClassMethod getTrainingRuns() As %Stream.Object
 {
     set tDyna = {}
@@ -426,6 +442,7 @@ ClassMethod getTrainingRuns() As %Stream.Object
 /// Train the Model named modelName and gives the name trainingName to the training run<br/>
 /// The method arguments hold values for:<br/>
 ///     trainingInfo, Training informations<br/>
+/// WARNING: This method's signature has changed.
 ClassMethod trainModel(trainingInfo As %Stream.Object) As %Stream.Object
 {
     set tDyna = {}
@@ -445,10 +462,11 @@ ClassMethod executeQuery(pQuery As %String) As %Status
     return sc
 }
 
-/// Get the state of a speecific training run<br/>
+/// Get the state of a specific training run<br/>
 /// The method arguments hold values for:<br/>
 ///     modelName, Name of the model<br/>
 ///     trainingName, Name of the training run<br/>
+/// WARNING: This method's signature has changed.
 ClassMethod getStateTrainingRun(modelName As %String, trainingName As %String) As %Stream.Object
 {
     set myquery = "SELECT RUN_STATUS "
@@ -468,6 +486,7 @@ ClassMethod getStateTrainingRun(modelName As %String, trainingName As %String) A
 /// Get the log of a speecific training run<br/>
 /// The method arguments hold values for:<br/>
 ///     trainingName, Name of the training run<br/>
+/// WARNING: This method's signature has changed.
 ClassMethod getLogTrainingRun(trainingName As %String) As %Stream.Object
 {
     set myquery = "SELECT substring(LOG,1,CHAR_LENGTH(LOG)) FROM INFORMATION_SCHEMA.ML_TRAINING_RUNS WHERE TRAINING_RUN_NAME = ?"
@@ -484,6 +503,7 @@ ClassMethod getLogTrainingRun(trainingName As %String) As %Stream.Object
 // ----- ML CONFIGURATION -----
 
 /// Get ml configurations
+/// WARNING: This method's signature has changed.
 ClassMethod getAllConfigurations() As %Stream.Object
 {
     set tDyna = {}
@@ -495,6 +515,7 @@ ClassMethod getAllConfigurations() As %Stream.Object
 /// Update ml configuration<br/>
 /// The method arguments hold values for:<br/>
 ///     configName, Configuration name to use<br/>
+/// WARNING: This method's signature has changed.
 ClassMethod changeConfiguration(configName As %Stream.Object) As %Stream.Object
 {
     set tInfo = {}.%FromJSON(configName)
@@ -502,9 +523,10 @@ ClassMethod changeConfiguration(configName As %Stream.Object) As %Stream.Object
     quit tSc
 }
 
-/// Create a DataRobot configuration<br/>
+/// Create a DataRobot configuration named DataRobotConfig<br/>
 /// The method arguments hold values for:<br/>
 ///     payload, URL to use<br/>
+/// WARNING: This method's signature has changed.
 ClassMethod createDRConfiguration(payload As %Stream.Object) As %Stream.Object
 {
     set tInfo = {}.%FromJSON(payload)
@@ -520,6 +542,7 @@ ClassMethod createDRConfiguration(payload As %Stream.Object) As %Stream.Object
 /// Alter DataRobot ml configuration<br/>
 /// The method arguments hold values for:<br/>
 ///     payload, URL to use<br/>
+/// WARNING: This method's signature has changed.
 ClassMethod alterDRConfiguration(payload As %Stream.Object) As %Stream.Object
 {
     set tInfo = {}.%FromJSON(payload)
@@ -535,6 +558,7 @@ ClassMethod alterDRConfiguration(payload As %Stream.Object) As %Stream.Object
 // ----- VALIDATION RUNS -----
 
 /// Get all validation runs
+/// WARNING: This method's signature has changed.
 ClassMethod getValidationRuns() As %Stream.Object
 {
     set tDyna = {}
@@ -558,7 +582,7 @@ ClassMethod getValidationRuns() As %Stream.Object
         set tModel."validationRunQuery" = tRs."VALIDATION_RUN_QUERY"
         do tRuns.%Push(tModel)
     }
-    set tDyna."trainingRuns" = tRuns
+    set tDyna."validationRuns" = tRuns
     set tDyna."query" = myquery
     quit tDyna
 }
@@ -566,6 +590,7 @@ ClassMethod getValidationRuns() As %Stream.Object
 /// Validate the Model named modelName using trainedModelName trained model on the fromTable table and gives the name validationName to the validation run<br/>
 /// The method arguments hold values for:<br/>
 ///     validationInfo, Validation informations<br/>
+/// WARNING: This method's signature has changed.
 ClassMethod validateModel(validationInfo As %Stream.Object) As %Stream.Object
 {
     set tInfo = {}.%FromJSON(validationInfo)
@@ -586,6 +611,7 @@ ClassMethod validateModel(validationInfo As %Stream.Object) As %Stream.Object
 /// The method arguments hold values for:<br/>
 ///     modelName, The model from which we want to select a validation run<br/>
 ///     validationName, The validation run we want to retreive the metrics from<br/>
+/// WARNING: This method's signature has changed.
 ClassMethod getMetrics(modelName As %String, validationName As %String) As %Stream.Object
 {
     set tDyna = {}
@@ -597,10 +623,10 @@ ClassMethod getMetrics(modelName As %String, validationName As %String) As %Stre
     set tRs = tStatement.%Execute()	 	 
     while (tRs.%Next()) {
         set tm = {}
-        set tm."METRIC_NAME" = tRs."METRIC_NAME"
-        set tm."METRIC_VALUE" = tRs."METRIC_VALUE"
-        set tm."TARGET_VALUE" = tRs."TARGET_VALUE"
-        do tMetrics.%Push(tLine)
+        set tm."metricName" = tRs."METRIC_NAME"
+        set tm."metricValue" = tRs."METRIC_VALUE"
+        set tm."targetValue" = tRs."TARGET_VALUE"
+        do tMetrics.%Push(tm)
     }
     set tDyna."metrics" = tMetrics
     set tDyna."query" = myquery
@@ -610,6 +636,7 @@ ClassMethod getMetrics(modelName As %String, validationName As %String) As %Stre
 // ----- TRAINED MODELS -----
 
 /// Get all trained models
+/// WARNING: This method's signature has changed.
 ClassMethod getTrainedModels() As %Stream.Object
 {
     set tDyna = {}
@@ -639,6 +666,7 @@ ClassMethod getTrainedModels() As %Stream.Object
 ///     trainedModel, Trained Model to predict with<br/>
 ///     id, ID to predict with<br/>
 ///     fromTable, Table to predict from<br/>
+/// WARNING: This method's signature has changed.
 ClassMethod predict(model As %String, trainedModel As %String, id As %String, fromTable As %String) As %Stream.Object
 {
     set myquery = "SELECT PREDICT("_model_" USE "_trainedModel_") FROM "_fromTable_" WHERE ID="_id
@@ -659,6 +687,7 @@ ClassMethod predict(model As %String, trainedModel As %String, id As %String, fr
 ///     labelValue, Label of the value for probability<br/>
 ///     id, ID to predict with<br/>
 ///     fromTable, Table to predict from<br/>
+/// WARNING: This method's signature has changed.
 ClassMethod probability(model As %String, trainedModel As %String, labelValue As %String, id As %String, fromTable As %String) As %Stream.Object
 {
     set myquery = "SELECT PROBABILITY("_model_" USE "_trainedModel_" FOR '"_labelValue_"') FROM "_fromTable_" WHERE ID="_id

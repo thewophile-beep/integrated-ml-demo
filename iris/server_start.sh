@@ -2,6 +2,6 @@
 
 cd ${FLASK_PATH}
 
-${PYTHON_PATH} /usr/irissys/bin/gunicorn --bind "0.0.0.0:8080" wsgi:app -w 9
+${PYTHON_PATH} /usr/irissys/bin/gunicorn --bind "0.0.0.0:8080" wsgi:app -w 4 > /tmp/flask.log &
 
 exit

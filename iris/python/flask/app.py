@@ -9,15 +9,16 @@ import iris
 # TODO: 
 # - [ ] Find a way to have more parametered queries
 # - [ ] Find a way to catch the irisbuiltins.SQLError to return 400 messages instead of the default 500
-# - [ ] Change the get all >>> with objects 
+# - [ ] Change the get all >>> with objects, for correct pagination + to have an example
 
 # Changing the ML Configuration with `iris.cls("%SYS.ML.Configuration")._SetSystemDefault()` makes IRIS go boom ?
 # And changing it with an SQL query doesn't work in all namespaces / users
-# Bypass: don't change
+# Bypass: don't change, use COS api
 
 # - [x] Find a way to make training work. Maybe it is the same pb than with the Stream type
 # When training a model, in %ML.Utils.RunMethodWithCapture(), $ZU(82, 12) throws an error. Is it due to the %Stream bug ?
 # Bypass: commenting all lines with ZU, and setting capture to 1 in said method
+# (but to do that we need to go to System Admin > Configuration > System Configuration > Local Databases and uncheck Mount Read-Only for the IRISLIB db)
 
 app = Flask(__name__)
 CORS(app)

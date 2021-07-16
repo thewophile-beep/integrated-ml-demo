@@ -17,17 +17,11 @@ XData OpenAPI [ MimeType = application/json ]
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     }
   },
-  "host": "localhost:4041",
+  "host": "localhost:52775",
   "basePath": "/api/integratedML",
   "schemes": [
     "http",
     "https"
-  ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
   ],
   "paths": {
     "/passengers": {
