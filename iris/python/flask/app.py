@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request, make_response
 from flask_cors import CORS
 from humps import camelize
+import json
 import threading
 from definitions.passenger import Passenger
 from definitions.patient import Patient
@@ -9,7 +10,8 @@ import iris
 # TODO: 
 # - [ ] Find a way to have more parametered queries
 # - [ ] Find a way to catch the irisbuiltins.SQLError to return 400 messages instead of the default 500
-# - [ ] Change the get all >>> with objects, for correct pagination + to have an example
+
+# - [x] Change the get all >>> with objects, for correct pagination + to have an example
 
 # Changing the ML Configuration with `iris.cls("%SYS.ML.Configuration")._SetSystemDefault()` makes IRIS go boom ?
 # And changing it with an SQL query doesn't work in all namespaces / users
@@ -31,32 +33,73 @@ CORS(app)
 # GET all passengers
 @app.route("/api/integratedML/passengers", methods=["GET"])
 def getAllPassengers():
-    query = "SELECT * FROM Titanic_Table.Passenger"
+    payload = {}
+    payload['passengers'] = []
+    tp = {}
     name = request.args.get('name')
     currPage = request.args.get('currPage')
     pageSize = request.args.get('pageSize')
     if not (name is None):
         # If search by name 
-        query += " WHERE name %STARTSWITH ?"
+        query = "SELECT ID FROM Titanic_Table.Passenger WHERE name %STARTSWITH ?"
         rs = iris.sql.exec(query, name)
+        for i in rs:
+            # We create an iris object
+            tp = iris.ref(1)
+            # We get the json in a string
+            iris.cls("Titanic.Table.Passenger")._OpenId(i[0])._JSONExportToString(tp)
+            # We normalize the string to get it in python
+            tp = iris.cls("%String").Normalize(tp)
+            # We load the string in a dict
+            tp = json.loads(tp)
+            # We add the id
+            tp['passengerId'] = i[0]
+            payload['passengers'].append(tp)
     else:
         if not (currPage is None or pageSize is None):
             # if paginator
             currPage = int(currPage)
             pageSize = int(pageSize)
-            query += " WHERE ID > ? AND ID <= ?"
-            rs = iris.sql.exec(query, pageSize * (currPage - 1), pageSize * currPage)
+            tStartRow = pageSize * (currPage - 1)
+            tEndRow = tStartRow + pageSize
+            tRow = 0
+            query = "SELECT ID FROM Titanic_Table.Passenger"
+            rs = iris.sql.exec(query)
+            for i in rs:
+                if tRow < tEndRow:
+                    tRow += 1
+                    if tRow > tStartRow:
+                        # We create an iris object
+                        tp = iris.ref(1)
+                        # We get the json in a string
+                        iris.cls("Titanic.Table.Passenger")._OpenId(i[0])._JSONExportToString(tp)
+                        # We normalize the string to get it in python
+                        tp = iris.cls("%String").Normalize(tp)
+                        # We load the string in a dict
+                        tp = json.loads(tp)
+                        # We add the id
+                        tp['passengerId'] = i[0]
+                        payload['passengers'].append(tp)
         else:
             # If no queries, return all passengers
+            query = "SELECT ID FROM Titanic_Table.Passenger"
             rs = iris.sql.exec(query)
-    payload = {}
-    payload['passengers'] = []
-    for p in rs:
-        payload['passengers'].append(Passenger(p).__dict__)
+            for i in rs:
+                # We create an iris object
+                tp = iris.ref(1)
+                # We get the json in a string
+                iris.cls("Titanic.Table.Passenger")._OpenId(i[0])._JSONExportToString(tp)
+                # We normalize the string to get it in python
+                tp = iris.cls("%String").Normalize(tp)
+                # We load the string in a dict
+                tp = json.loads(tp)
+                # We add the id
+                tp['passengerId'] = i[0]
+                payload['passengers'].append(tp)
     # Getting the total number of passengers
-    rs = iris.sql.exec("SELECT MAX(ID) FROM Titanic_Table.Passenger")
+    rs = iris.sql.exec("SELECT COUNT(*) FROM Titanic_Table.Passenger")
     payload['total'] = rs.__next__()[0]
-    payload['query'] = query
+    payload['query'] = "no SQL there; selected via objects"
     return jsonify(payload)
 
 # POST a new passenger
