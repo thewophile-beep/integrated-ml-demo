@@ -23,6 +23,8 @@ ClassMethod getAllPassengers(currPage As %Float, pageSize As %Float, name As %St
 {
     set tDyna = {}
     set tPassengers = []
+    // Query equivalent in case of no search by name
+    set myquery = "SELECT Id FROM Titanic_Table.Passenger"
     if ($Data(name)) {
         // If search by name
         set myquery = "SELECT Id FROM Titanic_Table.Passenger WHERE name %STARTSWITH ?"
@@ -69,7 +71,7 @@ ClassMethod getAllPassengers(currPage As %Float, pageSize As %Float, name As %St
     do tRs.%Next()
     set tDyna = {}
     set tDyna."total" = tRs."total"
-    set tDyna."query" = "no SQL there; selected via objects"
+    set tDyna."query" = myquery
     set tDyna."passengers" = tPassengers
     quit tDyna
 }

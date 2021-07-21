@@ -15,12 +15,13 @@ import iris
 
 # Changing the ML Configuration with `iris.cls("%SYS.ML.Configuration")._SetSystemDefault()` makes IRIS go boom ?
 # And changing it with an SQL query doesn't work in all namespaces / users
-# Bypass: don't change, use COS api
+# Bypass: don't change with this service, use COS api
 
 # - [x] Find a way to make training work. Maybe it is the same pb than with the Stream type
 # When training a model, in %ML.Utils.RunMethodWithCapture(), $ZU(82, 12) throws an error. Is it due to the %Stream bug ?
 # Bypass: commenting all lines with ZU, and setting capture to 1 in said method
 # (but to do that we need to go to System Admin > Configuration > System Configuration > Local Databases and uncheck Mount Read-Only for the IRISLIB db)
+# Other Bypass: use COS api
 
 app = Flask(__name__)
 CORS(app)
@@ -99,7 +100,7 @@ def getAllPassengers():
     # Getting the total number of passengers
     rs = iris.sql.exec("SELECT COUNT(*) FROM Titanic_Table.Passenger")
     payload['total'] = rs.__next__()[0]
-    payload['query'] = "no SQL there; selected via objects"
+    payload['query'] = query
     return jsonify(payload)
 
 # POST a new passenger
@@ -396,7 +397,8 @@ def getTrainingRuns():
     payload = {}
     # Same procedure than with getting all models
     payload['trainingRuns'] = camelize(rs.dataframe().replace({float("Nan"): ""}).to_dict(orient="records"))
-    payload['query'] = query
+    # TODO: if streams accepted, change the query actually done and add logs back
+    payload['query'] = "SELECT * FROM INFORMATION_SCHEMA.ML_TRAINING_RUNS"
     return jsonify(payload)
 
 # POST new training
@@ -490,7 +492,8 @@ def getValidationRuns():
     payload = {}
     # Standard operational procedure 
     payload['validationRuns'] = camelize(rs.dataframe().replace({float("Nan"): ""}).to_dict(orient="records"))
-    payload['query'] = query
+    # TODO: same than training runs with the logs
+    payload['query'] = "SELECT * FROM INFORMATION_SCHEMA.ML_VALIDATION_RUNS"
     return jsonify(payload)
 
 # POST new validation run
