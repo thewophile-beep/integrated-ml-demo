@@ -100,7 +100,7 @@ def getAllPassengers():
     # Getting the total number of passengers
     rs = iris.sql.exec("SELECT COUNT(*) FROM Titanic_Table.Passenger")
     payload['total'] = rs.__next__()[0]
-    payload['query'] = query
+    payload['query'] = "Selection by objects"
     return jsonify(payload)
 
 # POST a new passenger
@@ -193,13 +193,13 @@ def deletePassenger(id):
 @app.route("/api/integratedML/patients", methods=["GET"])
 def getAllPatients():
     query = "SELECT ID, * FROM Noshow_Table.Appointment"
-    name = request.args.get('name')
+    id = request.args.get('id')
     currPage = request.args.get('currPage')
     pageSize = request.args.get('pageSize')
     # Search by name 
-    if not (name is None):
-        query += " WHERE name %STARTSWITH ?"
-        rs = iris.sql.exec(query, name)
+    if not (id is None):
+        query += " WHERE ID = ?"
+        rs = iris.sql.exec(query, id)
     else:
         # Paginator
         if not (currPage is None or pageSize is None):
@@ -216,7 +216,7 @@ def getAllPatients():
         payload['patients'].append(Patient(p).__dict__)
     rs = iris.sql.exec("SELECT MAX(ID) FROM Noshow_Table.Appointment")
     payload['maxId'] = rs.__next__()[0]
-    payload['query'] = query
+    payload['query'] = "Selection by objects"
     return jsonify(payload)
 
 # POST new patient, same as for passengers
