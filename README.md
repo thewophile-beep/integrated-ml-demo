@@ -26,7 +26,7 @@ The front-end has been done with angular and the back-end with IRIS (and Python!
   - [2.2. Building the nginx container](#22-building-the-nginx-container)
 - [3. Running the demo](#3-running-the-demo)
   - [3.1. Exploring both datasets](#31-exploring-both-datasets)
-  - [3.2. 3.2 Using both APIs](#32-32-using-both-apis)
+  - [3.2. Using both APIs](#32-using-both-apis)
   - [3.3. Managing models](#33-managing-models)
     - [3.3.1. Creating a model](#331-creating-a-model)
     - [3.3.2. Training a model](#332-training-a-model)
@@ -70,7 +70,7 @@ For both datasets, you'll have access to a complete CRUD, enabling you to modify
 
 In order to switch from one dataset to the other, you can press the button in the top right-hand corner. 
 
-## 3.2. 3.2 Using both APIs
+## 3.2. Using both APIs
 
 A little button on the top right-hand cornerwill enable you to switch between COS and Flask API. 
 
