@@ -1,10 +1,24 @@
 # 1. Integrated ML Demonstration
 
-This repository is a demonstration of integratedML. 
+This repository is a demonstration of integratedML, but also of Embedded Python!
 
-Using a web application, you will be able to create, train and validate the models you want on two datasets, the **Titanic** and the **NoShow** datasets. 
-
-The front-end has been done with angular and the back-end with IRIS. 
+Using a web application, you will be able to create, train and validate the models you want on two datasets, the **Titanic** and the **NoShow** datasets. You will be able to use a REST service made in COS, or a Flask API using Embedded Python to manipulate IRIS objects.
+<br/>
+<br/>
+<br/>
+<p align="center">
+"I couldn't believe my ears in the beggining, but it's real! <br/> ★★★★★ - Philip, Embedded Python enthusiast
+</p>
+<p align="center">
+"Good demo, would try again" <br/> ★★★★☆ - Henry, COS lover 
+</p>
+<p align="center">
+"It's clearly lacking some R code in there" <br/> ★☆☆☆☆ - Jane, R purist
+</p>
+<br/>
+<br/>
+<br/>
+The front-end has been done with angular and the back-end with IRIS (and Python!). 
 
 - [1. Integrated ML Demonstration](#1-integrated-ml-demonstration)
 - [2. Building the demo](#2-building-the-demo)
@@ -12,6 +26,7 @@ The front-end has been done with angular and the back-end with IRIS.
   - [2.2. Building the nginx container](#22-building-the-nginx-container)
 - [3. Running the demo](#3-running-the-demo)
   - [3.1. Exploring both datasets](#31-exploring-both-datasets)
+  - [3.2 Using both APIs](#32-using-both-apis)
   - [3.2. Managing models](#32-managing-models)
     - [3.2.1. Creating a model](#321-creating-a-model)
     - [3.2.2. Training a model](#322-training-a-model)
@@ -31,7 +46,9 @@ docker compose up
 
 Two containers will be built: one with IRIS and one with an nginx server. 
 
-![containers](https://raw.githubusercontent.com/thewophile-beep/integrated-ml-demo/main/misc/img/containers.png)
+![containers](https://raw.githubusercontent.com/thewophile-beep/integrated-ml-demo/flask/misc/img/containers.png)
+
+The IRIS image used contains Embedded Python (a key is needed sadly :(... For now)! That's really exciting. After building, the container will run a wsgi server with the Flask API.
 
 We are using the community package csvgen to import the titanic dataset into iris. For the noshow dataset, we use another custom method (the `Load()` classmethod of the `Util.Loader` class). In order for the container to have access to the csv files, we bind the `iris/` local directory to the `/opt/irisapp/` directory in the container.
 
@@ -52,6 +69,12 @@ Just go to the address: http://localhost:8080/ and That's it! Enjoy!
 For both datasets, you'll have access to a complete CRUD, enabling you to modify at will the saved tables. 
 
 In order to switch from one dataset to the other, you can press the button in the top right-hand corner. 
+
+## 3.2 Using both APIs
+
+A little button on the top right-hand cornerwill enable you to switch between COS and Flask API. 
+
+WARNING! Since it's still in dev, you might want to switch to one or another in case of little bugs or whatnot.
 
 ## 3.2. Managing models
 
