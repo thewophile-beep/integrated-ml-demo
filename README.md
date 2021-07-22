@@ -26,12 +26,12 @@ The front-end has been done with angular and the back-end with IRIS (and Python!
   - [2.2. Building the nginx container](#22-building-the-nginx-container)
 - [3. Running the demo](#3-running-the-demo)
   - [3.1. Exploring both datasets](#31-exploring-both-datasets)
-  - [3.2 Using both APIs](#32-using-both-apis)
-  - [3.2. Managing models](#32-managing-models)
-    - [3.2.1. Creating a model](#321-creating-a-model)
-    - [3.2.2. Training a model](#322-training-a-model)
-    - [3.2.3. Validating a model](#323-validating-a-model)
-    - [3.2.4. Making predictions](#324-making-predictions)
+  - [3.2. 3.2 Using both APIs](#32-32-using-both-apis)
+  - [3.3. Managing models](#33-managing-models)
+    - [3.3.1. Creating a model](#331-creating-a-model)
+    - [3.3.2. Training a model](#332-training-a-model)
+    - [3.3.3. Validating a model](#333-validating-a-model)
+    - [3.3.4. Making predictions](#334-making-predictions)
 - [4. Going further](#4-going-further)
 - [5. Conclusion](#5-conclusion)
 
@@ -70,15 +70,15 @@ For both datasets, you'll have access to a complete CRUD, enabling you to modify
 
 In order to switch from one dataset to the other, you can press the button in the top right-hand corner. 
 
-## 3.2 Using both APIs
+## 3.2. 3.2 Using both APIs
 
 A little button on the top right-hand cornerwill enable you to switch between COS and Flask API. 
 
 WARNING! Since it's still in dev, you might want to switch to one or another in case of little bugs or whatnot.
 
-## 3.2. Managing models
+## 3.3. Managing models
 
-### 3.2.1. Creating a model
+### 3.3.1. Creating a model
 
 Once you have discovered the data, you can create model predicting the value you want. 
 
@@ -98,7 +98,7 @@ As you can see, creating a model only takes one SQL query. The informations you 
 
 In the `actions` column, you can delete a model or purge it. Purging a model will remove all of its training runs (and their validation runs) except for the last one. 
 
-### 3.2.2. Training a model
+### 3.3.2. Training a model
 
 In the next tab, you will be able to train your models. 
 
@@ -118,7 +118,7 @@ Training a model only takes a single SQL query, as you can see in the messages s
 Keep in mind that in these two tabs, you will only see the models that concern the dataset you are actually using.
 
 
-### 3.2.3. Validating a model
+### 3.3.3. Validating a model
 
 Finally, you can validate a model in the final tab. Clicking on a validation run will pop up a dialog with the metrics associated with the validation. There again, you can choose a percentage of the dataset to use for the validation. 
 
@@ -127,7 +127,7 @@ Finally, you can validate a model in the final tab. Clicking on a validation run
 Once again, it only takes a single SQL query.
 
 
-### 3.2.4. Making predictions
+### 3.3.4. Making predictions
 
 In the `Make Predictions` menu, last tab, you can make predictions using your newly trained models.
 
