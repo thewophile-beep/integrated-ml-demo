@@ -144,7 +144,7 @@ Once again, it takes on query to retreive the prediction and one for the probabi
 
 # 4. New Feature ! Embedded Python for the win
 
-Maybe you notcied the new button in the top righ-hand corner, right next to the swtich dataset button... Now you can use the Flask API !
+Maybe you noticed the new button in the top righ-hand corner, right next to the switch dataset button... Now you can use the Flask API !
 
 Let's summarize. We created the ObjectScript objects with tools such as csvgen or the Loader, and we used them with Embedded Python. **It is possible to create an entire web application using IRIS, without touching ObjectScript!**
 
