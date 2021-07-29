@@ -32,8 +32,9 @@ The front-end has been done with angular and the back-end with IRIS (and Python!
     - [3.3.2. Training a model](#332-training-a-model)
     - [3.3.3. Validating a model](#333-validating-a-model)
     - [3.3.4. Making predictions](#334-making-predictions)
-- [4. Going further](#4-going-further)
-- [5. Conclusion](#5-conclusion)
+- [4. New Feature ! Embedded Python for the win](#4-new-feature--embedded-python-for-the-win)
+- [5. Going further](#5-going-further)
+- [6. Conclusion](#6-conclusion)
 
 # 2. Building the demo
 
@@ -141,7 +142,15 @@ In the case of Mrs. Fatima Masselmani, the model correctly predicted that she su
 
 Once again, it takes on query to retreive the prediction and one for the probability.
 
-# 4. Going further
+# 4. New Feature ! Embedded Python for the win
+
+Maybe you notcied the new button in the top righ-hand corner, right next to the swtich dataset button... Now you can use the Flask API !
+
+Let's summarize. We created the ObjectScript objects with tools such as csvgen or the Loader, and we used them with Embedded Python. **It is possible to create an entire web application using IRIS, without touching ObjectScript!**
+
+(PS: I admit that we cheated, we still had to modify a bit the ObjectScript objects in order to cast some of the csv fields or to make the tables extend the %JSON.Adaptor)
+
+# 5. Going further
 
 If you want more explainability (more than what the log can offer you), we suggest you using the DataRobot provider. 
 
@@ -157,7 +166,7 @@ Once the models trained, you can have access to **a lot** of details, here's a p
 
 ![DRmodelDetails](https://raw.githubusercontent.com/thewophile-beep/integrated-ml-demo/main/misc/img/DRmodelDetails.png)
 
-# 5. Conclusion
+# 6. Conclusion
 
 Through this demonstration, we have been able to see how easy it was to create, train and validate a model as well as to predict values through very few SQL queries.
 
