@@ -1,40 +1,24 @@
 # 1. Integrated ML Demonstration
 
-This repository is a demonstration of integratedML, but also of Embedded Python!
-
-Using a web application, you will be able to create, train and validate the models you want on two datasets, the **Titanic** and the **NoShow** datasets. You will be able to use a REST service made in COS, or a Flask API using Embedded Python to manipulate IRIS objects.
-<br/>
-<br/>
-<br/>
-<p align="center">
-"I couldn't believe my ears in the beggining, but it's real! <br/> ★★★★★ - Philip, Embedded Python enthusiast
-</p>
-<p align="center">
-"Good demo, would try again" <br/> ★★★★☆ - Henry, COS lover 
-</p>
-<p align="center">
-"It's clearly lacking some R code in there" <br/> ★☆☆☆☆ - Jane, R purist
-</p>
-<br/>
-<br/>
-<br/>
-The front-end has been done with angular and the back-end with IRIS (and Python!). 
+This repository is a demonstration of IntegratedML and Embedded Python. 
 
 - [1. Integrated ML Demonstration](#1-integrated-ml-demonstration)
 - [2. Building the demo](#2-building-the-demo)
   - [2.1. Architecture](#21-architecture)
   - [2.2. Building the nginx container](#22-building-the-nginx-container)
 - [3. Running the demo](#3-running-the-demo)
-  - [3.1. Exploring both datasets](#31-exploring-both-datasets)
-  - [3.2. Using both APIs](#32-using-both-apis)
-  - [3.3. Managing models](#33-managing-models)
-    - [3.3.1. Creating a model](#331-creating-a-model)
-    - [3.3.2. Training a model](#332-training-a-model)
-    - [3.3.3. Validating a model](#333-validating-a-model)
-    - [3.3.4. Making predictions](#334-making-predictions)
-- [4. New Feature ! Embedded Python for the win](#4-new-feature--embedded-python-for-the-win)
-- [5. Going further](#5-going-further)
-- [6. Conclusion](#6-conclusion)
+- [4. Embedded Python and Flask](#4-embedded-python-and-flask)
+- [5. IntegratedML](#5-integratedml)
+  - [5.1. Exploring both datasets](#51-exploring-both-datasets)
+  - [5.2. Managing models](#52-managing-models)
+    - [5.2.1. Creating a model](#521-creating-a-model)
+    - [5.2.2. Training a model](#522-training-a-model)
+    - [5.2.3. Validating a model](#523-validating-a-model)
+    - [5.2.4. Making predictions](#524-making-predictions)
+- [6. Using COS](#6-using-cos)
+- [7. Going further](#7-going-further)
+- [8. Conclusion](#8-conclusion)
+- [9. TODO](#9-todo)
 
 # 2. Building the demo
 
@@ -49,13 +33,13 @@ Two containers will be built: one with IRIS and one with an nginx server.
 
 ![containers](https://raw.githubusercontent.com/thewophile-beep/integrated-ml-demo/flask/misc/img/containers.png)
 
-The IRIS image used contains Embedded Python (a key is needed sadly :(... For now)! That's really exciting. After building, the container will run a wsgi server with the Flask API.
+The IRIS image used contains Embedded Python. After building, the container will run a wsgi server with the Flask API.
 
 We are using the community package csvgen to import the titanic dataset into iris. For the noshow dataset, we use another custom method (the `Load()` classmethod of the `Util.Loader` class). In order for the container to have access to the csv files, we bind the `iris/` local directory to the `/opt/irisapp/` directory in the container.
 
 ## 2.2. Building the nginx container
 
-In order to build our nginx container, we use multi-stage building. First, we create a container with node. We then install npm and copy all of our files in that container. We build the project with the command `ng build`. The output file is copied in a new container that only contains nginx. 
+In order to build our nginx container, docker uses multi-stage building. First, it creates a container with node. It then installs npm and copy all of our files in that container. It builds the project with the command `ng build`, and the output file is copied in a new container that only contains nginx. 
 
 Thanks to that manoeuvre, we obtain a very light container that does not contain all of the librairies and tools needed to build the webpage. 
 
@@ -65,21 +49,39 @@ You can check the details of that multi-build in the `angular/Dockerfile` file. 
 
 Just go to the address: http://localhost:8080/ and That's it! Enjoy!
 
-## 3.1. Exploring both datasets
+# 4. Embedded Python and Flask
+
+The back-end is made with Python Flask. We use Embedded Python in order to call iris classes and execute queries from python. 
+
+For that, we use `irispython` as a python interepreter, and do:
+```python
+import iris
+```
+Right at the beginning of the file
+
+We will then be able to run methods such as:
+
+![flaskExample](https://raw.githubusercontent.com/thewophile-beep/integrated-ml-demo/flask/misc/img/flaskExample.png)
+
+As you can see, in order to GET a passenger with an ID, we just execute a query and use its result set. 
+
+We can also directly use the IRIS objects:
+
+![flaskObjectExample](https://raw.githubusercontent.com/thewophile-beep/integrated-ml-demo/flask/misc/img/flaskObjectExample.png)
+
+Here, we use an SQL query to get all the IDs in the table, and we then retreive each passenger from the table with the `%OpenId()` method from the `Titanic.Table.Passenger` class (note that since `%` is an illegal character in Python, we use `_` instead).
+
+# 5. IntegratedML
+
+## 5.1. Exploring both datasets
 
 For both datasets, you'll have access to a complete CRUD, enabling you to modify at will the saved tables. 
 
 In order to switch from one dataset to the other, you can press the button in the top right-hand corner. 
 
-## 3.2. Using both APIs
+## 5.2. Managing models
 
-A little button on the top right-hand cornerwill enable you to switch between COS and Flask API. 
-
-WARNING! Since it's still in dev, you might want to switch to one or another in case of little bugs or whatnot.
-
-## 3.3. Managing models
-
-### 3.3.1. Creating a model
+### 5.2.1. Creating a model
 
 Once you have discovered the data, you can create model predicting the value you want. 
 
@@ -99,7 +101,7 @@ As you can see, creating a model only takes one SQL query. The informations you 
 
 In the `actions` column, you can delete a model or purge it. Purging a model will remove all of its training runs (and their validation runs) except for the last one. 
 
-### 3.3.2. Training a model
+### 5.2.2. Training a model
 
 In the next tab, you will be able to train your models. 
 
@@ -119,7 +121,7 @@ Training a model only takes a single SQL query, as you can see in the messages s
 Keep in mind that in these two tabs, you will only see the models that concern the dataset you are actually using.
 
 
-### 3.3.3. Validating a model
+### 5.2.3. Validating a model
 
 Finally, you can validate a model in the final tab. Clicking on a validation run will pop up a dialog with the metrics associated with the validation. There again, you can choose a percentage of the dataset to use for the validation. 
 
@@ -128,7 +130,7 @@ Finally, you can validate a model in the final tab. Clicking on a validation run
 Once again, it only takes a single SQL query.
 
 
-### 3.3.4. Making predictions
+### 5.2.4. Making predictions
 
 In the `Make Predictions` menu, last tab, you can make predictions using your newly trained models.
 
@@ -142,15 +144,15 @@ In the case of Mrs. Fatima Masselmani, the model correctly predicted that she su
 
 Once again, it takes on query to retreive the prediction and one for the probability.
 
-# 4. New Feature ! Embedded Python for the win
+# 6. Using COS
 
-Maybe you noticed the new button in the top righ-hand corner, right next to the switch dataset button... Now you can use the Flask API !
+The demonstration actually provides two APIs. We use the Flask API with Embedded Python, but a REST service in COS has also been setup at the building of the container.
 
-Let's summarize. We created the ObjectScript objects with tools such as csvgen or the Loader, and we used them with Embedded Python. **It is possible to create an entire web application using IRIS, without touching ObjectScript!**
+By pressing the button in the top right-hand side **"Switch to COS API"**, you will be able to use this service.
 
-(PS: I admit that we cheated, we still had to modify a bit the ObjectScript objects in order to cast some of the csv fields or to make the tables extend the %JSON.Adaptor)
+Notice how nothing changes. Both APIs are equivalent and work in the same way. 
 
-# 5. Going further
+# 7. Going further
 
 If you want more explainability (more than what the log can offer you), we suggest you using the DataRobot provider. 
 
@@ -166,10 +168,20 @@ Once the models trained, you can have access to **a lot** of details, here's a p
 
 ![DRmodelDetails](https://raw.githubusercontent.com/thewophile-beep/integrated-ml-demo/main/misc/img/DRmodelDetails.png)
 
-# 6. Conclusion
+# 8. Conclusion
 
-Through this demonstration, we have been able to see how easy it was to create, train and validate a model as well as to predict values through very few SQL queries.
+Through this demonstration, we have been able to see how easy it was to create, train and validate a model as well as to predict values through very few SQL queries. 
 
-Another goal of this demonstration was to show how it is possible to use a RESTful API together with IntegratedML. 
+We did this using a RESTful API with Python Flask, using Embedded Python, and we have done a comparison with a COS API.
 
 The front-end has been made with Angular.
+
+# 9. TODO
+with future embedded Python releases: 
+- [ ] Find a way to catch the irisbuiltins.SQLError to return 400 messages instead of the default 500 (Cast)
+
+- [ ] Un-comment the changeConfiguration method. For some reason, changing the ML Configuration with `iris.cls("%SYS.ML.Configuration")._SetSystemDefault()` makes IRIS go boom. And changing it with an SQL query doesn't work in all namespaces / users
+
+- [x] Find a way to make training work. When training a model, in %ML.Utils.RunMethodWithCapture(), $ZU(82, 12) makes IRIS crash. Already in Jira.
+Bypass: commenting all lines with ZU, and setting capture to 1 in said method
+(but to do that we need to go to System Admin > Configuration > System Configuration > Local Databases and uncheck Mount Read-Only for the IRISLIB db)
