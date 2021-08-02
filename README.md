@@ -18,7 +18,9 @@ This repository is a demonstration of IntegratedML and Embedded Python.
 - [6. Using COS](#6-using-cos)
 - [7. Going further](#7-going-further)
 - [8. Conclusion](#8-conclusion)
-- [9. TODO](#9-todo)
+- [9. Addendum](#9-addendum)
+  - [9.1. TODO](#91-todo)
+  - [9.2. Troubleshooting](#92-troubleshooting)
 
 # 2. Building the demo
 
@@ -176,7 +178,9 @@ We did this using a RESTful API with Python Flask, using Embedded Python, and we
 
 The front-end has been made with Angular.
 
-# 9. TODO
+
+# 9. Addendum
+## 9.1. TODO
 with future embedded Python releases: 
 - [ ] Find a way to catch the irisbuiltins.SQLError to return 400 messages instead of the default 500 (Cast)
 
@@ -185,3 +189,9 @@ with future embedded Python releases:
 - [x] Find a way to make training work. When training a model, in %ML.Utils.RunMethodWithCapture(), $ZU(82, 12) makes IRIS crash. Already in Jira.
 Bypass: commenting all lines with ZU, and setting capture to 1 in said method
 (but to do that we need to go to System Admin > Configuration > System Configuration > Local Databases and uncheck Mount Read-Only for the IRISLIB db)
+
+## 9.2. Troubleshooting
+
+If you don't have a key to use the internal IRIS image with Embedded Python, but still want to see IntegratedML in action, you can comment out lines concerning python in the IRIS Dockerfile, as well as comment the line `command: -a "sh server_start.sh"` in the docker-compose. 
+
+By doing that, you will only have the COS API up and running. 
