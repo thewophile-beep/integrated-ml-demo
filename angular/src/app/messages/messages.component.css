@@ -19,3 +19,8 @@
 .clear-button {
     margin: 10px auto;
 }
+
+.limited-height {
+    height: 400px;
+    overflow-y: scroll;
+}

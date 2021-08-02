@@ -3,13 +3,15 @@ import { mlModel } from '../../definitions/mlModel';
 import { ModelService } from '../../services/model.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatChip } from '@angular/material/chips';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 @Component({
   selector: 'app-models',
   templateUrl: './models.component.html',
   styleUrls: ['./models.component.css']
 })
 export class ModelsComponent implements OnInit {
-  models: mlModel[] = [];
+  models$!: Observable<mlModel[]>;
   displayedColumns: string[] = ["modelName", "description", "predictingColumnName", "predictingColumnType", "withColumns", "createTimestamp", "defaultTrainedModelName", "defaultSettings", "defaultTrainingQuery", "actions"]
   loopColumns: string[] = ["description", "predictingColumnName", "predictingColumnType", "withColumns", "createTimestamp", "defaultTrainedModelName", "defaultSettings", "defaultTrainingQuery"]
 
@@ -35,14 +37,11 @@ export class ModelsComponent implements OnInit {
   }
   
   getAll(): void {
-    this.modelService.getAllModels().subscribe(response => {
-      this.models = response.models,
-      this.models = this.models.filter(model => model.defaultTrainingQuery.includes(this.fromTable.split('_')[0]))
-    });
+    this.models$ = this.modelService.getAllModels()
   }
   
   delete(model: mlModel): void {
-    this.models = this.models.filter(h => h !== model);
+    this.models$.subscribe(models => models.filter(h => h !== model));
     this.modelService.deleteModel(model.modelName).subscribe(
       _ => this.getAll()
     );
@@ -55,11 +54,13 @@ export class ModelsComponent implements OnInit {
   onSubmit(): void {
     var isValid = true;
     // Name already taken ?
-    this.models.forEach(model => {
-      if (this.modelForm.value.modelName === model.modelName) {
-        isValid = false;
-      }
-    })
+    this.models$.subscribe(models => 
+      models.forEach(model => {
+        if (this.modelForm.value.modelName === model.modelName) {
+          isValid = false;
+        }
+      })
+    )
     if (isValid) {
       // If not taken
       // Preparing variables -> needs to be like "varName varType"
@@ -80,8 +81,11 @@ export class ModelsComponent implements OnInit {
 
   // To toggle selection of chips when clicked
   toggleSelection(chip: MatChip) {
+    // We change only if the chip is enabled (clicking on a disabled chip will not do anything)
     if (!chip.disabled) {
+      // We toggle the selection
       chip.toggleSelected();
+      // We look for the value of the chip (the corresponding variable) and toggle selection of found variable
       const index = this.possibleVariables.findIndex(i => i.name === chip.value)
       this.possibleVariables[index].selected = !this.possibleVariables[index].selected;
     }
@@ -89,12 +93,16 @@ export class ModelsComponent implements OnInit {
 
   // Check to disable chips or not
   checkingPredicting(chip: MatChip): boolean {
+    // If the selected value to predict is the value of this chip
     if (this.modelForm.value.predicting === chip.value) {
+      // We toggle the selection if selected (to have the predicting value to "not selected")
       if (chip.selected) {
         this.toggleSelection(chip);
       }
+      // We disable the chip
       return true;
     }
+    // Else the chip is enabled
     return false;
   }
 }

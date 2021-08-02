@@ -11,17 +11,17 @@ import { PassengerService } from "../../services/passenger.service"
 })
 export class PassengerCreationComponent implements OnInit {
   passengerForm = this.fb.group({
-    name: [null, Validators.required],
-    sex: [null],
-    age: [null, Validators.min(0)],
-    class: [null, Validators.required],
+    name: ["", Validators.required],
+    sex: [""],
+    age: ["", Validators.min(0)],
+    pclass: ["", Validators.required],
     sibSp: [0, Validators.min(0)],
     parCh: [0, Validators.min(0)],
-    ticket: null, 
-    fare: [null, Validators.min(0)],
-    cabin: null,
-    embarked: null,
-    survived: null,
+    ticket: "", 
+    fare: ["", Validators.min(0)],
+    cabin: "",
+    embarked: "",
+    survived: "",
   });
 
   constructor(private fb: FormBuilder, private passengerService: PassengerService) {}

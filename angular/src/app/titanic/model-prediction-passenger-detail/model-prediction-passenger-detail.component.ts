@@ -11,7 +11,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 export class ModelPredictionPassengerDetailComponent implements OnInit {
 
   passenger: {[key:string]: string} = {
-    passengerId: "",
+    ID: "",
     survived: "",
     class: "",
     name: "",
@@ -23,7 +23,6 @@ export class ModelPredictionPassengerDetailComponent implements OnInit {
     fare: "",
     cabin: "",
     embarked: "",
-    ID: "same as passengerId"
   };
   variableList: string[] = [];
 
@@ -37,9 +36,9 @@ export class ModelPredictionPassengerDetailComponent implements OnInit {
   // Filling in this.passenger object with injected data
   getPassenger(): void {
     this.passengerService.getPassenger(this.data.id).subscribe(passenger => {
-      this.passenger.passengerId = String(passenger.passengerId);
+      this.passenger.ID = String(passenger.passengerId);
       this.passenger.survived = String(passenger.survived);
-      this.passenger.class = String(passenger.class);
+      this.passenger.pclass = String(passenger.pclass);
       this.passenger.name = passenger.name;
       this.passenger.sex = passenger.sex;
       this.passenger.age = String(passenger.age);

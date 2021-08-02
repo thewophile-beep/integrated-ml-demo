@@ -5,14 +5,14 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { Patient } from '../definitions/patient';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PatientService {
 
-  private PatientsUrl = environment.url + 'patients';  // URL to web api
+  private currentUrl = localStorage.getItem('url')
+  private PatientsUrl = this.currentUrl + 'patients';  // URL to web api
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -39,7 +39,7 @@ export class PatientService {
   }
   
   private log(message: string) {
-    // this.messageService.add(`PatientService: ${message}`);
+    this.messageService.add(`PatientService: ${message}`);
   }
   
   constructor(
@@ -52,7 +52,7 @@ export class PatientService {
     const url = `${this.PatientsUrl}?currPage=${currPage + 1}&pageSize=${pageSize}`
     return this.http.get<any>(url)
       .pipe(
-        tap(_ => this.log('fetched Patients')),
+        tap(response => this.log(response.query)),
         catchError(this.handleError<any>('getPatients', []))
       );
   }
@@ -64,10 +64,8 @@ export class PatientService {
       return of([]);
     }
     return this.http.get<any>(`${this.PatientsUrl}?id=${term}`).pipe(
+      tap(response => this.log(response.query)),
       map(res => res.patients),
-      tap(x => x.length ?
-        this.log(`found Patients matching "${term}"`) :
-        this.log(`no Patients matching "${term}"`)),
       catchError(this.handleError<any>('searchPatients', []))
     );
   }
@@ -75,7 +73,7 @@ export class PatientService {
   /** POST: add a new Patient to the server */
   createPatient(Patient: Patient): Observable<any> {
     return this.http.post<any>(this.PatientsUrl, Patient, this.httpOptions).pipe(
-      tap(response => this.log(`added Patient w/ id=${response.patientId}`)),
+      tap(response => this.log(response.query)),
       catchError(this.handleError<any>('createPatient'))
     );
   }
@@ -83,31 +81,29 @@ export class PatientService {
   /** GET Patient by id. Will 404 if id not found */
   getPatient(id: number): Observable<Patient> {
     const url = `${this.PatientsUrl}/${id}`;
-    return this.http.get<Patient>(url)
-      .pipe(
-        tap(_ => this.log(`fetched Patient id=${id}`)),
-        catchError(this.handleError<Patient>(`getPatient id=${id}`))
-      );
+    return this.http.get<any>(url).pipe(
+      tap(response => this.log(response.query)),
+      map(res => res.patient),
+      catchError(this.handleError<any>(`getPatient id=${id}`))
+    );
   }
 
   /** PUT: update the Patient on the server */
   updatePatient(id: number, Patient: Patient): Observable<any> {
-    return this.http.put(`${this.PatientsUrl}/${id}`, Patient, this.httpOptions)
+    return this.http.put<any>(`${this.PatientsUrl}/${id}`, Patient, this.httpOptions)
       .pipe(
-        tap(_ => this.log(`updated Patient id=${id}`)),
+        tap(response => this.log(response.query)),
         catchError(this.handleError<any>('updatePatient'))
       );
   }
 
   /** DELETE: delete the Patient from the server */
-  deletePatient(id: number): Observable<Patient> {
+  deletePatient(id: number): Observable<any> {
     const url = `${this.PatientsUrl}/${id}`;
-
-    return this.http.delete<Patient>(url, this.httpOptions)
-      .pipe(
-        tap(_ => this.log(`deleted Patient id=${id}`)),
-        catchError(this.handleError<Patient>('deletePatient'))
-      );
+    return this.http.delete<any>(url, this.httpOptions).pipe(
+      tap(response => this.log(response.query)),
+      catchError(this.handleError<any>('deletePatient'))
+    );
   }
 
 }

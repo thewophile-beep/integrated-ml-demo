@@ -8,7 +8,7 @@ XData OpenAPI [ MimeType = application/json ]
   "info": {
     "title": "InterSystems IRIS REST API for Integrated ML Demo",
     "description": "Rest API for the Integrated ML Demo",
-    "version": "0.2",
+    "version": "0.3",
     "contact": {
       "email": "theophile.thierry@intersystems.com"
     },
@@ -23,20 +23,10 @@ XData OpenAPI [ MimeType = application/json ]
     "http",
     "https"
   ],
-  "securityDefinitions": {
-    "basicAuth": {
-      "type": "basic"
-    }
-  },
-  "security": [
-    {
-      "basicAuth": []
-    }
-  ],
   "paths": {
     "/passengers": {
       "get": {
-        "description": "Retreive the total number of Passengers THEN the Passengers from currPage\\*(pageSize-1) to currPage\\*pageSize. Search by name possible too.",
+        "description": "Retreive the Passengers from the current page with specific page length. Search by name possible too.",
         "summary": "Get passengers with pagination and search by name possible",
         "parameters": [
           {
@@ -66,14 +56,17 @@ XData OpenAPI [ MimeType = application/json ]
             "schema": {
               "type": "object",
               "properties": {
-                "total": {
-                  "type": "number"
-                },
                 "passengers": {
                   "type": "array",
                   "items": {
                     "$ref": "#/definitions/passenger"
                   }
+                },
+                "total": {
+                  "type": "number"
+                },
+                "query": {
+                  "type": "string"
                 }
               }
             }
@@ -107,6 +100,9 @@ XData OpenAPI [ MimeType = application/json ]
               "properties": {
                 "passengerId": {
                   "type": "integer"
+                },
+                "query": {
+                  "type": "string"
                 }
               }
             }
@@ -138,7 +134,15 @@ XData OpenAPI [ MimeType = application/json ]
           "200": {
             "description": "(Expected Result)",
             "schema": {
-              "$ref": "#/definitions/passenger"
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string"
+                },
+                "passenger": {
+                  "$ref": "#/definitions/passenger"
+                }
+              }
             }
           },
           "204": {
@@ -173,7 +177,15 @@ XData OpenAPI [ MimeType = application/json ]
         ],
         "responses": {
           "200": {
-            "description": "(Expected Result)"
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "204": {
             "description": "(Not Found)"
@@ -201,7 +213,15 @@ XData OpenAPI [ MimeType = application/json ]
         ],
         "responses": {
           "200": {
-            "description": "(Expected Result)"
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "204": {
             "description": "(Not Found)"
@@ -252,6 +272,9 @@ XData OpenAPI [ MimeType = application/json ]
                   "items": {
                     "$ref": "#/definitions/patient"
                   }
+                },
+                "query": {
+                  "type": "string"
                 }
               }
             }
@@ -285,6 +308,9 @@ XData OpenAPI [ MimeType = application/json ]
               "properties": {
                 "patientId": {
                   "type": "integer"
+                },
+                "query": {
+                  "type": "string"
                 }
               }
             }
@@ -316,7 +342,15 @@ XData OpenAPI [ MimeType = application/json ]
           "200": {
             "description": "(Expected Result)",
             "schema": {
-              "$ref": "#/definitions/patient"
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string"
+                },
+                "patient": {
+                  "$ref": "#/definitions/patient"
+                }
+              }
             }
           },
           "204": {
@@ -351,7 +385,15 @@ XData OpenAPI [ MimeType = application/json ]
         ],
         "responses": {
           "200": {
-            "description": "(Expected Result)"
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "204": {
             "description": "(Not Found)"
@@ -379,7 +421,15 @@ XData OpenAPI [ MimeType = application/json ]
         ],
         "responses": {
           "200": {
-            "description": "(Expected Result)"
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "204": {
             "description": "(Not Found)"
@@ -670,7 +720,7 @@ XData OpenAPI [ MimeType = application/json ]
             "description": "Name of the training run"
           }
         ],
-        "description": "Get the state of a speecific training run",
+        "description": "Get the state of a specific training run",
         "summary": "Get state of training run",
         "operationId": "getStateTrainingRun",
         "x-ISC_ServiceMethod": "getStateTrainingRun",
@@ -688,167 +738,6 @@ XData OpenAPI [ MimeType = application/json ]
                 }
               }
             }
-          },
-          "204": {
-            "description": "(Not Found)"
-          },
-          "default": {
-            "description": "(Unexpected Error)"
-          }
-        }
-      }
-    },
-    "/ml/trainings/configurations": {
-      "get": {
-        "description": "Get ml configurations",
-        "summary": "Get configurations",
-        "operationId": "getAllConfigurations",
-        "x-ISC_ServiceMetho": "getAllConfigurations",
-        "responses": {
-          "200": {
-            "description": "(Expected Result)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "configName": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "(Bad Request)"
-          }
-        }
-      },
-      "put": {
-        "description": "Update ml configuration",
-        "summary": "Update configuration",
-        "operationId": "changeConfiguration",
-        "x-ISC_ServiceMethod": "changeConfiguration",
-        "parameters": [
-          {
-            "name": "configName",
-            "in": "body",
-            "description": "Configuration name to use",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "configName": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "(Expected Result)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "query": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "204": {
-            "description": "(Not Found)"
-          },
-          "400": {
-            "description": "(Bad Request)"
-          },
-          "default": {
-            "description": "(Unexpected Error)"
-          }
-        }
-      }
-    },
-    "/ml/trainings/configurations/datarobot": {
-      "post": {
-        "description": "Create a DataRobot configuration",
-        "summary": "Create DataRobot configuration",
-        "operationId": "createDRConfiguration",
-        "x-ISC_ServiceMethod": "createDRConfiguration",
-        "parameters": [
-          {
-            "name": "payload",
-            "in": "body",
-            "description": "URL to use",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "url": {
-                  "type": "string"
-                },
-                "apiToken": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "(Expected Result)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "query": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "(Bad Request)"
-          },
-          "default": {
-            "description": "(Unexpected Error)"
-          }
-        }
-      },
-      "put": {
-        "description": "Alter DataRobot ml configuration",
-        "summary": "Alter DataRobot configuration",
-        "operationId": "alterDRConfiguration",
-        "x-ISC_ServiceMethod": "alterDRConfiguration",
-        "parameters": [
-          {
-            "name": "payload",
-            "in": "body",
-            "description": "URL to use",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "url": {
-                  "type": "string"
-                },
-                "apiToken": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "(Expected Result)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "query": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "(Bad Request)"
           },
           "default": {
             "description": "(Unexpected Error)"
@@ -894,6 +783,153 @@ XData OpenAPI [ MimeType = application/json ]
         }
       }
     },
+    "/ml/trainings/configurations": {
+      "get": {
+        "description": "Get ml configurations",
+        "summary": "Get configurations",
+        "operationId": "getAllConfigurations",
+        "x-ISC_ServiceMetho": "getAllConfigurations",
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "defaultConfigName": {
+                  "type": "string"
+                },
+                "configs": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "(Bad Request)"
+          }
+        }
+      },
+      "put": {
+        "description": "Update ml configuration",
+        "summary": "Update configuration",
+        "operationId": "changeConfiguration",
+        "x-ISC_ServiceMethod": "changeConfiguration",
+        "parameters": [
+          {
+            "name": "configName",
+            "in": "body",
+            "description": "Configuration name to use",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "configName": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "(Expected Result)"
+          },
+          "204": {
+            "description": "(Not Found)"
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      }
+    },
+    "/ml/trainings/configurations/datarobot": {
+      "post": {
+        "description": "Create a DataRobot configuration named DataRobotConfig",
+        "summary": "Create DataRobot configuration",
+        "operationId": "createDRConfiguration",
+        "x-ISC_ServiceMethod": "createDRConfiguration",
+        "parameters": [
+          {
+            "name": "payload",
+            "in": "body",
+            "description": "URL to use",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string"
+                },
+                "apiToken": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      },
+      "put": {
+        "description": "Alter DataRobot ml configuration",
+        "summary": "Alter DataRobot configuration",
+        "operationId": "alterDRConfiguration",
+        "x-ISC_ServiceMethod": "alterDRConfiguration",
+        "parameters": [
+          {
+            "name": "payload",
+            "in": "body",
+            "description": "URL to use",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string"
+                },
+                "apiToken": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "(Expected Result)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "(Unexpected Error)"
+          }
+        }
+      }
+    },
     "/ml/validations": {
       "get": {
         "description": "Get all validation runs",
@@ -906,7 +942,7 @@ XData OpenAPI [ MimeType = application/json ]
             "schema": {
               "type": "object",
               "properties": {
-                "trainingRuns": {
+                "validationRuns": {
                   "type": "array",
                   "items": {
                     "$ref": "#/definitions/mlValidationRun"
@@ -1184,7 +1220,7 @@ XData OpenAPI [ MimeType = application/json ]
           "type": "integer"
         },
         "survived": {
-          "type": "boolean"
+          "type": "integer"
         },
         "class": {
           "type": "integer"
@@ -1261,7 +1297,7 @@ XData OpenAPI [ MimeType = application/json ]
           "type": "number"
         },
         "noShow": {
-          "type": "string"
+          "type": "number"
         }
       }
     },

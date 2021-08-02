@@ -46,6 +46,22 @@
       <span>Integrated ML Demo: {{router.url.includes('titanic') === true ? "Titanic Dataset" : "NoShow Dataset"}}</span>
       <div class="toggle">
         <button 
+          mat-stroked-button 
+          *ngIf="urlIsCos()"
+          color="basic" 
+          (click)="changeToFlask()" 
+          class="dataset-button">
+            Use Flask API
+        </button>
+        <button 
+          mat-stroked-button 
+          *ngIf="!urlIsCos()"
+          color="basic" 
+          (click)="changeToCos()" 
+          class="dataset-button">
+            Use Cos API
+        </button>
+        <button 
           *ngIf="router.url.includes('titanic')"
           mat-raised-button 
           color="basic" 

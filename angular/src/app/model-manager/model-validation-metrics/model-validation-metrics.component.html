@@ -5,7 +5,7 @@
 
     <mat-list role="list" *ngIf="validationMetrics.length > 0">
         <mat-list-item role="listitem" *ngFor="let metric of validationMetrics; let isLast = last;">
-            {{metric}}
+            {{metric.metricName}} : {{metric.metricValue}}  <div *ngIf="metric.targetValue" style="margin-left: auto;">for target value: {{metric.targetValue}}</div>
             <div *ngIf="!isLast">
                 <mat-divider></mat-divider>
             </div>
