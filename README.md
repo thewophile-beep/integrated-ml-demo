@@ -192,6 +192,6 @@ Bypass: commenting all lines with ZU, and setting capture to 1 in said method
 
 ## 9.2. Troubleshooting
 
-If you don't have a key to use the internal IRIS image with Embedded Python, but still want to see IntegratedML in action, you can comment out lines concerning python in the IRIS Dockerfile, as well as comment the line `command: -a "sh flask_server_start.sh"` in the docker-compose. 
+If you don't have a key to use the internal IRIS image with Embedded Python, but still want to see IntegratedML in action, you can comment out lines concerning python in the IRIS Dockerfile (especially the third `ARG` line), as well as comment the line `command: -a "sh flask_server_start.sh"` in the docker-compose. 
 
 By doing that, you will only have the COS API up and running. 
