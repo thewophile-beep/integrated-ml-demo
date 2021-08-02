@@ -33,7 +33,7 @@ docker compose up
 
 Two containers will be built: one with IRIS and one with an nginx server. 
 
-![containers](https://raw.githubusercontent.com/thewophile-beep/integrated-ml-demo/flask/misc/img/containers.png)
+![containers](https://raw.githubusercontent.com/thewophile-beep/integrated-ml-demo/main/misc/img/containers.png)
 
 The IRIS image used contains Embedded Python. After building, the container will run a wsgi server with the Flask API.
 
@@ -63,13 +63,13 @@ Right at the beginning of the file
 
 We will then be able to run methods such as:
 
-![flaskExample](https://raw.githubusercontent.com/thewophile-beep/integrated-ml-demo/flask/misc/img/flaskExample.png)
+![flaskExample](https://raw.githubusercontent.com/thewophile-beep/integrated-ml-demo/main/misc/img/flaskExample.png)
 
 As you can see, in order to GET a passenger with an ID, we just execute a query and use its result set. 
 
 We can also directly use the IRIS objects:
 
-![flaskObjectExample](https://raw.githubusercontent.com/thewophile-beep/integrated-ml-demo/flask/misc/img/flaskObjectExample.png)
+![flaskObjectExample](https://raw.githubusercontent.com/thewophile-beep/integrated-ml-demo/main/misc/img/flaskObjectExample.png)
 
 Here, we use an SQL query to get all the IDs in the table, and we then retreive each passenger from the table with the `%OpenId()` method from the `Titanic.Table.Passenger` class (note that since `%` is an illegal character in Python, we use `_` instead).
 
