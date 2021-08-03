@@ -2,7 +2,6 @@ ARG IMAGE=containers.intersystems.com/intersystems/iris-ml-community:2021.1.0.21
 ARG IMAGE=containers.intersystems.com/intersystems/iris-ml-community:2020.3.0.304.0
 ARG IMAGE=arti.iscinternal.com/intersystems/iris:2021.1.0PYTHON.300.0
 
-
 FROM $IMAGE
 # copy files
 COPY key/iris.key /usr/irissys/mgr/iris.key
@@ -27,4 +26,8 @@ RUN iris start IRIS \
 
 ENV PYTHON_PATH=/usr/irissys/bin/irispython
 ENV FLASK_PATH=/opt/irisapp/python/flask
+ENV IRISUSERNAME "SuperUser"
+ENV IRISPASSWORD $IRIS_PASSWORD
+ENV PATH "/usr/irissys/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/irisowner/bin"
+
 RUN ${PYTHON_PATH} -m pip install -r ${FLASK_PATH}/requirements.txt
