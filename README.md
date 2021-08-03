@@ -111,7 +111,7 @@ In the docker-compose file, we add the following line:
 iris:
   command: -a "sh /opt/irisapp/flask_server_start.sh"
 ````
-That will launch the following script:
+That will launch, after the container is started (thanks to the `-a` flag), the following script:
 ````bash
 #!/bin/bash
 
