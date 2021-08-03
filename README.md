@@ -239,7 +239,7 @@ with future embedded Python releases:
 
 ### 9.2.1. I don't have access to an Embedded Python image (yet)
 
-If you don't have a key to use the internal IRIS image with Embedded Python, but still want to see IntegratedML in action, you can comment out lines concerning python in the IRIS Dockerfile (especially the third `ARG` line), as well as comment the line `command: -a "sh flask_server_start.sh"` in the docker-compose. 
+If you don't have a key to use the internal IRIS image with Embedded Python, but still want to see IntegratedML in action, you can comment out lines concerning python in the IRIS Dockerfile (especially the third `ARG` line), as well as comment the line `command: -a "sh /opt/irisapp/flask_server_start.sh"` in the docker-compose. 
 
 It will create the container with a community image containing IntegratedML.
 
