@@ -121,6 +121,12 @@ ${PYTHON_PATH} /usr/irissys/bin/gunicorn --bind "0.0.0.0:8080" wsgi:app -w 4 2>&
 
 exit 1
 ````
+With the environment variables defined in the Dockerfile as follows:
+````dockerfile
+ENV PYTHON_PATH=/usr/irissys/bin/irispython
+ENV FLASK_PATH=/opt/irisapp/python/flask
+````
+
 We will then have access to the Flask back-end through the local port `4040`, since we bound the container's 8080 port to it.
 # 5. IntegratedML
 
