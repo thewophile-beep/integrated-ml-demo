@@ -7,7 +7,11 @@ This repository is a demonstration of IntegratedML and Embedded Python.
   - [2.1. Architecture](#21-architecture)
   - [2.2. Building the nginx container](#22-building-the-nginx-container)
 - [3. Running the demo](#3-running-the-demo)
-- [4. Embedded Python and Flask](#4-embedded-python-and-flask)
+- [4. Python back-end](#4-python-back-end)
+  - [4.1. Embedded Python](#41-embedded-python)
+    - [4.1.1. Setting up the container](#411-setting-up-the-container)
+    - [4.1.2. Using Embedded Python](#412-using-embedded-python)
+  - [4.2. Launching the server](#42-launching-the-server)
 - [5. IntegratedML](#5-integratedml)
   - [5.1. Exploring both datasets](#51-exploring-both-datasets)
   - [5.2. Managing models](#52-managing-models)
@@ -16,11 +20,13 @@ This repository is a demonstration of IntegratedML and Embedded Python.
     - [5.2.3. Validating a model](#523-validating-a-model)
     - [5.2.4. Making predictions](#524-making-predictions)
 - [6. Using COS](#6-using-cos)
-- [7. Going further](#7-going-further)
+- [7. More explainability with DataRobot](#7-more-explainability-with-datarobot)
 - [8. Conclusion](#8-conclusion)
 - [9. Addendum](#9-addendum)
   - [9.1. TODO](#91-todo)
   - [9.2. Troubleshooting](#92-troubleshooting)
+    - [9.2.1. I don't have access to an Embedded Python image (yet)](#921-i-dont-have-access-to-an-embedded-python-image-yet)
+    - [9.2.2. It crashes when I try to train models](#922-it-crashes-when-i-try-to-train-models)
 
 # 2. Building the demo
 
@@ -51,15 +57,36 @@ You can check the details of that multi-build in the `angular/Dockerfile` file. 
 
 Just go to the address: http://localhost:8080/ and That's it! Enjoy!
 
-# 4. Embedded Python and Flask
+# 4. Python back-end
 
 The back-end is made with Python Flask. We use Embedded Python in order to call iris classes and execute queries from python. 
 
-For that, we use `irispython` as a python interepreter, and do:
+## 4.1. Embedded Python
+
+### 4.1.1. Setting up the container
+
+In the dockerfile, we first need to explicit two environment variables that Embedded Python will use:
+````dockerfile
+ENV IRISUSERNAME "SuperUser"
+ENV IRISPASSWORD $IRIS_PASSWORD
+````
+
+With $IRIS_PASSWORD setup like this in the docker-compose file:
+
+````yaml
+iris:
+  build:
+    args:
+      - IRIS_PASSWORD=${IRIS_PASSWORD:-SYS}
+````
+(The password tranferred is the one setup on your local machine or -if not setup- will be by default "SYS")
+### 4.1.2. Using Embedded Python
+
+In order to use embedded Python, we use `irispython` as a python interepreter, and do:
 ```python
 import iris
 ```
-Right at the beginning of the file
+Right at the beginning of the file. 
 
 We will then be able to run methods such as:
 
@@ -73,6 +100,28 @@ We can also directly use the IRIS objects:
 
 Here, we use an SQL query to get all the IDs in the table, and we then retreive each passenger from the table with the `%OpenId()` method from the `Titanic.Table.Passenger` class (note that since `%` is an illegal character in Python, we use `_` instead).
 
+Thanks to Flask, we implement all of our routes and methods that way. 
+
+## 4.2. Launching the server
+
+To launch the server, we use `gunicorn` with `irispython`. 
+
+In the docker-compose file, we add the following line:
+````yaml
+iris:
+  command: -a "sh /opt/irisapp/flask_server_start.sh"
+````
+That will launch the following script:
+````bash
+#!/bin/bash
+
+cd ${FLASK_PATH}
+
+${PYTHON_PATH} /usr/irissys/bin/gunicorn --bind "0.0.0.0:8080" wsgi:app -w 4 2>&1
+
+exit 1
+````
+We will then have access to the Flask back-end through the local port `4040`, since we bound the container's 8080 port to it.
 # 5. IntegratedML
 
 ## 5.1. Exploring both datasets
@@ -154,7 +203,7 @@ By pressing the button in the top right-hand side **"Switch to COS API"**, you w
 
 Notice how nothing changes. Both APIs are equivalent and work in the same way. 
 
-# 7. Going further
+# 7. More explainability with DataRobot
 
 If you want more explainability (more than what the log can offer you), we suggest you using the DataRobot provider. 
 
@@ -184,14 +233,22 @@ The front-end has been made with Angular.
 with future embedded Python releases: 
 - [ ] Find a way to catch the irisbuiltins.SQLError to return 400 messages instead of the default 500 (Cast)
 
-- [ ] Un-comment the changeConfiguration method. For some reason, changing the ML Configuration with `iris.cls("%SYS.ML.Configuration")._SetSystemDefault()` makes IRIS go boom. And changing it with an SQL query doesn't work in all namespaces / users
-
-- [x] Find a way to make training work. When training a model, in %ML.Utils.RunMethodWithCapture(), $ZU(82, 12) makes IRIS crash. Already in Jira.
-Bypass: commenting all lines with ZU, and setting capture to 1 in said method
-(but to do that we need to go to System Admin > Configuration > System Configuration > Local Databases and uncheck Mount Read-Only for the IRISLIB db)
+- [ ] Un-comment the changeConfiguration method. For some reason, changing the ML Configuration with `iris.cls("%SYS.ML.Configuration")._SetSystemDefault()` makes IRIS crash (loads indefinitely). And changing it with an SQL query doesn't work in all namespaces / users. 
 
 ## 9.2. Troubleshooting
 
+### 9.2.1. I don't have access to an Embedded Python image (yet)
+
 If you don't have a key to use the internal IRIS image with Embedded Python, but still want to see IntegratedML in action, you can comment out lines concerning python in the IRIS Dockerfile (especially the third `ARG` line), as well as comment the line `command: -a "sh flask_server_start.sh"` in the docker-compose. 
 
-By doing that, you will only have the COS API up and running. 
+It will create the container with a community image containing IntegratedML.
+
+By doing that, you will only have the COS API. 
+
+### 9.2.2. It crashes when I try to train models
+
+When training a model, in %ML.Utils.RunMethodWithCapture(), $ZU(82, 12) makes IRIS crash (for now). 
+
+Bypass: 
+- In the **Portal Management**, go to System Admin > Configuration > System Configuration > Local Databases and **uncheck Mount Read-Only** for the IRISLIB database.
+- Compile the file in `src/%ML/Utils.cls`. All the $ZU(82,12) commands are commented out. 
