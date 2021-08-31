@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   iris:
-    image: iris-ml
+    image: iris-ml-python
     build:
       context: ./iris
       dockerfile : Dockerfile-python
