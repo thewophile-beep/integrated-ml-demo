@@ -11,6 +11,7 @@ This repository is a demonstration of IntegratedML and Embedded Python.
   - [4.1. Embedded Python](#41-embedded-python)
     - [4.1.1. Setting up the container](#411-setting-up-the-container)
     - [4.1.2. Using Embedded Python](#412-using-embedded-python)
+    - [4.1.3. Side By Side Comparaison](#413-side-by-side-comparaison)
   - [4.2. Launching the server](#42-launching-the-server)
 - [5. IntegratedML](#5-integratedml)
   - [5.1. Exploring both datasets](#51-exploring-both-datasets)
@@ -101,6 +102,14 @@ We can also directly use the IRIS objects:
 Here, we use an SQL query to get all the IDs in the table, and we then retreive each passenger from the table with the `%OpenId()` method from the `Titanic.Table.Passenger` class (note that since `%` is an illegal character in Python, we use `_` instead).
 
 Thanks to Flask, we implement all of our routes and methods that way. 
+
+### 4.1.3. Side By Side Comparaison
+
+On this screenshot you have a side by side comparaison between an **Flask** implementation and an **ObjectScript** implementation.
+
+As you can see there is a lot of similarities. 
+
+<img width="1441" alt="SideBySidePythonAndCos" src="https://user-images.githubusercontent.com/47849411/131483904-1d07cb2d-748a-427f-8de1-321a1bb70cbb.png">
 
 ## 4.2. Launching the server
 
