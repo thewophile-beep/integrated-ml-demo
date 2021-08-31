@@ -1,24 +1,32 @@
 # 1. Integrated ML Demonstration
 
-This repository is a demonstration of integratedML. 
-
-Using a web application, you will be able to create, train and validate the models you want on two datasets, the **Titanic** and the **NoShow** datasets. 
-
-The front-end has been done with angular and the back-end with IRIS. 
+This repository is a demonstration of IntegratedML and Embedded Python. 
 
 - [1. Integrated ML Demonstration](#1-integrated-ml-demonstration)
 - [2. Building the demo](#2-building-the-demo)
   - [2.1. Architecture](#21-architecture)
   - [2.2. Building the nginx container](#22-building-the-nginx-container)
 - [3. Running the demo](#3-running-the-demo)
-  - [3.1. Exploring both datasets](#31-exploring-both-datasets)
-  - [3.2. Managing models](#32-managing-models)
-    - [3.2.1. Creating a model](#321-creating-a-model)
-    - [3.2.2. Training a model](#322-training-a-model)
-    - [3.2.3. Validating a model](#323-validating-a-model)
-    - [3.2.4. Making predictions](#324-making-predictions)
-- [4. Going further](#4-going-further)
-- [5. Conclusion](#5-conclusion)
+- [4. Python back-end](#4-python-back-end)
+  - [4.1. Embedded Python](#41-embedded-python)
+    - [4.1.1. Setting up the container](#411-setting-up-the-container)
+    - [4.1.2. Using Embedded Python](#412-using-embedded-python)
+  - [4.2. Launching the server](#42-launching-the-server)
+- [5. IntegratedML](#5-integratedml)
+  - [5.1. Exploring both datasets](#51-exploring-both-datasets)
+  - [5.2. Managing models](#52-managing-models)
+    - [5.2.1. Creating a model](#521-creating-a-model)
+    - [5.2.2. Training a model](#522-training-a-model)
+    - [5.2.3. Validating a model](#523-validating-a-model)
+    - [5.2.4. Making predictions](#524-making-predictions)
+- [6. Using COS](#6-using-cos)
+- [7. More explainability with DataRobot](#7-more-explainability-with-datarobot)
+- [8. Conclusion](#8-conclusion)
+- [9. Addendum](#9-addendum)
+  - [9.1. TODO](#91-todo)
+  - [9.2. Troubleshooting](#92-troubleshooting)
+    - [9.2.1. I don't have access to an Embedded Python image (yet)](#921-i-dont-have-access-to-an-embedded-python-image-yet)
+    - [9.2.2. It crashes when I try to train models](#922-it-crashes-when-i-try-to-train-models)
 
 # 2. Building the demo
 
@@ -33,11 +41,13 @@ Two containers will be built: one with IRIS and one with an nginx server.
 
 ![containers](https://raw.githubusercontent.com/thewophile-beep/integrated-ml-demo/main/misc/img/containers.png)
 
-We are using the community package csvgen to import the titanic dataset into iris. For the noshow dataset, we use another custom method (the `Load()` classmethod of the `Util.Loader` class). In order for the container to have access to the csv files, we bind the `iris/` local directory to the `/tmp/iris/` directory in the container.
+The IRIS image used contains Embedded Python. After building, the container will run a wsgi server with the Flask API.
+
+We are using the community package csvgen to import the titanic dataset into iris. For the noshow dataset, we use another custom method (the `Load()` classmethod of the `Util.Loader` class). In order for the container to have access to the csv files, we bind the `iris/` local directory to the `/opt/irisapp/` directory in the container.
 
 ## 2.2. Building the nginx container
 
-In order to build our nginx container, we use multi-stage building. First, we create a container with node. We then install npm and copy all of our files in that container. We build the project with the command `ng build`. The output file is copied in a new container that only contains nginx. 
+In order to build our nginx container, docker uses multi-stage building. First, it creates a container with node. It then installs npm and copy all of our files in that container. It builds the project with the command `ng build`, and the output file is copied in a new container that only contains nginx. 
 
 Thanks to that manoeuvre, we obtain a very light container that does not contain all of the librairies and tools needed to build the webpage. 
 
@@ -47,15 +57,88 @@ You can check the details of that multi-build in the `angular/Dockerfile` file. 
 
 Just go to the address: http://localhost:8080/ and That's it! Enjoy!
 
-## 3.1. Exploring both datasets
+# 4. Python back-end
+
+The back-end is made with Python Flask. We use Embedded Python in order to call iris classes and execute queries from python. 
+
+## 4.1. Embedded Python
+
+### 4.1.1. Setting up the container
+
+In the dockerfile, we first need to explicit two environment variables that Embedded Python will use:
+````dockerfile
+ENV IRISUSERNAME "SuperUser"
+ENV IRISPASSWORD $IRIS_PASSWORD
+````
+
+With $IRIS_PASSWORD setup like this in the docker-compose file:
+
+````yaml
+iris:
+  build:
+    args:
+      - IRIS_PASSWORD=${IRIS_PASSWORD:-SYS}
+````
+(The password tranferred is the one setup on your local machine or -if not setup- will be by default "SYS")
+### 4.1.2. Using Embedded Python
+
+In order to use embedded Python, we use `irispython` as a python interepreter, and do:
+```python
+import iris
+```
+Right at the beginning of the file. 
+
+We will then be able to run methods such as:
+
+![flaskExample](https://raw.githubusercontent.com/thewophile-beep/integrated-ml-demo/main/misc/img/flaskExample.png)
+
+As you can see, in order to GET a passenger with an ID, we just execute a query and use its result set. 
+
+We can also directly use the IRIS objects:
+
+![flaskObjectExample](https://raw.githubusercontent.com/thewophile-beep/integrated-ml-demo/main/misc/img/flaskObjectExample.png)
+
+Here, we use an SQL query to get all the IDs in the table, and we then retreive each passenger from the table with the `%OpenId()` method from the `Titanic.Table.Passenger` class (note that since `%` is an illegal character in Python, we use `_` instead).
+
+Thanks to Flask, we implement all of our routes and methods that way. 
+
+## 4.2. Launching the server
+
+To launch the server, we use `gunicorn` with `irispython`. 
+
+In the docker-compose file, we add the following line:
+````yaml
+iris:
+  command: -a "sh /opt/irisapp/flask_server_start.sh"
+````
+That will launch, after the container is started (thanks to the `-a` flag), the following script:
+````bash
+#!/bin/bash
+
+cd ${FLASK_PATH}
+
+${PYTHON_PATH} /usr/irissys/bin/gunicorn --bind "0.0.0.0:8080" wsgi:app -w 4 2>&1
+
+exit 1
+````
+With the environment variables defined in the Dockerfile as follows:
+````dockerfile
+ENV PYTHON_PATH=/usr/irissys/bin/irispython
+ENV FLASK_PATH=/opt/irisapp/python/flask
+````
+
+We will then have access to the Flask back-end through the local port `4040`, since we bound the container's 8080 port to it.
+# 5. IntegratedML
+
+## 5.1. Exploring both datasets
 
 For both datasets, you'll have access to a complete CRUD, enabling you to modify at will the saved tables. 
 
 In order to switch from one dataset to the other, you can press the button in the top right-hand corner. 
 
-## 3.2. Managing models
+## 5.2. Managing models
 
-### 3.2.1. Creating a model
+### 5.2.1. Creating a model
 
 Once you have discovered the data, you can create model predicting the value you want. 
 
@@ -75,7 +158,7 @@ As you can see, creating a model only takes one SQL query. The informations you 
 
 In the `actions` column, you can delete a model or purge it. Purging a model will remove all of its training runs (and their validation runs) except for the last one. 
 
-### 3.2.2. Training a model
+### 5.2.2. Training a model
 
 In the next tab, you will be able to train your models. 
 
@@ -95,7 +178,7 @@ Training a model only takes a single SQL query, as you can see in the messages s
 Keep in mind that in these two tabs, you will only see the models that concern the dataset you are actually using.
 
 
-### 3.2.3. Validating a model
+### 5.2.3. Validating a model
 
 Finally, you can validate a model in the final tab. Clicking on a validation run will pop up a dialog with the metrics associated with the validation. There again, you can choose a percentage of the dataset to use for the validation. 
 
@@ -104,7 +187,7 @@ Finally, you can validate a model in the final tab. Clicking on a validation run
 Once again, it only takes a single SQL query.
 
 
-### 3.2.4. Making predictions
+### 5.2.4. Making predictions
 
 In the `Make Predictions` menu, last tab, you can make predictions using your newly trained models.
 
@@ -118,7 +201,15 @@ In the case of Mrs. Fatima Masselmani, the model correctly predicted that she su
 
 Once again, it takes on query to retreive the prediction and one for the probability.
 
-# 4. Going further
+# 6. Using COS
+
+The demonstration actually provides two APIs. We use the Flask API with Embedded Python, but a REST service in COS has also been setup at the building of the container.
+
+By pressing the button in the top right-hand side **"Switch to COS API"**, you will be able to use this service.
+
+Notice how nothing changes. Both APIs are equivalent and work in the same way. 
+
+# 7. More explainability with DataRobot
 
 If you want more explainability (more than what the log can offer you), we suggest you using the DataRobot provider. 
 
@@ -134,10 +225,36 @@ Once the models trained, you can have access to **a lot** of details, here's a p
 
 ![DRmodelDetails](https://raw.githubusercontent.com/thewophile-beep/integrated-ml-demo/main/misc/img/DRmodelDetails.png)
 
-# 5. Conclusion
+# 8. Conclusion
 
-Through this demonstration, we have been able to see how easy it was to create, train and validate a model as well as to predict values through very few SQL queries.
+Through this demonstration, we have been able to see how easy it was to create, train and validate a model as well as to predict values through very few SQL queries. 
 
-Another goal of this demonstration was to show how it is possible to use a RESTful API together with IntegratedML. 
+We did this using a RESTful API with Python Flask, using Embedded Python, and we have done a comparison with a COS API.
 
 The front-end has been made with Angular.
+
+
+# 9. Addendum
+## 9.1. TODO
+with future embedded Python releases: 
+- [ ] Find a way to catch the irisbuiltins.SQLError to return 400 messages instead of the default 500 (Cast)
+
+- [ ] Un-comment the changeConfiguration method. For some reason, changing the ML Configuration with `iris.cls("%SYS.ML.Configuration")._SetSystemDefault()` makes IRIS crash (loads indefinitely). And changing it with an SQL query doesn't work in all namespaces / users. 
+
+## 9.2. Troubleshooting
+
+### 9.2.1. I don't have access to an Embedded Python image (yet)
+
+If you don't have a key to use the internal IRIS image with Embedded Python, but still want to see IntegratedML in action, you can comment out lines concerning python in the IRIS Dockerfile (especially the third `ARG` line), as well as comment the line `command: -a "sh /opt/irisapp/flask_server_start.sh"` in the docker-compose. 
+
+It will create the container with a community image containing IntegratedML.
+
+By doing that, you will only have the COS API. 
+
+### 9.2.2. It crashes when I try to train models
+
+When training a model, in %ML.Utils.RunMethodWithCapture(), $ZU(82, 12) makes IRIS crash (for now). 
+
+Bypass: 
+- In the **Portal Management**, go to System Admin > Configuration > System Configuration > Local Databases and **uncheck Mount Read-Only** for the IRISLIB database.
+- Compile the file in `src/%ML/Utils.cls`. All the $ZU(82,12) commands are commented out. 

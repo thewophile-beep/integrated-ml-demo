@@ -65,7 +65,7 @@
     </mat-card-header>
 
     <mat-card-content>
-        <div *ngIf="models.length > 0; else isEmpty">
+        <div *ngIf="models$ | async as models">
             <div class="overflow">
                 <table mat-table [dataSource]="models.slice().reverse()" class="mat-table">
                     
@@ -98,10 +98,6 @@
                     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                 </table>
             </div>
-        </div> 
-        <!-- If no models to show -->
-        <ng-template #isEmpty>
-            <div class="align-middle">No models to show yet.</div>
-        </ng-template>       
+        </div>    
     </mat-card-content>
 </mat-card>

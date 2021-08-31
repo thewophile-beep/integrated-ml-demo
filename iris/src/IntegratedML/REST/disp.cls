@@ -15,9 +15,9 @@ Parameter CONVERTINPUTSTREAM = 1;
 /// The default response charset is utf-8
 Parameter CHARSET = "utf-8";
 
-Parameter HandleCorsRequest = 1;
-
 Parameter CONTENTTYPE = "application/json";
+
+Parameter HandleCorsRequest = 1;
 
 XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 {
@@ -58,6 +58,8 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
   <Route Url="/ml/trainings" Method="post" Call="trainModel" />
   <!-- Get state of training run -->
   <Route Url="/ml/trainings/states" Method="get" Call="getStateTrainingRun" />
+  <!-- Get log of training run -->
+  <Route Url="/ml/trainings/logs" Method="get" Call="getLogTrainingRun" />
   <!-- Get configurations -->
   <Route Url="/ml/trainings/configurations" Method="get" Call="getAllConfigurations" />
   <!-- Update configuration -->
@@ -66,8 +68,6 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
   <Route Url="/ml/trainings/configurations/datarobot" Method="post" Call="createDRConfiguration" />
   <!-- Alter DataRobot configuration -->
   <Route Url="/ml/trainings/configurations/datarobot" Method="put" Call="alterDRConfiguration" />
-  <!-- Get log of training run -->
-  <Route Url="/ml/trainings/logs" Method="get" Call="getLogTrainingRun" />
   <!-- Get all validation runs -->
   <Route Url="/ml/validations" Method="get" Call="getValidationRuns" />
   <!-- Validate a Model -->
@@ -381,6 +381,24 @@ ClassMethod getStateTrainingRun() As %Status
     Quit $$$OK
 }
 
+/// Get log of training run
+ClassMethod getLogTrainingRun() As %Status
+{
+    Try {
+        If $data(%request.Data("trainingName",2)) {
+            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"trainingName")) Quit
+        }
+        If $data(%request.Data("trainingName",1)) {
+            Set ptrainingName=%request.Data("trainingName",1)
+        }
+        Set response=##class(IntegratedML.REST.impl).getLogTrainingRun(.ptrainingName)
+        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
+    } Catch (ex) {
+        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
+    }
+    Quit $$$OK
+}
+
 /// Get configurations
 ClassMethod getAllConfigurations() As %Status
 {
@@ -428,24 +446,6 @@ ClassMethod alterDRConfiguration() As %Status
         If '$isobject(%request.Content) Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTRequired,"payload")) Quit
         Set ppayload=%request.Content
         Set response=##class(IntegratedML.REST.impl).alterDRConfiguration(ppayload)
-        Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
-    } Catch (ex) {
-        Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))
-    }
-    Quit $$$OK
-}
-
-/// Get log of training run
-ClassMethod getLogTrainingRun() As %Status
-{
-    Try {
-        If $data(%request.Data("trainingName",2)) {
-            Do ##class(%REST.Impl).%ReportRESTError(..#HTTP400BADREQUEST,$$$ERROR($$$RESTDuplicate,"trainingName")) Quit
-        }
-        If $data(%request.Data("trainingName",1)) {
-            Set ptrainingName=%request.Data("trainingName",1)
-        }
-        Set response=##class(IntegratedML.REST.impl).getLogTrainingRun(.ptrainingName)
         Do ##class(IntegratedML.REST.impl).%WriteResponse(response)
     } Catch (ex) {
         Do ##class(%REST.Impl).%ReportRESTError(..#HTTP500INTERNALSERVERERROR,ex.AsStatus(),$parameter("IntegratedML.REST.impl","ExposeServerExceptions"))

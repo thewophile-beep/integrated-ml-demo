@@ -1,7 +1,7 @@
 export interface Passenger {
     passengerId: number;
     survived: number;
-    class: number;
+    pclass: number;
     name: string;
     sex: string;
     age: number;

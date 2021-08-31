@@ -20,7 +20,8 @@
                 </mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
-                <div *ngIf="trainedModels.length > 0; else isEmpty">
+
+                <div *ngIf="trainedModels$ | async as trainedModels">
                     <div class="overflow">
                         <table mat-table [dataSource]="trainedModels" class="mat-table">
                             
@@ -38,14 +39,11 @@
                             <tr mat-header-row *matHeaderRowDef="displayedColumnsTrained"></tr>
                             <tr mat-row *matRowDef="let run; columns: displayedColumnsTrained;"
                                 [class.active-row]="chosenModel === run"
-                                (click)="chosenModel = chosenModel === run ? undefined : run">
+                                (click)="chosenModel = (chosenModel === run ? undefined : run)">
                             </tr>
                         </table>
                     </div>
-                </div> 
-                <ng-template #isEmpty>
-                    <div class="align-middle">No trained models to show yet.</div>
-                </ng-template>       
+                </div>       
             </mat-card-content>
         </mat-card>
         
@@ -111,7 +109,7 @@
         </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
-        <div *ngIf="validationRuns.length > 0; else isEmpty">
+        <div *ngIf="validationRuns$ | async as validationRuns; else isEmpty">
             <div class="overflow">
                 <table mat-table [dataSource]="validationRuns.slice().reverse()" class="mat-table">
                     

@@ -10,6 +10,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular-material-components/datetime-picker": "^6.0.3",
     "@angular/animations": "~12.0.3",
     "@angular/cdk": "^12.0.4",
     "@angular/common": "~12.0.3",
@@ -20,8 +21,10 @@
     "@angular/platform-browser": "~12.0.3",
     "@angular/platform-browser-dynamic": "~12.0.3",
     "@angular/router": "~12.0.3",
+    "ajv": "^8.6.2",
     "angular-in-memory-web-api": "^0.11.0",
     "navigation": "^5.5.0",
+    "npkill": "^0.8.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.1.0",
     "zone.js": "~0.11.4"
