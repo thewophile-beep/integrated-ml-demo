@@ -12,7 +12,10 @@
         "service": "iris",
         "internalPort": 52773
       },
-      "active": true
+      "active": true,
+      "links": {
+        "Demo": "http://localhost:8080/"
+      }
     }
 
 }
