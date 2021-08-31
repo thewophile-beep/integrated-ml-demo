@@ -24,7 +24,7 @@ export class NavigationComponent implements OnInit {
 
   ngOnInit() {
     if (!this.currUrl) {
-      this.currUrl = environment.flask_url
+      this.currUrl = environment.cos_url
       localStorage.setItem('url', this.currUrl)
     }
   }
