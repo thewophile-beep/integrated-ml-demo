@@ -1,13 +1,15 @@
 version: '3.7'
 services:
   iris:
-    image: iris-ml-python
+    image: iris-ml
     build:
       context: ./iris
+      dockerfile : Dockerfile-python
       args:
         - IRIS_PASSWORD=${IRIS_PASSWORD:-SYS}
     volumes:
       - ./iris:/tmp/iris
+    command: -a "sh /opt/irisapp/flask_server_start.sh"
     ports:
     - 52775:52773
     - 51776:1972
