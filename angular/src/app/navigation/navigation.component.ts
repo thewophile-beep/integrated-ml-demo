@@ -32,6 +32,10 @@ export class NavigationComponent implements OnInit {
   urlIsCos(): Boolean {
     return this.currUrl === environment.cos_url
   }
+
+  isFlaskBuild(): Boolean {
+    return environment.flask_build
+  }
   
   changeToCos() {
     localStorage.setItem('url', environment.cos_url)

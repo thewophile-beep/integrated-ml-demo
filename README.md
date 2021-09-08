@@ -33,8 +33,16 @@ This repository is a demonstration of IntegratedML and Embedded Python.
 
 To build the demo, you just have to run the command:
 ````
-docker compose up
+docker-compose up --build
 ````
+
+If you have access to EAP of Embedded Python you can use this one :
+
+````
+docker-compose -f docker-compose-python.yml up --build
+````
+
+Don't forget to put you IRIS key in iris/key and name it iris.key
 
 ## 2.1. Architecture
 

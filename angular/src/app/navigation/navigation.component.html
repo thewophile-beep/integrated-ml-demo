@@ -47,7 +47,7 @@
       <div class="toggle">
         <button 
           mat-stroked-button 
-          *ngIf="urlIsCos()"
+          *ngIf="urlIsCos() && isFlaskBuild()"
           color="basic" 
           (click)="changeToFlask()" 
           class="dataset-button">
@@ -55,7 +55,7 @@
         </button>
         <button 
           mat-stroked-button 
-          *ngIf="!urlIsCos()"
+          *ngIf="!urlIsCos() && isFlaskBuild()"
           color="basic" 
           (click)="changeToCos()" 
           class="dataset-button">
