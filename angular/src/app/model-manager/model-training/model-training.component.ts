@@ -111,18 +111,18 @@ export class ModelTrainingComponent implements OnInit {
       const trainingName = this.runForm.value.runName
       this.modelService.trainModel(modelName, trainingName, fromTable).subscribe(
         _ => {
-          // Checks every 3 seconds if the training is completed or failed
-          const intervalObservable = interval(3000).subscribe(
+          // Checks one time 2 seconds if the training is completed or failed
+          const intervalObservable = interval(2000).subscribe(
             _ => {
               this.modelService.getStateTrainingRun(modelName, trainingName).subscribe(
                 response => {
-                  if (response === "completed" || response === "failed") {
+                  
                     // Need to unsubscribe to stop checking 
                     intervalObservable.unsubscribe()
-                    this.runForm.patchValue({runName: '', modelName: ''})
+                    this.runForm.reset()
                     this.getAll()
                     this.waiting = false;
-                  };
+
                 }
               );
             }
