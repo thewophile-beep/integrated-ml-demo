@@ -42,6 +42,10 @@ export class PassengerService {
   private log(message: string) {
     this.messageService.add(`PassengerService: ${message}`);
   }
+
+  private logMessage(message: string,verbose:boolean) {
+    this.messageService.addMessage(message,verbose);
+  }
   
   constructor(
     private http: HttpClient,
@@ -53,7 +57,7 @@ export class PassengerService {
     const url = `${this.PassengersUrl}?currPage=${currPage + 1}&pageSize=${pageSize}`
     return this.http.get<any>(url)
       .pipe(
-        tap(response => this.log(response.query)),
+        tap(response => this.logMessage(response.query,false)),
         catchError(this.handleError<any>('getPassengers', []))
       );
   }
@@ -65,7 +69,7 @@ export class PassengerService {
       return of([]);
     }
     return this.http.get<any>(`${this.PassengersUrl}?name=${term}`).pipe(
-      tap(response => this.log(response.query)),
+      tap(response => this.logMessage(response.query,false)),
       map(res => res.passengers),
       catchError(this.handleError<any>('searchPassengers', []))
     );
@@ -74,7 +78,7 @@ export class PassengerService {
   /** POST: add a new Passenger to the server */
   createPassenger(Passenger: Passenger): Observable<any> {
     return this.http.post<any>(this.PassengersUrl, Passenger, this.httpOptions).pipe(
-      tap(response => this.log(response.query)),
+      tap(response => this.logMessage(response.query,false)),
       catchError(this.handleError<any>('createPassenger'))
     );
   }
@@ -83,7 +87,7 @@ export class PassengerService {
   getPassenger(id: number): Observable<Passenger> {
     const url = `${this.PassengersUrl}/${id}`;
     return this.http.get<any>(url).pipe(
-      tap(response => this.log(response.query)),
+      tap(response => this.logMessage(response.query,false)),
       map(res => res.passenger),
       catchError(this.handleError<any>(`getPassenger id=${id}`))
     );
@@ -92,7 +96,7 @@ export class PassengerService {
   /** PUT: update the Passenger on the server */
   updatePassenger(id: number, Passenger: Passenger): Observable<any> {
     return this.http.put<any>(`${this.PassengersUrl}/${id}`, Passenger, this.httpOptions).pipe(
-      tap(response => this.log(response.query)),
+      tap(response => this.logMessage(response.query,false)),
       catchError(this.handleError<any>('updatePassenger'))
     );
   }
@@ -102,7 +106,7 @@ export class PassengerService {
     const url = `${this.PassengersUrl}/${id}`;
 
     return this.http.delete<any>(url, this.httpOptions).pipe(
-      tap(response => this.log(response.query)),
+      tap(response => this.logMessage(response.query,false)),
       catchError(this.handleError<any>('deletePassenger'))
     );
   }

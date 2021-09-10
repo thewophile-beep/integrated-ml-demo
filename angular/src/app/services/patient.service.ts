@@ -41,6 +41,10 @@ export class PatientService {
   private log(message: string) {
     this.messageService.add(`PatientService: ${message}`);
   }
+
+  private logMessage(message: string,verbose:boolean) {
+    this.messageService.addMessage(message,verbose);
+  }
   
   constructor(
     private http: HttpClient,

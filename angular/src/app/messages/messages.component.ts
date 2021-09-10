@@ -8,6 +8,7 @@ import { MessageService } from '../services/message.service';
 export class MessagesComponent implements OnInit {
 
   isChecked: boolean = true;
+  isVerbose: boolean = false;
 
   constructor(public messageService: MessageService) { }
 

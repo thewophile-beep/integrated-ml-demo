@@ -84,7 +84,7 @@ def getAllPassengers():
     # Getting the total number of passengers
     rs = iris.sql.exec("SELECT COUNT(*) FROM Titanic_Table.Passenger")
     payload['total'] = rs.__next__()[0]
-    payload['query'] = "Selection by objects"
+    payload['query'] = query
     return jsonify(payload)
 
 # POST a new passenger
@@ -200,7 +200,7 @@ def getAllPatients():
         payload['patients'].append(Patient(p).__dict__)
     rs = iris.sql.exec("SELECT MAX(ID) FROM Noshow_Table.Appointment")
     payload['maxId'] = rs.__next__()[0]
-    payload['query'] = "Selection by objects"
+    payload['query'] = query
     return jsonify(payload)
 
 # POST new patient, same as for passengers

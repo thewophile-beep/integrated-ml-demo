@@ -1,15 +1,16 @@
 <div class="wrapper">
     <mat-slide-toggle [(ngModel)]="isChecked">See SQL queries?</mat-slide-toggle>
+    <mat-slide-toggle [(ngModel)]="isVerbose">Verbose?</mat-slide-toggle>
     <div *ngIf="messageService.messages.length && isChecked">
         <button mat-raised-button (click)="messageService.clear()" class="clear-button">Clear messages</button>
 
         <div class="limited-height">
             <mat-divider></mat-divider>
-            <div *ngFor="let message of messageService.messages.slice().reverse()"  class="message-item">
-                <span>{{message}}</span>
+            <div *ngFor="let message of messageService.messages.slice().reverse()" class="message-item">
+                <span [style.font-weight]="(message.verbose && isVerbose) ? 'bold' : 'normal'" *ngIf='message.verbose || isVerbose'>{{message.message}}</span>
             </div>
-            <mat-divider></mat-divider>
         </div>
     </div>
 </div>
+
 

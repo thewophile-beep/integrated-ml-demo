@@ -26,9 +26,9 @@ ClassMethod getAllPassengers(currPage As %Float, pageSize As %Float, name As %St
 
     if ($Data(name)) {
         // If search by name
-        set myquery = "SELECT Id FROM Titanic_Table.Passenger WHERE name %STARTSWITH ?"
+        set query = "SELECT Id FROM Titanic_Table.Passenger WHERE name %STARTSWITH ?"
         set tStatement = ##class(%SQL.Statement).%New()
-        $$$ThrowOnError(tStatement.%Prepare(myquery))
+        $$$ThrowOnError(tStatement.%Prepare(query))
         set tRs = tStatement.%Execute(name)
         while tRs.%Next() {
             do ##class(Titanic.Table.Passenger).%OpenId(tRs.Id).%JSONExportToStream(.tStream)
@@ -40,6 +40,7 @@ ClassMethod getAllPassengers(currPage As %Float, pageSize As %Float, name As %St
     else {
         if ($Data(pageSize) && $Data(currPage)) {
             // if pagination 
+            set query = "SELECT * FROM Titanic_Table.Passenger"
             set tStartRow = pageSize * (currPage - 1)
             set tEndRow = tStartRow + pageSize
             set tRow = 0
@@ -69,7 +70,7 @@ ClassMethod getAllPassengers(currPage As %Float, pageSize As %Float, name As %St
     set tRs = tStatement.%Execute()
     do tRs.%Next()
     set tDyna."total" = tRs."total"
-    set tDyna."query" = "Selection by object"
+    set tDyna."query" = query
     set tDyna."passengers" = tPassengers
     quit tDyna
 }
