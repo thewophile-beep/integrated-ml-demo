@@ -20,3 +20,10 @@ testem.log
 .DS_Store
 Thumbs.db
 iris/key/iris.key
+
+#python
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
