@@ -108,7 +108,11 @@
             },
             "development": {
               "browserTarget": "integrated-ml-demo:build:development"
+            },
+            "development-flask": {
+              "browserTarget": "integrated-ml-demo:build:development-flask"
             }
+
           },
           "defaultConfiguration": "development"
         },
